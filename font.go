@@ -13,13 +13,15 @@ type Font struct {
 }
 
 func NewFont() *Font {
-	return &Font{}
+	return &Font{
+		fonts: map[rune]*ebiten.Image{},
+	}
 }
 
 func (f *Font) Load(path string) error {
 	// TODO(hajimehoshi): Use goroutine
 	for n := 33; n < 128; n++ {
-		src := filepath.Join(path, fmt.Sprintf("%d.png",n))
+		src := filepath.Join(path, fmt.Sprintf("%d.png", n))
 		img, _, err := ebitenutil.NewImageFromFile(src, ebiten.FilterNearest)
 		if err != nil {
 			return err
