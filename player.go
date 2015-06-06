@@ -445,13 +445,14 @@ func (p *Player) getOnField() FieldType {
 }
 
 func (p *Player) Draw(game *Game) {
-	v := p.view.ToScreenPosition(Position{int(p.position.X), int(p.position.Y)})
+	v := p.view.ToScreenPosition(p.position)
+	vx, vy := int(v.X), int(v.Y)
 	if p.state == PLAYERSTATE_DEAD { // 死亡
 		anime := (p.timer / 6) % 4
 		if game.playerData.lunkerMode {
-			game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+			game.Draw("ino", vx, vy, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 		} else {
-			game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
+			game.Draw("ino", vx, vy, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
 		}
 	} else { // 生存
 		if p.state != PLAYERSTATE_MUTEKI || p.timer%10 < 5 {
@@ -461,15 +462,15 @@ func (p *Player) Draw(game *Game) {
 			}
 			if p.direction < 0 {
 				if game.playerData.lunkerMode {
-					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+					game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 				} else {
-					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
+					game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
 				}
 			} else {
 				if game.playerData.lunkerMode {
-					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
+					game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
 				} else {
-					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
+					game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 				}
 			}
 		}

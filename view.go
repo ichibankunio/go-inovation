@@ -4,10 +4,10 @@ type View struct {
 	position PositionF
 }
 
-func (v *View) ToScreenPosition(p Position) Position {
-	x := p.X - int(v.position.X) + g_width/2
-	y := p.Y - int(v.position.Y) + g_height/2
-	return Position{x, y}
+func (v *View) ToScreenPosition(p PositionF) PositionF {
+	x := p.X - v.position.X + g_width/2
+	y := p.Y - v.position.Y + g_height/2
+	return PositionF{x, y}
 }
 
 func (v *View) GetPosition() PositionF {
