@@ -225,16 +225,20 @@ func (s *SecretMain) GetMsg() GameStateMsg {
 type GameMain struct {
 	gameStateMsg GameStateMsg
 	player       *Player
+	field        *Field
 }
 
 func NewGameMain(game *Game) *GameMain {
-	return &GameMain{
-		player: NewPlayer(game),
+	f := NewField(field_data)
+	g := &GameMain{
+		player: NewPlayer(game, f),
+		field:  f,
 	}
+	return g
 }
 
 func (g *GameMain) Update(game *Game) {
-	game.field.Move()
+	g.field.Move()
 	g.player.Move(g)
 }
 
@@ -246,7 +250,7 @@ func (g *GameMain) Draw(game *Game) {
 	}
 
 	p := g.player.view.GetPosition()
-	game.field.Draw(game, Position{X: int(p.X), Y: int(p.Y)})
+	g.field.Draw(game, Position{X: int(p.X), Y: int(p.Y)})
 	g.player.Draw()
 }
 
@@ -266,7 +270,6 @@ type GameState interface {
 
 type Game struct {
 	gameState  GameState
-	field      *Field
 	playerData *PlayerData
 	img        map[string]*ebiten.Image
 	font       *Font
@@ -281,11 +284,6 @@ func NewGame() *Game {
 
 func (g *Game) Start() error {
 	return ebiten.Run(g.Loop, g_width, g_height, 2, "Inovation 5")
-}
-
-func (g *Game) ResetField() {
-	g.field = &Field{}
-	g.field.LoadFieldData(field_data)
 }
 
 func (g *Game) Loop(screen *ebiten.Image) error {
@@ -304,7 +302,6 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 			g.gameState = &OpeningMain{}
 			break
 		case GAMESTATE_MSG_REQ_GAME:
-			g.ResetField()
 			g.gameState = NewGameMain(g)
 			break
 		case GAMESTATE_MSG_REQ_ENDING:

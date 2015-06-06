@@ -47,14 +47,15 @@ type Player struct {
 	waitTimer   int
 	game        *Game
 	view        *View
+	field       *Field
 }
 
-func NewPlayer(game *Game) *Player{
-	p := &Player{game: game}
+func NewPlayer(game *Game, field *Field) *Player{
+	p := &Player{game: game, field: field}
 	p.state = PLAYERSTATE_NORMAL
 	p.life = p.game.playerData.lifeMax * LIFE_RATIO
 
-	startPoint := p.game.field.GetStartPoint()
+	startPoint := p.field.GetStartPoint()
 	startPointF := PositionF{float64(startPoint.X), float64(startPoint.Y)}
 	p.position = startPointF
 	p.jumpedPoint = startPointF
@@ -69,10 +70,10 @@ func (p *Player) OnWall() bool {
 	if p.toFieldOfsY() > CHAR_SIZE/4 {
 		return false
 	}
-	if p.game.field.IsRidable(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
+	if p.field.IsRidable(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
 		return true
 	}
-	if p.game.field.IsRidable(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > CHAR_SIZE/8 {
+	if p.field.IsRidable(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > CHAR_SIZE/8 {
 		return true
 	}
 	return false
@@ -82,10 +83,10 @@ func (p *Player) IsFallable() bool {
 	if !p.OnWall() {
 		return false
 	}
-	if p.game.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
+	if p.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
 		return false
 	}
-	if p.game.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > CHAR_SIZE/8 {
+	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > CHAR_SIZE/8 {
 		return false
 	}
 	return true
@@ -95,7 +96,7 @@ func (p *Player) IsUpperWallBoth() bool {
 	if p.toFieldOfsY() < CHAR_SIZE/2 {
 		return false
 	}
-	if p.game.field.IsWall(p.toFieldX(), p.toFieldY()) && p.game.field.IsWall(p.toFieldX()+1, p.toFieldY()) {
+	if p.field.IsWall(p.toFieldX(), p.toFieldY()) && p.field.IsWall(p.toFieldX()+1, p.toFieldY()) {
 		return true
 	}
 	return false
@@ -105,28 +106,28 @@ func (p *Player) IsUpperWall() bool {
 	if p.toFieldOfsY() < CHAR_SIZE/2 {
 		return false
 	}
-	if p.game.field.IsWall(p.toFieldX(), p.toFieldY()) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
+	if p.field.IsWall(p.toFieldX(), p.toFieldY()) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
 		return true
 	}
-	if p.game.field.IsWall(p.toFieldX()+1, p.toFieldY()) && p.toFieldOfsX() > CHAR_SIZE/8 {
+	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()) && p.toFieldOfsX() > CHAR_SIZE/8 {
 		return true
 	}
 	return false
 }
 func (p *Player) IsLeftWall() bool {
-	if p.game.field.IsWall(p.toFieldX(), p.toFieldY()) {
+	if p.field.IsWall(p.toFieldX(), p.toFieldY()) {
 		return true
 	}
-	if p.game.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsY() > CHAR_SIZE/8 {
+	if p.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsY() > CHAR_SIZE/8 {
 		return true
 	}
 	return false
 }
 func (p *Player) IsRightWall() bool {
-	if p.game.field.IsWall(p.toFieldX()+1, p.toFieldY()) {
+	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()) {
 		return true
 	}
-	if p.game.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsY() > CHAR_SIZE/8 {
+	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsY() > CHAR_SIZE/8 {
 		return true
 	}
 	return false
@@ -371,17 +372,17 @@ func (p *Player) checkCollision() {
 	for xx := 0; xx < 2; xx++ {
 		for yy := 0; yy < 2; yy++ {
 			// アイテム獲得(STATE_ITEMGETへ遷移)
-			if p.game.field.IsItem(p.toFieldX()+xx, p.toFieldY()+yy) {
+			if p.field.IsItem(p.toFieldX()+xx, p.toFieldY()+yy) {
 				// 隠しアイテムは条件が必要
-				if !p.game.field.IsItemGettable(p.toFieldX()+xx, p.toFieldY()+yy, p.game.playerData) {
+				if !p.field.IsItemGettable(p.toFieldX()+xx, p.toFieldY()+yy, p.game.playerData) {
 					continue
 				}
 
 				p.state = PLAYERSTATE_ITEMGET
 
 				// アイテム効果
-				p.itemGet = p.game.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy)
-				switch p.game.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy) {
+				p.itemGet = p.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy)
+				switch p.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy) {
 				case FIELD_ITEM_POWERUP:
 					p.game.playerData.jumpMax++
 				case FIELD_ITEM_LIFE:
@@ -390,7 +391,7 @@ func (p *Player) checkCollision() {
 				default:
 					p.game.playerData.itemGetFlags[p.itemGet] = true
 				}
-				p.game.field.EraseField(p.toFieldX()+xx, p.toFieldY()+yy)
+				p.field.EraseField(p.toFieldX()+xx, p.toFieldY()+yy)
 				p.waitTimer = 0
 
 				// TODO(hajimehoshi): Stop BGM
@@ -402,7 +403,7 @@ func (p *Player) checkCollision() {
 				return
 			}
 			// トゲ(ダメージ)
-			if p.game.field.IsSpike(p.toFieldX()+xx, p.toFieldY()+yy) {
+			if p.field.IsSpike(p.toFieldX()+xx, p.toFieldY()+yy) {
 				p.state = PLAYERSTATE_MUTEKI
 				p.waitTimer = 0
 				p.life -= LIFE_RATIO
@@ -422,16 +423,16 @@ func (p *Player) GetOnField() FieldType {
 		return FIELD_NONE
 	}
 	if p.toFieldOfsX() < CHAR_SIZE/2 {
-		if p.game.field.IsRidable(p.toFieldX(), p.toFieldY()+1) {
-			return p.game.field.GetField(p.toFieldX(), p.toFieldY()+1)
+		if p.field.IsRidable(p.toFieldX(), p.toFieldY()+1) {
+			return p.field.GetField(p.toFieldX(), p.toFieldY()+1)
 		} else {
-			return p.game.field.GetField(p.toFieldX()+1, p.toFieldY()+1)
+			return p.field.GetField(p.toFieldX()+1, p.toFieldY()+1)
 		}
 	} else {
-		if p.game.field.IsRidable(p.toFieldX()+1, p.toFieldY()+1) {
-			return p.game.field.GetField(p.toFieldX()+1, p.toFieldY()+1)
+		if p.field.IsRidable(p.toFieldX()+1, p.toFieldY()+1) {
+			return p.field.GetField(p.toFieldX()+1, p.toFieldY()+1)
 		} else {
-			return p.game.field.GetField(p.toFieldX(), p.toFieldY()+1)
+			return p.field.GetField(p.toFieldX(), p.toFieldY()+1)
 		}
 	}
 }

@@ -69,7 +69,8 @@ type Field struct {
 	timer int
 }
 
-func (f *Field) LoadFieldData(data string) {
+func NewField(data string) *Field {
+	f := &Field{}
 	xm := strings.Split(data, "\n")
 	const decoder = " HUB~<>*I PabcdefghijklmnopqrzL@"
 
@@ -79,6 +80,7 @@ func (f *Field) LoadFieldData(data string) {
 			f.field[yy*FIELD_X_MAX+xx] = FieldType(n)
 		}
 	}
+	return f
 }
 
 func (f *Field) Move() {
