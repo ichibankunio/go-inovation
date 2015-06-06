@@ -54,7 +54,6 @@ func NewPlayer(playerData *PlayerData, field *Field) *Player {
 	p := &Player{
 		playerData: playerData,
 		field:      field,
-		state:      PLAYERSTATE_NORMAL,
 		life:       playerData.lifeMax * LIFE_RATIO,
 	}
 
