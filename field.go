@@ -83,7 +83,7 @@ func NewField(data string) *Field {
 	return f
 }
 
-func (f *Field) Move() {
+func (f *Field) Update() {
 	f.timer++
 }
 

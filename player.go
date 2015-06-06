@@ -170,8 +170,9 @@ func (p *Player) toFieldOfsY() int {
 	return int(p.position.Y) % CHAR_SIZE
 }
 
-func (p *Player) Move(gameMain *GameMain) {
-	p.field.Move()
+func (p *Player) Update() GameStateMsg {
+	msg := GAMESTATE_MSG_NONE
+	p.field.Update()
 	switch p.state {
 	case PLAYERSTATE_START:
 		p.waitTimer++
@@ -194,7 +195,7 @@ func (p *Player) Move(gameMain *GameMain) {
 		p.moveItemGet()
 		if p.state != PLAYERSTATE_ITEMGET {
 			if p.playerData.IsGameClear() {
-				gameMain.SetMsg(GAMESTATE_MSG_REQ_ENDING)
+				msg = GAMESTATE_MSG_REQ_ENDING
 			}
 		}
 
@@ -210,7 +211,7 @@ func (p *Player) Move(gameMain *GameMain) {
 		p.moveNormal()
 		// TODO(hajimehoshi): Stop BGM
 		if input.IsActionKeyPressed() && p.waitTimer > 15 {
-			gameMain.SetMsg(GAMESTATE_MSG_REQ_TITLE)
+			msg = GAMESTATE_MSG_REQ_TITLE
 		}
 	}
 	if p.life < LIFE_RATIO {
@@ -221,6 +222,7 @@ func (p *Player) Move(gameMain *GameMain) {
 		p.direction = 0
 		p.waitTimer++
 	}
+	return msg
 }
 
 func (p *Player) moveNormal() {

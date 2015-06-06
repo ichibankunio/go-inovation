@@ -235,7 +235,7 @@ func NewGameMain(game *Game) *GameMain {
 }
 
 func (g *GameMain) Update(game *Game) {
-	g.player.Move(g)
+	g.gameStateMsg = g.player.Update()
 }
 
 func (g *GameMain) Draw(game *Game) {
@@ -249,10 +249,6 @@ func (g *GameMain) Draw(game *Game) {
 
 func (g *GameMain) GetMsg() GameStateMsg {
 	return g.gameStateMsg
-}
-
-func (g *GameMain) SetMsg(msg GameStateMsg) {
-	g.gameStateMsg = msg
 }
 
 type GameState interface {
