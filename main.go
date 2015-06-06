@@ -39,8 +39,8 @@ func init() {
 func (t *TitleMain) Update() {
 	t.timer++
 	if t.timer%5 == 0 {
-		t.offsetX = int(rand.Float64()*3000/11)%5 - 3
-		t.offsetY = int(rand.Float64()*3000/11)%5 - 3
+		t.offsetX = rand.Intn(5) - 3
+		t.offsetY = rand.Intn(5) - 3
 	}
 
 	key := t.gameState.game.key

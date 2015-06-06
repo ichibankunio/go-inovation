@@ -58,13 +58,11 @@ type Player struct {
 	speed       PositionF
 	direction   int
 	jumpedPoint PositionF
-	field       *Field
 	state       int
 	itemGet     int
 	waitTimer   int
 	game        *Game
 	view        *View
-	playerData  *PlayerData
 }
 
 func NewPlayer(g *Game) *Player {
@@ -74,15 +72,13 @@ func NewPlayer(g *Game) *Player {
 func (p *Player) Initialize() {
 	*p = Player{game: p.game}
 	p.state = PLAYERSTATE_NORMAL
-	p.playerData = p.game.playerData
-	p.life = p.playerData.lifeMax * LIFE_RATIO
+	p.life = p.game.playerData.lifeMax * LIFE_RATIO
 
 	startPoint := p.game.field.GetStartPoint()
 	startPointF := PositionF{float64(startPoint.X), float64(startPoint.Y)}
 	p.position = startPointF
 	p.jumpedPoint = startPointF
 
-	p.field = p.game.field
 	p.view = &View{}
 	p.view.SetPosition(p.position)
 	// TODO(hajimehoshi): Play BGM 'bgm0'
@@ -92,10 +88,10 @@ func (p *Player) OnWall() bool {
 	if p.toFieldOfsY() > CHAR_SIZE/4 {
 		return false
 	}
-	if p.field.IsRidable(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
+	if p.game.field.IsRidable(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
 		return true
 	}
-	if p.field.IsRidable(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > CHAR_SIZE/8 {
+	if p.game.field.IsRidable(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > CHAR_SIZE/8 {
 		return true
 	}
 	return false
@@ -105,10 +101,10 @@ func (p *Player) IsFallable() bool {
 	if !p.OnWall() {
 		return false
 	}
-	if p.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
+	if p.game.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
 		return false
 	}
-	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > CHAR_SIZE/8 {
+	if p.game.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > CHAR_SIZE/8 {
 		return false
 	}
 	return true
@@ -118,7 +114,7 @@ func (p *Player) IsUpperWallBoth() bool {
 	if p.toFieldOfsY() < CHAR_SIZE/2 {
 		return false
 	}
-	if p.field.IsWall(p.toFieldX(), p.toFieldY()) && p.field.IsWall(p.toFieldX()+1, p.toFieldY()) {
+	if p.game.field.IsWall(p.toFieldX(), p.toFieldY()) && p.game.field.IsWall(p.toFieldX()+1, p.toFieldY()) {
 		return true
 	}
 	return false
@@ -128,28 +124,28 @@ func (p *Player) IsUpperWall() bool {
 	if p.toFieldOfsY() < CHAR_SIZE/2 {
 		return false
 	}
-	if p.field.IsWall(p.toFieldX(), p.toFieldY()) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
+	if p.game.field.IsWall(p.toFieldX(), p.toFieldY()) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
 		return true
 	}
-	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()) && p.toFieldOfsX() > CHAR_SIZE/8 {
+	if p.game.field.IsWall(p.toFieldX()+1, p.toFieldY()) && p.toFieldOfsX() > CHAR_SIZE/8 {
 		return true
 	}
 	return false
 }
 func (p *Player) IsLeftWall() bool {
-	if p.field.IsWall(p.toFieldX(), p.toFieldY()) {
+	if p.game.field.IsWall(p.toFieldX(), p.toFieldY()) {
 		return true
 	}
-	if p.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsY() > CHAR_SIZE/8 {
+	if p.game.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsY() > CHAR_SIZE/8 {
 		return true
 	}
 	return false
 }
 func (p *Player) IsRightWall() bool {
-	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()) {
+	if p.game.field.IsWall(p.toFieldX()+1, p.toFieldY()) {
 		return true
 	}
-	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsY() > CHAR_SIZE/8 {
+	if p.game.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsY() > CHAR_SIZE/8 {
 		return true
 	}
 	return false
@@ -196,7 +192,7 @@ func (p *Player) Move() {
 	case PLAYERSTATE_NORMAL:
 		p.MoveByInput()
 		p.MoveNormal()
-		if p.life < p.playerData.lifeMax*LIFE_RATIO {
+		if p.life < p.game.playerData.lifeMax*LIFE_RATIO {
 			var o_life = p.life
 			p.life++
 			if (p.life / LIFE_RATIO) != (o_life / LIFE_RATIO) {
@@ -207,7 +203,7 @@ func (p *Player) Move() {
 	case PLAYERSTATE_ITEMGET:
 		p.MoveItemGet()
 		if p.state != PLAYERSTATE_ITEMGET {
-			if p.playerData.IsGameClear() {
+			if p.game.playerData.IsGameClear() {
 				p.game.gameState.SetMsg(GAMESTATE_MSG_REQ_ENDING)
 			}
 		}
@@ -239,7 +235,7 @@ func (p *Player) Move() {
 
 func (p *Player) MoveNormal() {
 	p.timer++
-	p.playerData.playtime = (p.timer / 50)
+	p.game.playerData.playtime = (p.timer / 50)
 
 	// 移動＆落下
 	p.speed.Y += PLAYER_GRAVITY
@@ -258,8 +254,8 @@ func (p *Player) MoveNormal() {
 	hitLeft := false
 	hitRight := false
 	hitUpper := false
-	if p.OnWall() && p.speed.Y >= 0 { // 着地判定
-		if p.playerData.lunkerMode { // ランカー・モード
+	if p.OnWall() && p.speed.Y >= 0 {
+		if p.game.playerData.lunkerMode {
 			if p.position.Y-p.jumpedPoint.Y > LUNKER_JUMP_DAMAGE1 {
 				p.state = PLAYERSTATE_MUTEKI
 				p.waitTimer = 0
@@ -370,7 +366,7 @@ func (p *Player) MoveByInput() {
 	}
 
 	if p.game.key.IsActionKeyPushed() {
-		if ((p.playerData.jumpMax > p.jumpCnt) || p.OnWall()) && !p.game.key.IsKeyPressed(ebiten.KeyDown) {
+		if ((p.game.playerData.jumpMax > p.jumpCnt) || p.OnWall()) && !p.game.key.IsKeyPressed(ebiten.KeyDown) {
 			p.speed.Y = PLAYER_JUMP // ジャンプ
 			if !p.OnWall() {
 				p.jumpCnt++
@@ -396,30 +392,30 @@ func (p *Player) CheckCollision() {
 	for xx := 0; xx < 2; xx++ {
 		for yy := 0; yy < 2; yy++ {
 			// アイテム獲得(STATE_ITEMGETへ遷移)
-			if p.field.IsItem(p.toFieldX()+xx, p.toFieldY()+yy) {
+			if p.game.field.IsItem(p.toFieldX()+xx, p.toFieldY()+yy) {
 				// 隠しアイテムは条件が必要
-				if !p.field.IsItemGetable(p.toFieldX()+xx, p.toFieldY()+yy) {
+				if !p.game.field.IsItemGetable(p.toFieldX()+xx, p.toFieldY()+yy) {
 					continue
 				}
 
 				p.state = PLAYERSTATE_ITEMGET
 
 				// アイテム効果
-				p.itemGet = p.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy)
-				switch p.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy) {
+				p.itemGet = p.game.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy)
+				switch p.game.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy) {
 				case FIELD_ITEM_POWERUP:
-					p.playerData.jumpMax++
+					p.game.playerData.jumpMax++
 				case FIELD_ITEM_LIFE:
-					p.playerData.lifeMax++
-					p.life = p.playerData.lifeMax * LIFE_RATIO
+					p.game.playerData.lifeMax++
+					p.life = p.game.playerData.lifeMax * LIFE_RATIO
 				default:
-					p.playerData.itemGetFlags[p.itemGet] = true
+					p.game.playerData.itemGetFlags[p.itemGet] = true
 				}
-				p.field.EraseField(p.toFieldX()+xx, p.toFieldY()+yy)
+				p.game.field.EraseField(p.toFieldX()+xx, p.toFieldY()+yy)
 				p.waitTimer = 0
 
 				// TODO(hajimehoshi): Stop BGM
-				if p.playerData.IsItemForClear(p.itemGet) || p.itemGet == FIELD_ITEM_POWERUP {
+				if p.game.playerData.IsItemForClear(p.itemGet) || p.itemGet == FIELD_ITEM_POWERUP {
 					// TODO(hajimehoshi): Play SE 'itemget'
 				} else {
 					// TODO(hajimehoshi): Play SE 'itemget2'
@@ -427,7 +423,7 @@ func (p *Player) CheckCollision() {
 				return
 			}
 			// トゲ(ダメージ)
-			if p.field.IsSpike(p.toFieldX()+xx, p.toFieldY()+yy) {
+			if p.game.field.IsSpike(p.toFieldX()+xx, p.toFieldY()+yy) {
 				p.state = PLAYERSTATE_MUTEKI
 				p.waitTimer = 0
 				p.life -= LIFE_RATIO
@@ -447,16 +443,16 @@ func (p *Player) GetOnField() int {
 		return FIELD_NONE
 	}
 	if p.toFieldOfsX() < CHAR_SIZE/2 {
-		if p.field.IsRidable(p.toFieldX(), p.toFieldY()+1) {
-			return p.field.GetField(p.toFieldX(), p.toFieldY()+1)
+		if p.game.field.IsRidable(p.toFieldX(), p.toFieldY()+1) {
+			return p.game.field.GetField(p.toFieldX(), p.toFieldY()+1)
 		} else {
-			return p.field.GetField(p.toFieldX()+1, p.toFieldY()+1)
+			return p.game.field.GetField(p.toFieldX()+1, p.toFieldY()+1)
 		}
 	} else {
-		if p.field.IsRidable(p.toFieldX()+1, p.toFieldY()+1) {
-			return p.field.GetField(p.toFieldX()+1, p.toFieldY()+1)
+		if p.game.field.IsRidable(p.toFieldX()+1, p.toFieldY()+1) {
+			return p.game.field.GetField(p.toFieldX()+1, p.toFieldY()+1)
 		} else {
-			return p.field.GetField(p.toFieldX(), p.toFieldY()+1)
+			return p.game.field.GetField(p.toFieldX(), p.toFieldY()+1)
 		}
 	}
 }
@@ -465,7 +461,7 @@ func (p *Player) Draw(game *Game) {
 	v := p.view.ToScreenPosition(Position{int(p.position.X), int(p.position.Y)})
 	if p.state == PLAYERSTATE_DEAD { // 死亡
 		anime := (p.timer / 6) % 4
-		if p.playerData.lunkerMode {
+		if p.game.playerData.lunkerMode {
 			game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 		} else {
 			game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
@@ -477,13 +473,13 @@ func (p *Player) Draw(game *Game) {
 				anime = 0
 			}
 			if p.direction < 0 {
-				if p.playerData.lunkerMode {
+				if p.game.playerData.lunkerMode {
 					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 				} else {
 					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
 				}
 			} else {
-				if p.playerData.lunkerMode {
+				if p.game.playerData.lunkerMode {
 					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
 				} else {
 					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
@@ -493,8 +489,8 @@ func (p *Player) Draw(game *Game) {
 	}
 
 	// ライフ表示
-	for t := 0; t < p.playerData.lifeMax; t++ {
-		if p.life < LIFE_RATIO*2 && p.timer%10 < 5 && p.playerData.lifeMax > 1 {
+	for t := 0; t < p.game.playerData.lifeMax; t++ {
+		if p.life < LIFE_RATIO*2 && p.timer%10 < 5 && p.game.playerData.lifeMax > 1 {
 			continue
 		}
 
@@ -507,11 +503,11 @@ func (p *Player) Draw(game *Game) {
 
 	// 取ったアイテム一覧
 	for t := FIELD_ITEM_FUJI; t < FIELD_ITEM_MAX; t++ {
-		if !p.playerData.itemGetFlags[t] {
+		if !p.game.playerData.itemGetFlags[t] {
 			game.Draw("ino", g_width-CHAR_SIZE/4*(FIELD_ITEM_MAX-2-t), 0, // 無
 				CHAR_SIZE*5, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 		} else {
-			if p.playerData.IsItemForClear(t) {
+			if p.game.playerData.IsItemForClear(t) {
 				// クリア条件アイテムは専用グラフィック
 				for i := 0; i < len(clearFlagItems); i++ {
 					if clearFlagItems[i] == t {
