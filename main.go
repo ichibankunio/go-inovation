@@ -1,6 +1,7 @@
 package inovation5
 
 import (
+	"fmt"
 	"image/color"
 	"math/rand"
 	"path/filepath"
@@ -344,6 +345,8 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	g.gameState.Update()
 	g.gameState.Draw()
 	g.key.Update()
+
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("\n%.2f", ebiten.CurrentFPS()))
 	return nil
 }
 
@@ -355,13 +358,33 @@ type imgPart struct {
 	px, py, sx, sy, sw, sh int
 }
 
-func (i *imgPart) Len() int                       { return 1 }
-func (i *imgPart) Dst(_ int) (int, int, int, int) { return i.px, i.py, i.px + i.sw, i.py + i.sh }
-func (i *imgPart) Src(_ int) (int, int, int, int) { return i.sx, i.sy, i.sx + i.sw, i.sy + i.sh }
+type imgParts []imgPart
+
+func (i imgParts) Len() int {
+	return len(i)
+}
+
+func (i imgParts) Dst(idx int) (int, int, int, int) {
+	p := i[idx]
+	return p.px, p.py, p.px + p.sw, p.py + p.sh
+}
+
+func (i imgParts) Src(idx int) (int, int, int, int) {
+	p := i[idx]
+	return p.sx, p.sy, p.sx + p.sw, p.sy + p.sh
+}
 
 func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) error {
 	op := &ebiten.DrawImageOptions{}
-	op.ImageParts = &imgPart{px, py, sx, sy, sw, sh}
+	op.ImageParts = imgParts([]imgPart{
+		imgPart{px, py, sx, sy, sw, sh},
+	})
+	return g.screen.DrawImage(g.img[key], op)
+}
+
+func (g *Game) DrawParts(key string, parts []imgPart) error {
+	op := &ebiten.DrawImageOptions{}
+	op.ImageParts = imgParts(parts)
 	return g.screen.DrawImage(g.img[key], op)
 }
 
@@ -394,7 +417,7 @@ func Run() error {
 	game.img = map[string]*ebiten.Image{}
 	for _, f := range []string{"ino", "msg", "bg"} {
 		var err error
-		game.img[f], _, err = ebitenutil.NewImageFromFile(filepath.Join(imgDir, f + ".png"), ebiten.FilterNearest)
+		game.img[f], _, err = ebitenutil.NewImageFromFile(filepath.Join(imgDir, f+".png"), ebiten.FilterNearest)
 		if err != nil {
 			return err
 		}
