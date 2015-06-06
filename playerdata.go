@@ -15,7 +15,7 @@ var clearFlagItems = [...]FieldType{
 
 type PlayerData struct {
 	itemGetFlags [FIELD_ITEM_MAX]bool
-	playtime     int
+	time         int
 	jumpMax      int
 	lifeMax      int
 	lunkerMode   bool
@@ -33,6 +33,14 @@ func NewPlayerData(gameMode GameMode) *PlayerData {
 		p.jumpMax = 1
 	}
 	return p
+}
+
+func (p *PlayerData) Update() {
+	p.time++
+}
+
+func (p *PlayerData) TimeInSecond() int {
+	return p.time / 60
 }
 
 func (p *PlayerData) IsGameClear() bool {

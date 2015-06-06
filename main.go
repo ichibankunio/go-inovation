@@ -181,7 +181,7 @@ func (e *EndingMain) Draw(game *Game) {
 		game.Draw("msg", (g_width-256)/2, (g_height-160)/2, 0, 1664, 256, 160)
 
 		game.DrawFont(strconv.Itoa(game.playerData.GetItemCount()), (g_width-10*0)/2, (g_height-160)/2+13*5+2)
-		game.DrawFont(strconv.Itoa(game.playerData.playtime), (g_width-13)/2, (g_height-160)/2+13*8+2)
+		game.DrawFont(strconv.Itoa(game.playerData.TimeInSecond()), (g_width-13)/2, (g_height-160)/2+13*8+2)
 	}
 }
 
