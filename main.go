@@ -231,7 +231,7 @@ func NewGameMain(game *Game) *GameMain {
 	f := &Field{}
 	f.LoadFieldData(field_data)
 	game.field = f
-	game.player.Initialize()
+	game.player = NewPlayer(game)
 	return g
 }
 
@@ -283,7 +283,6 @@ func NewGame() *Game {
 }
 
 func (g *Game) Start() error {
-	g.player = NewPlayer(g)
 	return ebiten.Run(g.Loop, g_width, g_height, 2, "Inovation 5")
 }
 

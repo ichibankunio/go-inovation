@@ -49,12 +49,8 @@ type Player struct {
 	view        *View
 }
 
-func NewPlayer(g *Game) *Player {
-	return &Player{game: g}
-}
-
-func (p *Player) Initialize() {
-	*p = Player{game: p.game}
+func NewPlayer(game *Game) *Player{
+	p := &Player{game: game}
 	p.state = PLAYERSTATE_NORMAL
 	p.life = p.game.playerData.lifeMax * LIFE_RATIO
 
@@ -66,6 +62,7 @@ func (p *Player) Initialize() {
 	p.view = &View{}
 	p.view.SetPosition(p.position)
 	// TODO(hajimehoshi): Play BGM 'bgm0'
+	return p
 }
 
 func (p *Player) OnWall() bool {
