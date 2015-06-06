@@ -103,11 +103,6 @@ const (
 	OPENING_SCROLL_SPEED = 3
 )
 
-func NewOpeningMain() *OpeningMain {
-	// TODO(hajimehoshi): Play BGM 'bgm1'
-	return &OpeningMain{}
-}
-
 func (o *OpeningMain) Update(game *Game) {
 	o.timer++
 
@@ -143,11 +138,6 @@ const (
 	ENDING_SCROLL_LEN   = 1088
 	ENDING_SCROLL_SPEED = 3
 )
-
-func NewEndingMain() *EndingMain {
-	// TODO(hajimehoshi): Play BGM 'bgm1'
-	return &EndingMain{}
-}
 
 func (e *EndingMain) Update(game *Game) {
 	e.timer++
@@ -206,7 +196,6 @@ type SecretMain struct {
 }
 
 func NewSecretMain(number int) *SecretMain {
-	// TODO(hajimehoshi): Play BGM 'bgm1'
 	return &SecretMain{
 		number: number,
 	}
@@ -315,18 +304,22 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 			g.gameState = &TitleMain{}
 			break
 		case GAMESTATE_MSG_REQ_OPENING:
-			g.gameState = NewOpeningMain()
+			// TODO(hajimehoshi): Play BGM 'bgm1'
+			g.gameState = &OpeningMain{}
 			break
 		case GAMESTATE_MSG_REQ_GAME:
 			g.gameState = NewGameMain(g)
 			break
 		case GAMESTATE_MSG_REQ_ENDING:
-			g.gameState = NewEndingMain()
+			// TODO(hajimehoshi): Play BGM 'bgm1'
+			g.gameState = &EndingMain{}
 			break
 		case GAMESTATE_MSG_REQ_SECRET1:
+			// TODO(hajimehoshi): Play BGM 'bgm1'
 			g.gameState = NewSecretMain(1)
 			break
 		case GAMESTATE_MSG_REQ_SECRET2:
+			// TODO(hajimehoshi): Play BGM 'bgm1'
 			g.gameState = NewSecretMain(2)
 			break
 		}
