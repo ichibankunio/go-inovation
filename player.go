@@ -43,7 +43,7 @@ type Player struct {
 	direction   int
 	jumpedPoint PositionF
 	state       PlayerState
-	itemGet     int
+	itemGet     FieldType
 	waitTimer   int
 	game        *Game
 	view        *View
@@ -417,7 +417,7 @@ func (p *Player) checkCollision() {
 	}
 }
 
-func (p *Player) GetOnField() int {
+func (p *Player) GetOnField() FieldType {
 	if !p.OnWall() {
 		return FIELD_NONE
 	}
@@ -483,19 +483,19 @@ func (p *Player) Draw() {
 	// 取ったアイテム一覧
 	for t := FIELD_ITEM_FUJI; t < FIELD_ITEM_MAX; t++ {
 		if !p.game.playerData.itemGetFlags[t] {
-			p.game.Draw("ino", g_width-CHAR_SIZE/4*(FIELD_ITEM_MAX-2-t), 0, // 無
+			p.game.Draw("ino", g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 無
 				CHAR_SIZE*5, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 		} else {
 			if p.game.playerData.IsItemForClear(t) {
 				// クリア条件アイテムは専用グラフィック
 				for i, c := range clearFlagItems {
 					if c == t {
-						p.game.Draw("ino", g_width-CHAR_SIZE/4*(FIELD_ITEM_MAX-2-t), 0,
+						p.game.Draw("ino", g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0,
 							CHAR_SIZE*5+CHAR_SIZE/4*(i+2), 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 					}
 				}
 			} else {
-				p.game.Draw("ino", g_width-CHAR_SIZE/4*(FIELD_ITEM_MAX-2-t), 0, // 有
+				p.game.Draw("ino", g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 有
 					CHAR_SIZE*5+CHAR_SIZE/4, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 			}
 		}
@@ -505,12 +505,12 @@ func (p *Player) Draw() {
 	if p.state == PLAYERSTATE_ITEMGET {
 		t := WAIT_TIMER_INTERVAL - p.waitTimer
 		p.game.Draw("msg", (g_width-256)/2, (g_height-96)/2-t*t+24,
-			256, 96*(p.itemGet-FIELD_ITEM_BORDER-1), 256, 96)
+			256, 96*(int(p.itemGet)-int(FIELD_ITEM_BORDER)-1), 256, 96)
 		p.game.FillRect((g_width-32)/2, (g_height-96)/2-t*t-24, 32, 32, color.RGBA{0, 0, 0, 255})
 		p.game.FillRect((g_width-32)/2+2, (g_height-96)/2-t*t-24+2, 32-4, 32-4, color.RGBA{255, 255, 255, 255})
 
-		it := p.itemGet - (FIELD_ITEM_BORDER + 1)
-		p.game.Draw("ino", (g_width-16)/2, (g_height-96)/2-t*t-16,
+		it := int(p.itemGet) - (int(FIELD_ITEM_BORDER) + 1)
+		p.game.Draw("ino", (g_width-16)/2, (g_height-96)/2-int(t)*int(t)-16,
 			(it%16)*CHAR_SIZE, (it/16+4)*CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 	}
 

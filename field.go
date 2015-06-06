@@ -4,18 +4,20 @@ import (
 	"strings"
 )
 
+type FieldType int
+
 const (
-	FIELD_NONE         = iota // なし
-	FIELD_HIDEPATH            // 隠しルート(見えるけど判定のないブロック)
-	FIELD_UNVISIBLE           // 不可視ブロック(見えないけど判定があるブロック)
-	FIELD_BLOCK               // 通常ブロック
-	FIELD_BAR                 // 床。降りたり上ったりできる
-	FIELD_SCROLL_L            // ベルト床左
-	FIELD_SCROLL_R            // ベルト床右
-	FIELD_SPIKE               // トゲ
-	FIELD_SLIP                // すべる
-	FIELD_ITEM_BORDER         // アイテムチェック用
-	FIELD_ITEM_POWERUP        // パワーアップ
+	FIELD_NONE         FieldType = iota // なし
+	FIELD_HIDEPATH                      // 隠しルート(見えるけど判定のないブロック)
+	FIELD_UNVISIBLE                     // 不可視ブロック(見えないけど判定があるブロック)
+	FIELD_BLOCK                         // 通常ブロック
+	FIELD_BAR                           // 床。降りたり上ったりできる
+	FIELD_SCROLL_L                      // ベルト床左
+	FIELD_SCROLL_R                      // ベルト床右
+	FIELD_SPIKE                         // トゲ
+	FIELD_SLIP                          // すべる
+	FIELD_ITEM_BORDER                   // アイテムチェック用
+	FIELD_ITEM_POWERUP                  // パワーアップ
 	// ふじ系
 	FIELD_ITEM_FUJI
 	FIELD_ITEM_BUSHI
@@ -63,7 +65,7 @@ type PositionF struct {
 }
 
 type Field struct {
-	field [FIELD_X_MAX * FIELD_Y_MAX]int
+	field [FIELD_X_MAX * FIELD_Y_MAX]FieldType
 	timer int
 }
 
@@ -74,7 +76,7 @@ func (f *Field) LoadFieldData(data string) {
 	for yy, line := range xm {
 		for xx, c := range line {
 			n := strings.IndexByte(decoder, byte(c))
-			f.field[yy*FIELD_X_MAX+xx] = n
+			f.field[yy*FIELD_X_MAX+xx] = FieldType(n)
 		}
 	}
 }
@@ -114,7 +116,7 @@ func (f *Field) IsSpike(x, y int) bool {
 	return f.field[y*FIELD_X_MAX+x] == FIELD_SPIKE
 }
 
-func (f *Field) GetField(x, y int) int {
+func (f *Field) GetField(x, y int) FieldType {
 	return f.field[y*FIELD_X_MAX+x]
 }
 
@@ -158,10 +160,10 @@ func (f *Field) Draw(game *Game, viewPosition Position) {
 			}
 
 			gy := (f.timer / 10) % 4
-			gx := f.field[fy*FIELD_X_MAX+fx]
+			gx := int(f.field[fy*FIELD_X_MAX+fx])
 
 			if f.IsItem(fx, fy) {
-				gx = gx - (FIELD_ITEM_BORDER + 1)
+				gx = gx - (int(FIELD_ITEM_BORDER) + 1)
 				gy = 4 + gx/16
 				gx = gx % 16
 			}

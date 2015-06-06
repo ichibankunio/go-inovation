@@ -274,10 +274,9 @@ type Game struct {
 }
 
 func NewGame() *Game {
-	g := &Game{
+	return &Game{
 		playerData: NewPlayerData(GAMEMODE_NORMAL),
 	}
-	return g
 }
 
 func (g *Game) Start() error {

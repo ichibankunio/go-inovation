@@ -1,11 +1,13 @@
 package inovation5
 
+type GameMode int
+
 const (
-	GAMEMODE_NORMAL = iota
+	GAMEMODE_NORMAL GameMode = iota
 	GAMEMODE_LUNKER
 )
 
-var clearFlagItems = [...]int{
+var clearFlagItems = [...]FieldType{
 	FIELD_ITEM_FUJI,
 	FIELD_ITEM_TAKA,
 	FIELD_ITEM_NASU,
@@ -19,11 +21,9 @@ type PlayerData struct {
 	lunkerMode   bool
 }
 
-func NewPlayerData(gameMode int) *PlayerData {
+func NewPlayerData(gameMode GameMode) *PlayerData {
 	p := &PlayerData{}
 	switch gameMode {
-	default:
-		fallthrough
 	case GAMEMODE_NORMAL:
 		p.lifeMax = 3
 		p.lunkerMode = false
@@ -44,7 +44,7 @@ func (p *PlayerData) IsGameClear() bool {
         return true;
 }
 
-func (p *PlayerData) IsItemForClear(it int) bool {
+func (p *PlayerData) IsItemForClear(it FieldType) bool {
 	for _, e := range clearFlagItems {
 		if e == it {
 			return true;
