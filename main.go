@@ -34,7 +34,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-func (t *TitleMain) Update() {
+func (t *TitleMain) Update(game *Game) {
 	t.timer++
 	if t.timer%5 == 0 {
 		t.offsetX = rand.Intn(5) - 3
@@ -45,9 +45,9 @@ func (t *TitleMain) Update() {
 		t.gameState.SetMsg(GAMESTATE_MSG_REQ_OPENING)
 
 		if t.lunkerMode {
-			t.gameState.game.playerData = NewPlayerData(GAMEMODE_LUNKER)
+			game.playerData = NewPlayerData(GAMEMODE_LUNKER)
 		} else {
-			t.gameState.game.playerData = NewPlayerData(GAMEMODE_NORMAL)
+			game.playerData = NewPlayerData(GAMEMODE_NORMAL)
 		}
 	}
 
@@ -74,16 +74,15 @@ func (t *TitleMain) Update() {
 	}
 }
 
-func (t *TitleMain) Draw() {
+func (t *TitleMain) Draw(game *Game) {
 	if t.lunkerMode {
-		t.gameState.game.Draw("bg", 0, 0, 0, 240, g_width, g_height)
-		t.gameState.game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64, 256, 16)
+		game.Draw("bg", 0, 0, 0, 240, g_width, g_height)
+		game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64, 256, 16)
 	} else {
-		t.gameState.game.Draw("bg", 0, 0, 0, 0, g_width, g_height)
-		t.gameState.game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64+16, 256, 16)
+		game.Draw("bg", 0, 0, 0, 0, g_width, g_height)
+		game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64+16, 256, 16)
 	}
-
-	t.gameState.game.Draw("msg", (g_width-256)/2, 32+(g_height-240)/2, 0, 0, 256, 64)
+	game.Draw("msg", (g_width-256)/2, 32+(g_height-240)/2, 0, 0, 256, 64)
 }
 
 func (t *TitleMain) GetMsg() GameStateMsg {
@@ -104,14 +103,12 @@ const (
 	OPENING_SCROLL_SPEED = 3
 )
 
-func NewOpeningMain(game *Game) *OpeningMain {
+func NewOpeningMain() *OpeningMain {
 	// TODO(hajimehoshi): Play BGM 'bgm1'
-	return &OpeningMain{
-		gameState: GameState{game: game},
-	}
+	return &OpeningMain{}
 }
 
-func (o *OpeningMain) Update() {
+func (o *OpeningMain) Update(game *Game) {
 	o.timer++
 
 	if input.IsActionKeyPressed() {
@@ -123,9 +120,9 @@ func (o *OpeningMain) Update() {
 	}
 }
 
-func (o *OpeningMain) Draw() {
-	o.gameState.game.Draw("bg", 0, 0, 0, 480, 320, 240)
-	o.gameState.game.Draw("msg", (g_width-256)/2, g_height-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
+func (o *OpeningMain) Draw(game *Game) {
+	game.Draw("bg", 0, 0, 0, 480, 320, 240)
+	game.Draw("msg", (g_width-256)/2, g_height-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
 }
 
 func (o *OpeningMain) GetMsg() GameStateMsg {
@@ -147,14 +144,12 @@ const (
 	ENDING_SCROLL_SPEED = 3
 )
 
-func NewEndingMain(game *Game) *EndingMain {
+func NewEndingMain() *EndingMain {
 	// TODO(hajimehoshi): Play BGM 'bgm1'
-	return &EndingMain{
-		gameState: GameState{game: game},
-	}
+	return &EndingMain{}
 }
 
-func (e *EndingMain) Update() {
+func (e *EndingMain) Update(game *Game) {
 	e.timer++
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
@@ -169,8 +164,8 @@ func (e *EndingMain) Update() {
 	case ENDINGMAIN_STATE_RESULT:
 		if input.IsActionKeyPushed() && e.timer > 5 {
 			// 条件を満たしていると隠し画面へ
-			if e.gameState.game.playerData.IsGetOmega() {
-				if e.gameState.game.playerData.lunkerMode {
+			if game.playerData.IsGetOmega() {
+				if game.playerData.lunkerMode {
 					e.gameState.SetMsg(GAMESTATE_MSG_REQ_SECRET2)
 				} else {
 					e.gameState.SetMsg(GAMESTATE_MSG_REQ_SECRET1)
@@ -182,17 +177,17 @@ func (e *EndingMain) Update() {
 	}
 }
 
-func (e *EndingMain) Draw() {
-	e.gameState.game.Draw("bg", 0, 0, 0, 480, 320, 240)
+func (e *EndingMain) Draw(game *Game) {
+	game.Draw("bg", 0, 0, 0, 480, 320, 240)
 
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		e.gameState.game.Draw("msg", (g_width-256)/2, g_height-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN)
+		game.Draw("msg", (g_width-256)/2, g_height-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN)
 	case ENDINGMAIN_STATE_RESULT:
-		e.gameState.game.Draw("msg", (g_width-256)/2, (g_height-160)/2, 0, 1664, 256, 160)
+		game.Draw("msg", (g_width-256)/2, (g_height-160)/2, 0, 1664, 256, 160)
 
-		e.gameState.game.DrawFont(strconv.Itoa(e.gameState.game.playerData.GetItemCount()), (g_width-10*0)/2, (g_height-160)/2+13*5+2)
-		e.gameState.game.DrawFont(strconv.Itoa(e.gameState.game.playerData.playtime), (g_width-13)/2, (g_height-160)/2+13*8+2)
+		game.DrawFont(strconv.Itoa(game.playerData.GetItemCount()), (g_width-10*0)/2, (g_height-160)/2+13*5+2)
+		game.DrawFont(strconv.Itoa(game.playerData.playtime), (g_width-13)/2, (g_height-160)/2+13*8+2)
 	}
 }
 
@@ -210,28 +205,27 @@ type SecretMain struct {
 	number    int
 }
 
-func NewSecretMain(game *Game, number int) *SecretMain {
+func NewSecretMain(number int) *SecretMain {
 	// TODO(hajimehoshi): Play BGM 'bgm1'
 	return &SecretMain{
-		gameState: GameState{game: game},
-		number:    number,
+		number: number,
 	}
 }
 
-func (s *SecretMain) Update() {
+func (s *SecretMain) Update(game *Game) {
 	s.timer++
 	if input.IsActionKeyPushed() && s.timer > 5 {
 		s.gameState.SetMsg(GAMESTATE_MSG_REQ_TITLE)
 	}
 }
 
-func (s *SecretMain) Draw() {
-	s.gameState.game.Draw("bg", 0, 0, 0, 240, 320, 240)
+func (s *SecretMain) Draw(game *Game) {
+	game.Draw("bg", 0, 0, 0, 240, 320, 240)
 
 	if s.number == 1 {
-		s.gameState.game.Draw("msg", (g_width-256)/2, (g_height-96)/2, 0, 2048-96*2, 256, 96)
+		game.Draw("msg", (g_width-256)/2, (g_height-96)/2, 0, 2048-96*2, 256, 96)
 	} else {
-		s.gameState.game.Draw("msg", (g_width-256)/2, (g_height-96)/2, 0, 2048-96, 256, 96)
+		game.Draw("msg", (g_width-256)/2, (g_height-96)/2, 0, 2048-96, 256, 96)
 	}
 }
 
@@ -248,9 +242,7 @@ type GameMain struct {
 }
 
 func NewGameMain(game *Game) *GameMain {
-	g := &GameMain{
-		gameState: GameState{game: game},
-	}
+	g := &GameMain{}
 	f := &Field{}
 	f.LoadFieldData(field_data)
 	game.field = f
@@ -258,21 +250,21 @@ func NewGameMain(game *Game) *GameMain {
 	return g
 }
 
-func (g *GameMain) Update() {
-	g.gameState.game.field.Move()
-	g.gameState.game.player.Move()
+func (g *GameMain) Update(game *Game) {
+	game.field.Move()
+	game.player.Move()
 }
 
-func (g *GameMain) Draw() {
-	if g.gameState.game.playerData.lunkerMode {
-		g.gameState.game.Draw("bg", 0, 0, 0, 240, g_width, g_height)
+func (g *GameMain) Draw(game *Game) {
+	if game.playerData.lunkerMode {
+		game.Draw("bg", 0, 0, 0, 240, g_width, g_height)
 	} else {
-		g.gameState.game.Draw("bg", 0, 0, 0, 0, g_width, g_height)
+		game.Draw("bg", 0, 0, 0, 0, g_width, g_height)
 	}
 
-	p := g.gameState.game.player.view.GetPosition()
-	g.gameState.game.field.Draw(g.gameState.game, Position{X: int(p.X), Y: int(p.Y)})
-	g.gameState.game.player.Draw()
+	p := game.player.view.GetPosition()
+	game.field.Draw(game, Position{X: int(p.X), Y: int(p.Y)})
+	game.player.Draw()
 }
 
 func (g *GameMain) GetMsg() GameStateMsg {
@@ -284,8 +276,8 @@ func (g *GameMain) SetMsg(msg GameStateMsg) {
 }
 
 type IGameState interface {
-	Update()
-	Draw()
+	Update(g *Game)
+	Draw(g *Game)
 	GetMsg() GameStateMsg
 	SetMsg(msg GameStateMsg)
 }
@@ -316,31 +308,31 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	g.screen = screen
 
 	if g.gameState == nil {
-		g.gameState = &TitleMain{gameState: GameState{game: g}}
+		g.gameState = &TitleMain{}
 	} else {
 		switch g.gameState.GetMsg() {
 		case GAMESTATE_MSG_REQ_TITLE:
-			g.gameState = &TitleMain{gameState: GameState{game: g}}
+			g.gameState = &TitleMain{}
 			break
 		case GAMESTATE_MSG_REQ_OPENING:
-			g.gameState = NewOpeningMain(g)
+			g.gameState = NewOpeningMain()
 			break
 		case GAMESTATE_MSG_REQ_GAME:
 			g.gameState = NewGameMain(g)
 			break
 		case GAMESTATE_MSG_REQ_ENDING:
-			g.gameState = NewEndingMain(g)
+			g.gameState = NewEndingMain()
 			break
 		case GAMESTATE_MSG_REQ_SECRET1:
-			g.gameState = NewSecretMain(g, 1)
+			g.gameState = NewSecretMain(1)
 			break
 		case GAMESTATE_MSG_REQ_SECRET2:
-			g.gameState = NewSecretMain(g, 2)
+			g.gameState = NewSecretMain(2)
 			break
 		}
 	}
-	g.gameState.Update()
-	g.gameState.Draw()
+	g.gameState.Update(g)
+	g.gameState.Draw(g)
 
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("\n%.2f", ebiten.CurrentFPS()))
 	return nil

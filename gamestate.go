@@ -13,8 +13,7 @@ const (
 )
 
 type GameState struct {
-	game *Game
-	msg  GameStateMsg
+	msg GameStateMsg
 }
 
 func (g *GameState) GetMsg() GameStateMsg {
@@ -23,12 +22,4 @@ func (g *GameState) GetMsg() GameStateMsg {
 
 func (g *GameState) SetMsg(m GameStateMsg) {
 	g.msg = m
-}
-
-func (g *GameState) Draw() {
-	print("GameState draw")
-}
-
-func (g *GameState) Update() {
-	print("GameState update")
 }
