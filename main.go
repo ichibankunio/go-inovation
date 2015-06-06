@@ -311,7 +311,7 @@ func NewGame() *Game {
 
 func (g *Game) Start() error {
 	g.player = NewPlayer(g)
-	return ebiten.Run(g.Loop, g_width, g_height, 1, "Inovation 5")
+	return ebiten.Run(g.Loop, g_width, g_height, 2, "Inovation 5")
 }
 
 func (g *Game) Loop(screen *ebiten.Image) error {
