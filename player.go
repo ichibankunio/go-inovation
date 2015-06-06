@@ -457,14 +457,14 @@ func (p *Player) GetOnField() int {
 	}
 }
 
-func (p *Player) Draw(game *Game) {
+func (p *Player) Draw() {
 	v := p.view.ToScreenPosition(Position{int(p.position.X), int(p.position.Y)})
 	if p.state == PLAYERSTATE_DEAD { // 死亡
 		anime := (p.timer / 6) % 4
 		if p.game.playerData.lunkerMode {
-			game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+			p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 		} else {
-			game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
+			p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
 		}
 	} else { // 生存
 		if p.state != PLAYERSTATE_MUTEKI || p.timer%10 < 5 {
@@ -474,15 +474,15 @@ func (p *Player) Draw(game *Game) {
 			}
 			if p.direction < 0 {
 				if p.game.playerData.lunkerMode {
-					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+					p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 				} else {
-					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
+					p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
 				}
 			} else {
 				if p.game.playerData.lunkerMode {
-					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
+					p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
 				} else {
-					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
+					p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 				}
 			}
 		}
@@ -495,28 +495,28 @@ func (p *Player) Draw(game *Game) {
 		}
 
 		if p.life >= (t+1)*LIFE_RATIO {
-			game.Draw("ino", CHAR_SIZE*t, 0, CHAR_SIZE*3, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
+			p.game.Draw("ino", CHAR_SIZE*t, 0, CHAR_SIZE*3, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
 		} else {
-			game.Draw("ino", CHAR_SIZE*t, 0, CHAR_SIZE*4, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
+			p.game.Draw("ino", CHAR_SIZE*t, 0, CHAR_SIZE*4, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
 		}
 	}
 
 	// 取ったアイテム一覧
 	for t := FIELD_ITEM_FUJI; t < FIELD_ITEM_MAX; t++ {
 		if !p.game.playerData.itemGetFlags[t] {
-			game.Draw("ino", g_width-CHAR_SIZE/4*(FIELD_ITEM_MAX-2-t), 0, // 無
+			p.game.Draw("ino", g_width-CHAR_SIZE/4*(FIELD_ITEM_MAX-2-t), 0, // 無
 				CHAR_SIZE*5, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 		} else {
 			if p.game.playerData.IsItemForClear(t) {
 				// クリア条件アイテムは専用グラフィック
-				for i := 0; i < len(clearFlagItems); i++ {
-					if clearFlagItems[i] == t {
-						game.Draw("ino", g_width-CHAR_SIZE/4*(FIELD_ITEM_MAX-2-t), 0,
+				for i, c := range clearFlagItems {
+					if c == t {
+						p.game.Draw("ino", g_width-CHAR_SIZE/4*(FIELD_ITEM_MAX-2-t), 0,
 							CHAR_SIZE*5+CHAR_SIZE/4*(i+2), 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 					}
 				}
 			} else {
-				game.Draw("ino", g_width-CHAR_SIZE/4*(FIELD_ITEM_MAX-2-t), 0, // 有
+				p.game.Draw("ino", g_width-CHAR_SIZE/4*(FIELD_ITEM_MAX-2-t), 0, // 有
 					CHAR_SIZE*5+CHAR_SIZE/4, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 			}
 		}
@@ -525,23 +525,23 @@ func (p *Player) Draw(game *Game) {
 	// アイテム獲得メッセージ
 	if p.state == PLAYERSTATE_ITEMGET {
 		t := WAIT_TIMER_INTERVAL - p.waitTimer
-		game.Draw("msg", (g_width-256)/2, (g_height-96)/2-t*t+24,
+		p.game.Draw("msg", (g_width-256)/2, (g_height-96)/2-t*t+24,
 			256, 96*(p.itemGet-FIELD_ITEM_BORDER-1), 256, 96)
-		game.FillRect((g_width-32)/2, (g_height-96)/2-t*t-24, 32, 32, color.RGBA{0, 0, 0, 255})
-		game.FillRect((g_width-32)/2+2, (g_height-96)/2-t*t-24+2, 32-4, 32-4, color.RGBA{255, 255, 255, 255})
+		p.game.FillRect((g_width-32)/2, (g_height-96)/2-t*t-24, 32, 32, color.RGBA{0, 0, 0, 255})
+		p.game.FillRect((g_width-32)/2+2, (g_height-96)/2-t*t-24+2, 32-4, 32-4, color.RGBA{255, 255, 255, 255})
 
 		it := p.itemGet - (FIELD_ITEM_BORDER + 1)
-		game.Draw("ino", (g_width-16)/2, (g_height-96)/2-t*t-16,
+		p.game.Draw("ino", (g_width-16)/2, (g_height-96)/2-t*t-16,
 			(it%16)*CHAR_SIZE, (it/16+4)*CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 	}
 
 	// ゲーム開始メッセージ
 	if p.state == PLAYERSTATE_START {
-		game.Draw("msg", (g_width-256)/2, 64+(g_height-240)/2, 0, 96, 256, 32)
+		p.game.Draw("msg", (g_width-256)/2, 64+(g_height-240)/2, 0, 96, 256, 32)
 	}
 
 	// ゲームオーバーメッセージ
 	if p.state == PLAYERSTATE_DEAD {
-		game.Draw("msg", (g_width-256)/2, 64+(g_height-240)/2, 0, 128, 256, 32)
+		p.game.Draw("msg", (g_width-256)/2, 64+(g_height-240)/2, 0, 128, 256, 32)
 	}
 }

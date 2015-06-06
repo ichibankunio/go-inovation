@@ -275,7 +275,7 @@ func (g *GameMain) Draw() {
 
 	p := g.gameState.game.player.view.GetPosition()
 	g.gameState.game.field.Draw(g.gameState.game, Position{X: int(p.X), Y: int(p.Y)})
-	g.gameState.game.player.Draw(g.gameState.game)
+	g.gameState.game.player.Draw()
 }
 
 func (g *GameMain) GetMsg() int {

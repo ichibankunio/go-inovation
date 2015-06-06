@@ -78,8 +78,7 @@ func (f *Field) LoadFieldData(data string) {
 	xm := strings.Split(data, "\n")
 	const decoder = " HUB~<>*I PabcdefghijklmnopqrzL@"
 
-	for yy := 0; yy < len(xm); yy++ {
-		line := xm[yy]
+	for yy, line := range xm {
 		for xx, c := range line {
 			n := strings.IndexByte(decoder, byte(c))
 			f.field[yy*FIELD_X_MAX+xx] = n
@@ -99,11 +98,11 @@ func (f *Field) GetStartPoint() Position {
 				p.X = xx * CHAR_SIZE
 				p.Y = yy * CHAR_SIZE
 				f.EraseField(xx, yy)
-				// TODO(hajimehoshi): return here?
+				return p
 			}
 		}
 	}
-	return p
+	return Position{}
 }
 
 func (f *Field) IsWall(x, y int) bool {
