@@ -57,9 +57,9 @@ func (t *TitleMain) Update(game *Game) {
 		t.gameStateMsg = GAMESTATE_MSG_REQ_OPENING
 
 		if t.lunkerMode {
-			game.playerData = NewPlayerData(GAMEMODE_LUNKER)
+			game.gameData = NewGameData(GAMEMODE_LUNKER)
 		} else {
-			game.playerData = NewPlayerData(GAMEMODE_NORMAL)
+			game.gameData = NewGameData(GAMEMODE_NORMAL)
 		}
 	}
 
@@ -158,8 +158,8 @@ func (e *EndingMain) Update(game *Game) {
 	case ENDINGMAIN_STATE_RESULT:
 		if input.IsActionKeyPushed() && e.timer > 5 {
 			// 条件を満たしていると隠し画面へ
-			if game.playerData.IsGetOmega() {
-				if game.playerData.lunkerMode {
+			if game.gameData.IsGetOmega() {
+				if game.gameData.lunkerMode {
 					e.gameStateMsg = GAMESTATE_MSG_REQ_SECRET2
 				} else {
 					e.gameStateMsg = GAMESTATE_MSG_REQ_SECRET1
@@ -180,8 +180,8 @@ func (e *EndingMain) Draw(game *Game) {
 	case ENDINGMAIN_STATE_RESULT:
 		game.Draw("msg", (g_width-256)/2, (g_height-160)/2, 0, 1664, 256, 160)
 
-		game.DrawFont(strconv.Itoa(game.playerData.GetItemCount()), (g_width-10*0)/2, (g_height-160)/2+13*5+2)
-		game.DrawFont(strconv.Itoa(game.playerData.TimeInSecond()), (g_width-13)/2, (g_height-160)/2+13*8+2)
+		game.DrawFont(strconv.Itoa(game.gameData.GetItemCount()), (g_width-10*0)/2, (g_height-160)/2+13*5+2)
+		game.DrawFont(strconv.Itoa(game.gameData.TimeInSecond()), (g_width-13)/2, (g_height-160)/2+13*8+2)
 	}
 }
 
@@ -229,7 +229,7 @@ type GameMain struct {
 
 func NewGameMain(game *Game) *GameMain {
 	g := &GameMain{
-		player: NewPlayer(game.playerData),
+		player: NewPlayer(game.gameData),
 	}
 	return g
 }
@@ -239,7 +239,7 @@ func (g *GameMain) Update(game *Game) {
 }
 
 func (g *GameMain) Draw(game *Game) {
-	if game.playerData.lunkerMode {
+	if game.gameData.lunkerMode {
 		game.Draw("bg", 0, 0, 0, 240, g_width, g_height)
 	} else {
 		game.Draw("bg", 0, 0, 0, 0, g_width, g_height)
@@ -258,16 +258,16 @@ type GameState interface {
 }
 
 type Game struct {
-	gameState  GameState
-	playerData *PlayerData
-	img        map[string]*ebiten.Image
-	font       *Font
-	screen     *ebiten.Image
+	gameState GameState
+	gameData  *GameData
+	img       map[string]*ebiten.Image
+	font      *Font
+	screen    *ebiten.Image
 }
 
 func NewGame() *Game {
 	return &Game{
-		playerData: NewPlayerData(GAMEMODE_NORMAL),
+		gameData: NewGameData(GAMEMODE_NORMAL),
 	}
 }
 

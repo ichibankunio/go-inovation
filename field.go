@@ -127,18 +127,18 @@ func (f *Field) IsItem(x, y int) bool {
 		f.field[y*FIELD_X_MAX+x] != FIELD_ITEM_STARTPOINT
 }
 
-func (f *Field) IsItemGettable(x, y int, playerData *PlayerData) bool {
+func (f *Field) IsItemGettable(x, y int, gameData *GameData) bool {
 	if !f.IsItem(x, y) {
 		return false
 	}
-	if f.field[y*FIELD_X_MAX+x] == FIELD_ITEM_OMEGA && f.isHiddenSecret(playerData) {
+	if f.field[y*FIELD_X_MAX+x] == FIELD_ITEM_OMEGA && f.isHiddenSecret(gameData) {
 		return false
 	}
 	return true
 }
 
-func (f *Field) isHiddenSecret(playerData *PlayerData) bool {
-	return playerData.GetItemCount() < 15
+func (f *Field) isHiddenSecret(gameData *GameData) bool {
+	return gameData.GetItemCount() < 15
 }
 
 func (f *Field) EraseField(x, y int) {
@@ -170,7 +170,7 @@ func (f *Field) Draw(game *Game, viewPosition Position) {
 				gx = gx % 16
 			}
 
-			if f.isHiddenSecret(game.playerData) && f.field[fy*FIELD_X_MAX+fx] == FIELD_ITEM_OMEGA {
+			if f.isHiddenSecret(game.gameData) && f.field[fy*FIELD_X_MAX+fx] == FIELD_ITEM_OMEGA {
 				continue
 			}
 
