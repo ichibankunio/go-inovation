@@ -16,9 +16,7 @@ func (i *Input) Update() {
 	i.prevPressed = i.pressed
 	for k, _ := range i.pressed {
 		k := ebiten.Key(k)
-		if ebiten.IsKeyPressed(k) {
-			i.pressed[k] = true
-		}
+		i.pressed[k] = ebiten.IsKeyPressed(k)
 	}
 }
 
