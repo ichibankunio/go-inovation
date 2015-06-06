@@ -4,6 +4,8 @@ import (
 	"github.com/hajimehoshi/ebiten"
 )
 
+var input = &Input{}
+
 // TODO(hajimehoshi): 256 is an arbitrary number.
 const maxKey = 256
 

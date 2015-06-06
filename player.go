@@ -203,7 +203,7 @@ func (p *Player) Move() {
 	case PLAYERSTATE_DEAD:
 		p.moveNormal()
 		// TODO(hajimehoshi): Stop BGM
-		if p.game.key.IsActionKeyPressed() && p.waitTimer > 15 {
+		if input.IsActionKeyPressed() && p.waitTimer > 15 {
 			p.game.gameState.SetMsg(GAMESTATE_MSG_REQ_TITLE)
 		}
 	}
@@ -254,7 +254,7 @@ func (p *Player) moveNormal() {
 			}
 		}
 
-		if !p.game.key.IsActionKeyPressed() || !p.game.key.IsKeyPressed(ebiten.KeyDown) || !p.IsFallable() {
+		if !input.IsActionKeyPressed() || !input.IsKeyPressed(ebiten.KeyDown) || !p.IsFallable() {
 			if p.speed.Y > 0 {
 				p.speed.Y = 0
 			}
@@ -333,22 +333,22 @@ func (p *Player) MoveItemGet() {
 		p.waitTimer++
 		return
 	}
-	if p.game.key.IsActionKeyPushed() {
+	if input.IsActionKeyPushed() {
 		p.state = PLAYERSTATE_NORMAL
 		// TODO(hajimehoshi): Play BGM 'bgm0'
 	}
 }
 
 func (p *Player) moveByInput() {
-	if p.game.key.IsKeyPressed(ebiten.KeyLeft) {
+	if input.IsKeyPressed(ebiten.KeyLeft) {
 		p.direction = -1
 	}
-	if p.game.key.IsKeyPressed(ebiten.KeyRight) {
+	if input.IsKeyPressed(ebiten.KeyRight) {
 		p.direction = 1
 	}
 
-	if p.game.key.IsActionKeyPushed() {
-		if ((p.game.playerData.jumpMax > p.jumpCnt) || p.OnWall()) && !p.game.key.IsKeyPressed(ebiten.KeyDown) {
+	if input.IsActionKeyPushed() {
+		if ((p.game.playerData.jumpMax > p.jumpCnt) || p.OnWall()) && !input.IsKeyPressed(ebiten.KeyDown) {
 			p.speed.Y = PLAYER_JUMP // ジャンプ
 			if !p.OnWall() {
 				p.jumpCnt++

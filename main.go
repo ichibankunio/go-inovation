@@ -41,8 +41,7 @@ func (t *TitleMain) Update() {
 		t.offsetY = rand.Intn(5) - 3
 	}
 
-	key := t.gameState.game.key
-	if key.IsActionKeyPushed() && t.timer > 5 {
+	if input.IsActionKeyPushed() && t.timer > 5 {
 		t.gameState.SetMsg(GAMESTATE_MSG_REQ_OPENING)
 
 		if t.lunkerMode {
@@ -55,15 +54,15 @@ func (t *TitleMain) Update() {
 	// ランカー・モード・コマンド
 	switch t.lunkerCommand {
 	case 0, 1, 2, 6:
-		if key.IsKeyPushed(ebiten.KeyLeft) {
+		if input.IsKeyPushed(ebiten.KeyLeft) {
 			t.lunkerCommand++
-		} else if key.IsKeyPushed(ebiten.KeyRight) || key.IsKeyPushed(ebiten.KeyUp) || key.IsKeyPushed(ebiten.KeyDown) {
+		} else if input.IsKeyPushed(ebiten.KeyRight) || input.IsKeyPushed(ebiten.KeyUp) || input.IsKeyPushed(ebiten.KeyDown) {
 			t.lunkerCommand = 0
 		}
 	case 3, 4, 5, 7:
-		if key.IsKeyPushed(ebiten.KeyRight) {
+		if input.IsKeyPushed(ebiten.KeyRight) {
 			t.lunkerCommand++
-		} else if key.IsKeyPushed(ebiten.KeyLeft) || key.IsKeyPushed(ebiten.KeyUp) || key.IsKeyPushed(ebiten.KeyDown) {
+		} else if input.IsKeyPushed(ebiten.KeyLeft) || input.IsKeyPushed(ebiten.KeyUp) || input.IsKeyPushed(ebiten.KeyDown) {
 			t.lunkerCommand = 0
 		}
 	default:
@@ -115,7 +114,7 @@ func NewOpeningMain(game *Game) *OpeningMain {
 func (o *OpeningMain) Update() {
 	o.timer++
 
-	if o.gameState.game.key.IsActionKeyPressed() {
+	if input.IsActionKeyPressed() {
 		o.timer += 20
 	}
 	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+g_height {
@@ -159,7 +158,7 @@ func (e *EndingMain) Update() {
 	e.timer++
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		if e.gameState.game.key.IsActionKeyPressed() {
+		if input.IsActionKeyPressed() {
 			e.timer += 20
 		}
 		if e.timer/ENDING_SCROLL_SPEED > ENDING_SCROLL_LEN+g_height {
@@ -168,7 +167,7 @@ func (e *EndingMain) Update() {
 			// TODO(hajimehoshi): Stop BGM with fade 5000
 		}
 	case ENDINGMAIN_STATE_RESULT:
-		if e.gameState.game.key.IsActionKeyPushed() && e.timer > 5 {
+		if input.IsActionKeyPushed() && e.timer > 5 {
 			// 条件を満たしていると隠し画面へ
 			if e.gameState.game.playerData.IsGetOmega() {
 				if e.gameState.game.playerData.lunkerMode {
@@ -221,7 +220,7 @@ func NewSecretMain(game *Game, number int) *SecretMain {
 
 func (s *SecretMain) Update() {
 	s.timer++
-	if s.gameState.game.key.IsActionKeyPushed() && s.timer > 5 {
+	if input.IsActionKeyPushed() && s.timer > 5 {
 		s.gameState.SetMsg(GAMESTATE_MSG_REQ_TITLE)
 	}
 }
@@ -296,7 +295,6 @@ type Game struct {
 	field      *Field
 	player     *Player
 	playerData *PlayerData
-	key        *Input
 	img        map[string]*ebiten.Image
 	font       *Font
 	screen     *ebiten.Image
@@ -314,6 +312,7 @@ func (g *Game) Start() error {
 }
 
 func (g *Game) Loop(screen *ebiten.Image) error {
+	input.Update()
 	g.screen = screen
 
 	if g.gameState == nil {
@@ -342,7 +341,6 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	}
 	g.gameState.Update()
 	g.gameState.Draw()
-	g.key.Update()
 
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("\n%.2f", ebiten.CurrentFPS()))
 	return nil
@@ -411,7 +409,6 @@ func Run() error {
 	const imgDir = "../resource/image/color"
 
 	game := NewGame()
-	game.key = &Input{}
 	game.img = map[string]*ebiten.Image{}
 	for _, f := range []string{"ino", "msg", "bg"} {
 		var err error
