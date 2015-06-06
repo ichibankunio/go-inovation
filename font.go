@@ -20,7 +20,7 @@ func NewFont() *Font {
 
 func (f *Font) Load(path string) error {
 	// TODO(hajimehoshi): Use goroutine
-	for n := 33; n < 128; n++ {
+	for n := 33; n < 126; n++ {
 		src := filepath.Join(path, fmt.Sprintf("%d.png", n))
 		img, _, err := ebitenutil.NewImageFromFile(src, ebiten.FilterNearest)
 		if err != nil {
