@@ -165,7 +165,7 @@ func (p *Player) toFieldOfsY() int {
 	return int(p.position.Y) % CHAR_SIZE
 }
 
-func (p *Player) Move() {
+func (p *Player) Move(gameMain *GameMain) {
 	switch p.state {
 	case PLAYERSTATE_START:
 		p.waitTimer++
@@ -177,7 +177,7 @@ func (p *Player) Move() {
 		p.moveByInput()
 		p.moveNormal()
 		if p.life < p.game.playerData.lifeMax*LIFE_RATIO {
-			var o_life = p.life
+			o_life := p.life
 			p.life++
 			if (p.life / LIFE_RATIO) != (o_life / LIFE_RATIO) {
 				// TODO(hajimehoshi): Play SE 'heal'
@@ -185,10 +185,10 @@ func (p *Player) Move() {
 		}
 
 	case PLAYERSTATE_ITEMGET:
-		p.MoveItemGet()
+		p.moveItemGet()
 		if p.state != PLAYERSTATE_ITEMGET {
 			if p.game.playerData.IsGameClear() {
-				p.game.gameState.SetMsg(GAMESTATE_MSG_REQ_ENDING)
+				gameMain.SetMsg(GAMESTATE_MSG_REQ_ENDING)
 			}
 		}
 
@@ -204,7 +204,7 @@ func (p *Player) Move() {
 		p.moveNormal()
 		// TODO(hajimehoshi): Stop BGM
 		if input.IsActionKeyPressed() && p.waitTimer > 15 {
-			p.game.gameState.SetMsg(GAMESTATE_MSG_REQ_TITLE)
+			gameMain.SetMsg(GAMESTATE_MSG_REQ_TITLE)
 		}
 	}
 	if p.life < LIFE_RATIO {
@@ -231,7 +231,7 @@ func (p *Player) moveNormal() {
 	}
 
 	if p.state == PLAYERSTATE_NORMAL {
-		p.CheckCollision()
+		p.checkCollision()
 	}
 
 	// ATARI判定
@@ -328,7 +328,7 @@ func (p *Player) moveNormal() {
 	p.view.SetPosition(v)
 }
 
-func (p *Player) MoveItemGet() {
+func (p *Player) moveItemGet() {
 	if p.waitTimer < WAIT_TIMER_INTERVAL {
 		p.waitTimer++
 		return
@@ -370,7 +370,7 @@ func (p *Player) moveByInput() {
 	}
 }
 
-func (p *Player) CheckCollision() {
+func (p *Player) checkCollision() {
 	for xx := 0; xx < 2; xx++ {
 		for yy := 0; yy < 2; yy++ {
 			// アイテム獲得(STATE_ITEMGETへ遷移)

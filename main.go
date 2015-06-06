@@ -101,10 +101,6 @@ func (t *TitleMain) GetMsg() GameStateMsg {
 	return t.gameStateMsg
 }
 
-func (t *TitleMain) SetMsg(msg GameStateMsg) {
-	t.gameStateMsg = msg
-}
-
 type OpeningMain struct {
 	gameStateMsg GameStateMsg
 	timer        int
@@ -134,10 +130,6 @@ func (o *OpeningMain) Draw(game *Game) {
 
 func (o *OpeningMain) GetMsg() GameStateMsg {
 	return o.gameStateMsg
-}
-
-func (o *OpeningMain) SetMsg(msg GameStateMsg) {
-	o.gameStateMsg = msg
 }
 
 type EndingMain struct {
@@ -197,10 +189,6 @@ func (e *EndingMain) GetMsg() GameStateMsg {
 	return e.gameStateMsg
 }
 
-func (e *EndingMain) SetMsg(msg GameStateMsg) {
-	e.gameStateMsg = msg
-}
-
 type SecretMain struct {
 	gameStateMsg GameStateMsg
 	timer        int
@@ -234,10 +222,6 @@ func (s *SecretMain) GetMsg() GameStateMsg {
 	return s.gameStateMsg
 }
 
-func (s *SecretMain) SetMsg(msg GameStateMsg) {
-	s.gameStateMsg = msg
-}
-
 type GameMain struct {
 	gameStateMsg GameStateMsg
 }
@@ -253,7 +237,7 @@ func NewGameMain(game *Game) *GameMain {
 
 func (g *GameMain) Update(game *Game) {
 	game.field.Move()
-	game.player.Move()
+	game.player.Move(g)
 }
 
 func (g *GameMain) Draw(game *Game) {
@@ -280,7 +264,6 @@ type GameState interface {
 	Update(g *Game)
 	Draw(g *Game)
 	GetMsg() GameStateMsg
-	SetMsg(msg GameStateMsg)
 }
 
 type Game struct {
