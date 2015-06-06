@@ -353,7 +353,7 @@ func (p *Player) MoveItemGet() {
 		p.waitTimer++
 		return
 	}
-	if p.game.key.IsActionKeyPressed() {
+	if p.game.key.IsActionKeyPushed() {
 		p.state = PLAYERSTATE_NORMAL
 		// TODO(hajimehoshi): Play BGM 'bgm0'
 	}
