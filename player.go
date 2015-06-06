@@ -68,7 +68,7 @@ func NewPlayer(playerData *PlayerData, field *Field) *Player {
 	return p
 }
 
-func (p *Player) OnWall() bool {
+func (p *Player) onWall() bool {
 	if p.toFieldOfsY() > CHAR_SIZE/4 {
 		return false
 	}
@@ -81,8 +81,8 @@ func (p *Player) OnWall() bool {
 	return false
 }
 
-func (p *Player) IsFallable() bool {
-	if !p.OnWall() {
+func (p *Player) isFallable() bool {
+	if !p.onWall() {
 		return false
 	}
 	if p.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
@@ -94,7 +94,7 @@ func (p *Player) IsFallable() bool {
 	return true
 }
 
-func (p *Player) IsUpperWallBoth() bool {
+func (p *Player) isUpperWallBoth() bool {
 	if p.toFieldOfsY() < CHAR_SIZE/2 {
 		return false
 	}
@@ -104,7 +104,7 @@ func (p *Player) IsUpperWallBoth() bool {
 	return false
 }
 
-func (p *Player) IsUpperWall() bool {
+func (p *Player) isUpperWall() bool {
 	if p.toFieldOfsY() < CHAR_SIZE/2 {
 		return false
 	}
@@ -116,7 +116,8 @@ func (p *Player) IsUpperWall() bool {
 	}
 	return false
 }
-func (p *Player) IsLeftWall() bool {
+
+func (p *Player) isLeftWall() bool {
 	if p.field.IsWall(p.toFieldX(), p.toFieldY()) {
 		return true
 	}
@@ -125,7 +126,8 @@ func (p *Player) IsLeftWall() bool {
 	}
 	return false
 }
-func (p *Player) IsRightWall() bool {
+
+func (p *Player) isRightWall() bool {
 	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()) {
 		return true
 	}
@@ -139,10 +141,12 @@ func (p *Player) normalizeToRight() {
 	p.position.X = float64(p.toFieldX() * CHAR_SIZE)
 	p.speed.X = 0
 }
+
 func (p *Player) normalizeToLeft() {
 	p.position.X = float64((p.toFieldX() + 1) * CHAR_SIZE)
 	p.speed.X = 0
 }
+
 func (p *Player) normalizeToUpper() {
 	if p.speed.Y < 0 {
 		p.speed.Y = 0
@@ -161,6 +165,7 @@ func (p *Player) toFieldY() int {
 func (p *Player) toFieldOfsX() int {
 	return int(p.position.X) % CHAR_SIZE
 }
+
 func (p *Player) toFieldOfsY() int {
 	return int(p.position.Y) % CHAR_SIZE
 }
@@ -238,7 +243,7 @@ func (p *Player) moveNormal() {
 	hitLeft := false
 	hitRight := false
 	hitUpper := false
-	if p.OnWall() && p.speed.Y >= 0 {
+	if p.onWall() && p.speed.Y >= 0 {
 		if p.playerData.lunkerMode {
 			if p.position.Y-p.jumpedPoint.Y > LUNKER_JUMP_DAMAGE1 {
 				p.state = PLAYERSTATE_MUTEKI
@@ -254,7 +259,7 @@ func (p *Player) moveNormal() {
 			}
 		}
 
-		if !input.IsActionKeyPressed() || !input.IsKeyPressed(ebiten.KeyDown) || !p.IsFallable() {
+		if !input.IsActionKeyPressed() || !input.IsKeyPressed(ebiten.KeyDown) || !p.isFallable() {
 			if p.speed.Y > 0 {
 				p.speed.Y = 0
 			}
@@ -265,13 +270,13 @@ func (p *Player) moveNormal() {
 		p.jumpedPoint.X = p.position.X
 		p.jumpedPoint.Y = p.position.Y
 	}
-	if p.IsLeftWall() && p.speed.X < 0 {
+	if p.isLeftWall() && p.speed.X < 0 {
 		hitLeft = true
 	}
-	if p.IsRightWall() && p.speed.X > 0 {
+	if p.isRightWall() && p.speed.X > 0 {
 		hitRight = true
 	}
-	if p.IsUpperWall() && p.speed.Y <= 0 {
+	if p.isUpperWall() && p.speed.Y <= 0 {
 		hitUpper = true
 	}
 
@@ -285,7 +290,7 @@ func (p *Player) moveNormal() {
 		p.normalizeToRight()
 	}
 	if hitUpper && hitRight {
-		if p.IsUpperWallBoth() {
+		if p.isUpperWallBoth() {
 			p.normalizeToUpper()
 		} else {
 			if p.toFieldOfsX() > p.toFieldOfsY() {
@@ -296,7 +301,7 @@ func (p *Player) moveNormal() {
 		}
 	}
 	if hitUpper && hitLeft {
-		if p.IsUpperWallBoth() {
+		if p.isUpperWallBoth() {
 			p.normalizeToUpper()
 		} else {
 			if CHAR_SIZE-p.toFieldOfsX() > p.toFieldOfsY() {
@@ -308,7 +313,7 @@ func (p *Player) moveNormal() {
 	}
 
 	// 床特殊効果
-	switch p.GetOnField() {
+	switch p.getOnField() {
 	case FIELD_SCROLL_L:
 		p.speed.X = p.speed.X*(1.0-PLAYER_GRD_ACCRATIO) + float64(p.direction*PLAYER_SPEED-SCROLLPANEL_SPEED)*PLAYER_GRD_ACCRATIO
 	case FIELD_SCROLL_R:
@@ -348,9 +353,9 @@ func (p *Player) moveByInput() {
 	}
 
 	if input.IsActionKeyPushed() {
-		if ((p.playerData.jumpMax > p.jumpCnt) || p.OnWall()) && !input.IsKeyPressed(ebiten.KeyDown) {
+		if ((p.playerData.jumpMax > p.jumpCnt) || p.onWall()) && !input.IsKeyPressed(ebiten.KeyDown) {
 			p.speed.Y = PLAYER_JUMP // ジャンプ
-			if !p.OnWall() {
+			if !p.onWall() {
 				p.jumpCnt++
 			}
 
@@ -420,8 +425,8 @@ func (p *Player) checkCollision() {
 	}
 }
 
-func (p *Player) GetOnField() FieldType {
-	if !p.OnWall() {
+func (p *Player) getOnField() FieldType {
+	if !p.onWall() {
 		return FIELD_NONE
 	}
 	if p.toFieldOfsX() < CHAR_SIZE/2 {
@@ -451,7 +456,7 @@ func (p *Player) Draw(game *Game) {
 	} else { // 生存
 		if p.state != PLAYERSTATE_MUTEKI || p.timer%10 < 5 {
 			anime := (p.timer / 6) % 2
-			if !p.OnWall() {
+			if !p.onWall() {
 				anime = 0
 			}
 			if p.direction < 0 {
