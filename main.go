@@ -224,6 +224,7 @@ func (s *SecretMain) GetMsg() GameStateMsg {
 
 type GameMain struct {
 	gameStateMsg GameStateMsg
+	player       *Player
 }
 
 func NewGameMain(game *Game) *GameMain {
@@ -231,13 +232,14 @@ func NewGameMain(game *Game) *GameMain {
 	f := &Field{}
 	f.LoadFieldData(field_data)
 	game.field = f
-	game.player = NewPlayer(game)
+
+	g.player = NewPlayer(game)
 	return g
 }
 
 func (g *GameMain) Update(game *Game) {
 	game.field.Move()
-	game.player.Move(g)
+	g.player.Move(g)
 }
 
 func (g *GameMain) Draw(game *Game) {
@@ -247,9 +249,9 @@ func (g *GameMain) Draw(game *Game) {
 		game.Draw("bg", 0, 0, 0, 0, g_width, g_height)
 	}
 
-	p := game.player.view.GetPosition()
+	p := g.player.view.GetPosition()
 	game.field.Draw(game, Position{X: int(p.X), Y: int(p.Y)})
-	game.player.Draw()
+	g.player.Draw()
 }
 
 func (g *GameMain) GetMsg() GameStateMsg {
@@ -269,7 +271,6 @@ type GameState interface {
 type Game struct {
 	gameState  GameState
 	field      *Field
-	player     *Player
 	playerData *PlayerData
 	img        map[string]*ebiten.Image
 	font       *Font
