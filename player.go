@@ -157,7 +157,7 @@ func (p *Player) normalizeToRight() {
 }
 func (p *Player) normalizeToLeft() {
 	p.position.X = float64((p.toFieldX() + 1) * CHAR_SIZE)
-	p.speed.Y = 0
+	p.speed.X = 0
 }
 func (p *Player) normalizeToUpper() {
 	if p.speed.Y < 0 {
