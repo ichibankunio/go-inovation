@@ -63,15 +63,8 @@ type PositionF struct {
 }
 
 type Field struct {
-	field      [FIELD_X_MAX * FIELD_Y_MAX]int
-	timer      int
-	playerData *PlayerData
-}
-
-func NewField(playerData *PlayerData) *Field {
-	return &Field{
-		playerData: playerData,
-	}
+	field [FIELD_X_MAX * FIELD_Y_MAX]int
+	timer int
 }
 
 func (f *Field) LoadFieldData(data string) {
@@ -130,18 +123,18 @@ func (f *Field) IsItem(x, y int) bool {
 		f.field[y*FIELD_X_MAX+x] != FIELD_ITEM_STARTPOINT
 }
 
-func (f *Field) IsItemGetable(x, y int) bool {
+func (f *Field) IsItemGettable(x, y int, playerData *PlayerData) bool {
 	if !f.IsItem(x, y) {
 		return false
 	}
-	if f.field[y*FIELD_X_MAX+x] == FIELD_ITEM_OMEGA && f.IsHiddenSecret() {
+	if f.field[y*FIELD_X_MAX+x] == FIELD_ITEM_OMEGA && f.isHiddenSecret(playerData) {
 		return false
 	}
 	return true
 }
 
-func (f *Field) IsHiddenSecret() bool {
-	return f.playerData.GetItemCount() < 15
+func (f *Field) isHiddenSecret(playerData *PlayerData) bool {
+	return playerData.GetItemCount() < 15
 }
 
 func (f *Field) EraseField(x, y int) {
@@ -173,14 +166,14 @@ func (f *Field) Draw(game *Game, viewPosition Position) {
 				gx = gx % 16
 			}
 
-			if f.IsHiddenSecret() && f.field[fy*FIELD_X_MAX+fx] == FIELD_ITEM_OMEGA {
+			if f.isHiddenSecret(game.playerData) && f.field[fy*FIELD_X_MAX+fx] == FIELD_ITEM_OMEGA {
 				continue
 			}
 
 			parts = append(parts, imgPart{
-				(xx+12)*CHAR_SIZE+ofs_x+GRAPHIC_OFFSET_X+(g_width-320)/2,
-				(yy+8)*CHAR_SIZE+ofs_y+GRAPHIC_OFFSET_Y+(g_height-240)/2,
-				gx*16, gy*16, 16, 16,
+				(xx+12)*CHAR_SIZE + ofs_x + GRAPHIC_OFFSET_X + (g_width-320)/2,
+				(yy+8)*CHAR_SIZE + ofs_y + GRAPHIC_OFFSET_Y + (g_height-240)/2,
+				gx * 16, gy * 16, 16, 16,
 			})
 
 		}

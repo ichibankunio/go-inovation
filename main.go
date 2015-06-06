@@ -16,8 +16,6 @@ const g_width = 320
 const g_height = 240
 const CHAR_SIZE = 16
 
-const ()
-
 const (
 	ENDINGMAIN_STATE_STAFFROLL = iota
 	ENDINGMAIN_STATE_RESULT
@@ -79,21 +77,21 @@ func (t *TitleMain) Update() {
 
 func (t *TitleMain) Draw() {
 	if t.lunkerMode {
-		t.gameState.game.Draw("bg", 0, 0, 0, 240, 320, 240)
+		t.gameState.game.Draw("bg", 0, 0, 0, 240, g_width, g_height)
 		t.gameState.game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64, 256, 16)
 	} else {
-		t.gameState.game.Draw("bg", 0, 0, 0, 0, 320, 240)
+		t.gameState.game.Draw("bg", 0, 0, 0, 0, g_width, g_height)
 		t.gameState.game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64+16, 256, 16)
 	}
 
 	t.gameState.game.Draw("msg", (g_width-256)/2, 32+(g_height-240)/2, 0, 0, 256, 64)
 }
 
-func (t *TitleMain) GetMsg() int {
+func (t *TitleMain) GetMsg() GameStateMsg {
 	return t.gameState.GetMsg()
 }
 
-func (t *TitleMain) SetMsg(msg int) {
+func (t *TitleMain) SetMsg(msg GameStateMsg) {
 	t.gameState.SetMsg(msg)
 }
 
@@ -131,11 +129,11 @@ func (o *OpeningMain) Draw() {
 	o.gameState.game.Draw("msg", (g_width-256)/2, g_height-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
 }
 
-func (o *OpeningMain) GetMsg() int {
+func (o *OpeningMain) GetMsg() GameStateMsg {
 	return o.gameState.GetMsg()
 }
 
-func (o *OpeningMain) SetMsg(msg int) {
+func (o *OpeningMain) SetMsg(msg GameStateMsg) {
 	o.gameState.SetMsg(msg)
 }
 
@@ -199,11 +197,11 @@ func (e *EndingMain) Draw() {
 	}
 }
 
-func (e *EndingMain) GetMsg() int {
+func (e *EndingMain) GetMsg() GameStateMsg {
 	return e.gameState.GetMsg()
 }
 
-func (e *EndingMain) SetMsg(msg int) {
+func (e *EndingMain) SetMsg(msg GameStateMsg) {
 	e.gameState.SetMsg(msg)
 }
 
@@ -238,11 +236,11 @@ func (s *SecretMain) Draw() {
 	}
 }
 
-func (s *SecretMain) GetMsg() int {
+func (s *SecretMain) GetMsg() GameStateMsg {
 	return s.gameState.GetMsg()
 }
 
-func (s *SecretMain) SetMsg(msg int) {
+func (s *SecretMain) SetMsg(msg GameStateMsg) {
 	s.gameState.SetMsg(msg)
 }
 
@@ -254,7 +252,7 @@ func NewGameMain(game *Game) *GameMain {
 	g := &GameMain{
 		gameState: GameState{game: game},
 	}
-	f := NewField(game.playerData)
+	f := &Field{}
 	f.LoadFieldData(field_data)
 	game.field = f
 	game.player.Initialize()
@@ -268,9 +266,9 @@ func (g *GameMain) Update() {
 
 func (g *GameMain) Draw() {
 	if g.gameState.game.playerData.lunkerMode {
-		g.gameState.game.Draw("bg", 0, 0, 0, 240, 320, 240)
+		g.gameState.game.Draw("bg", 0, 0, 0, 240, g_width, g_height)
 	} else {
-		g.gameState.game.Draw("bg", 0, 0, 0, 0, 320, 240)
+		g.gameState.game.Draw("bg", 0, 0, 0, 0, g_width, g_height)
 	}
 
 	p := g.gameState.game.player.view.GetPosition()
@@ -278,19 +276,19 @@ func (g *GameMain) Draw() {
 	g.gameState.game.player.Draw()
 }
 
-func (g *GameMain) GetMsg() int {
+func (g *GameMain) GetMsg() GameStateMsg {
 	return g.gameState.GetMsg()
 }
 
-func (g *GameMain) SetMsg(msg int) {
+func (g *GameMain) SetMsg(msg GameStateMsg) {
 	g.gameState.SetMsg(msg)
 }
 
 type IGameState interface {
 	Update()
 	Draw()
-	GetMsg() int
-	SetMsg(msg int)
+	GetMsg() GameStateMsg
+	SetMsg(msg GameStateMsg)
 }
 
 type Game struct {

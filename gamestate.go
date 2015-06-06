@@ -1,7 +1,9 @@
 package inovation5
 
+type GameStateMsg int
+
 const (
-	GAMESTATE_MSG_NONE= iota
+	GAMESTATE_MSG_NONE GameStateMsg = iota
 	GAMESTATE_MSG_REQ_TITLE
 	GAMESTATE_MSG_REQ_GAME
 	GAMESTATE_MSG_REQ_OPENING
@@ -12,14 +14,14 @@ const (
 
 type GameState struct {
 	game *Game
-	msg  int
+	msg  GameStateMsg
 }
 
-func (g *GameState) GetMsg() int {
+func (g *GameState) GetMsg() GameStateMsg {
 	return g.msg
 }
 
-func (g *GameState) SetMsg(m int) {
+func (g *GameState) SetMsg(m GameStateMsg) {
 	g.msg = m
 }
 
@@ -30,4 +32,3 @@ func (g *GameState) Draw() {
 func (g *GameState) Update() {
 	print("GameState update")
 }
-

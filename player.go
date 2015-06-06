@@ -7,8 +7,10 @@ import (
 	"github.com/hajimehoshi/ebiten"
 )
 
+type PlayerState int
+
 const (
-	PLAYERSTATE_START = iota
+	PLAYERSTATE_START PlayerState = iota
 	PLAYERSTATE_NORMAL
 	PLAYERSTATE_ITEMGET
 	PLAYERSTATE_MUTEKI
@@ -58,7 +60,7 @@ type Player struct {
 	speed       PositionF
 	direction   int
 	jumpedPoint PositionF
-	state       int
+	state       PlayerState
 	itemGet     int
 	waitTimer   int
 	game        *Game
@@ -190,8 +192,8 @@ func (p *Player) Move() {
 		}
 
 	case PLAYERSTATE_NORMAL:
-		p.MoveByInput()
-		p.MoveNormal()
+		p.moveByInput()
+		p.moveNormal()
 		if p.life < p.game.playerData.lifeMax*LIFE_RATIO {
 			var o_life = p.life
 			p.life++
@@ -209,15 +211,15 @@ func (p *Player) Move() {
 		}
 
 	case PLAYERSTATE_MUTEKI:
-		p.MoveByInput()
-		p.MoveNormal()
+		p.moveByInput()
+		p.moveNormal()
 		p.waitTimer++
 		if p.waitTimer > MUTEKI_INTERVAL {
 			p.state = PLAYERSTATE_NORMAL
 		}
 
 	case PLAYERSTATE_DEAD:
-		p.MoveNormal()
+		p.moveNormal()
 		// TODO(hajimehoshi): Stop BGM
 		if p.game.key.IsActionKeyPressed() && p.waitTimer > 15 {
 			p.game.gameState.SetMsg(GAMESTATE_MSG_REQ_TITLE)
@@ -233,7 +235,7 @@ func (p *Player) Move() {
 	}
 }
 
-func (p *Player) MoveNormal() {
+func (p *Player) moveNormal() {
 	p.timer++
 	p.game.playerData.playtime = (p.timer / 50)
 
@@ -357,7 +359,7 @@ func (p *Player) MoveItemGet() {
 	}
 }
 
-func (p *Player) MoveByInput() {
+func (p *Player) moveByInput() {
 	if p.game.key.IsKeyPressed(ebiten.KeyLeft) {
 		p.direction = -1
 	}
@@ -394,7 +396,7 @@ func (p *Player) CheckCollision() {
 			// アイテム獲得(STATE_ITEMGETへ遷移)
 			if p.game.field.IsItem(p.toFieldX()+xx, p.toFieldY()+yy) {
 				// 隠しアイテムは条件が必要
-				if !p.game.field.IsItemGetable(p.toFieldX()+xx, p.toFieldY()+yy) {
+				if !p.game.field.IsItemGettable(p.toFieldX()+xx, p.toFieldY()+yy, p.game.playerData) {
 					continue
 				}
 
