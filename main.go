@@ -231,7 +231,7 @@ type GameMain struct {
 func NewGameMain(game *Game) *GameMain {
 	f := NewField(field_data)
 	g := &GameMain{
-		player: NewPlayer(game, f),
+		player: NewPlayer(game.playerData, f),
 		field:  f,
 	}
 	return g
@@ -251,7 +251,7 @@ func (g *GameMain) Draw(game *Game) {
 
 	p := g.player.view.GetPosition()
 	g.field.Draw(game, Position{X: int(p.X), Y: int(p.Y)})
-	g.player.Draw()
+	g.player.Draw(game)
 }
 
 func (g *GameMain) GetMsg() GameStateMsg {

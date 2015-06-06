@@ -45,15 +45,18 @@ type Player struct {
 	state       PlayerState
 	itemGet     FieldType
 	waitTimer   int
-	game        *Game
+	playerData  *PlayerData // TODO(hajimehoshi): Remove this?
 	view        *View
 	field       *Field
 }
 
-func NewPlayer(game *Game, field *Field) *Player{
-	p := &Player{game: game, field: field}
-	p.state = PLAYERSTATE_NORMAL
-	p.life = p.game.playerData.lifeMax * LIFE_RATIO
+func NewPlayer(playerData *PlayerData, field *Field) *Player {
+	p := &Player{
+		playerData: playerData,
+		field:      field,
+		state:      PLAYERSTATE_NORMAL,
+		life:       playerData.lifeMax * LIFE_RATIO,
+	}
 
 	startPoint := p.field.GetStartPoint()
 	startPointF := PositionF{float64(startPoint.X), float64(startPoint.Y)}
@@ -174,7 +177,7 @@ func (p *Player) Move(gameMain *GameMain) {
 	case PLAYERSTATE_NORMAL:
 		p.moveByInput()
 		p.moveNormal()
-		if p.life < p.game.playerData.lifeMax*LIFE_RATIO {
+		if p.life < p.playerData.lifeMax*LIFE_RATIO {
 			o_life := p.life
 			p.life++
 			if (p.life / LIFE_RATIO) != (o_life / LIFE_RATIO) {
@@ -185,7 +188,7 @@ func (p *Player) Move(gameMain *GameMain) {
 	case PLAYERSTATE_ITEMGET:
 		p.moveItemGet()
 		if p.state != PLAYERSTATE_ITEMGET {
-			if p.game.playerData.IsGameClear() {
+			if p.playerData.IsGameClear() {
 				gameMain.SetMsg(GAMESTATE_MSG_REQ_ENDING)
 			}
 		}
@@ -217,7 +220,7 @@ func (p *Player) Move(gameMain *GameMain) {
 
 func (p *Player) moveNormal() {
 	p.timer++
-	p.game.playerData.playtime = (p.timer / 50)
+	p.playerData.playtime = (p.timer / 50)
 
 	// 移動＆落下
 	p.speed.Y += PLAYER_GRAVITY
@@ -237,7 +240,7 @@ func (p *Player) moveNormal() {
 	hitRight := false
 	hitUpper := false
 	if p.OnWall() && p.speed.Y >= 0 {
-		if p.game.playerData.lunkerMode {
+		if p.playerData.lunkerMode {
 			if p.position.Y-p.jumpedPoint.Y > LUNKER_JUMP_DAMAGE1 {
 				p.state = PLAYERSTATE_MUTEKI
 				p.waitTimer = 0
@@ -346,7 +349,7 @@ func (p *Player) moveByInput() {
 	}
 
 	if input.IsActionKeyPushed() {
-		if ((p.game.playerData.jumpMax > p.jumpCnt) || p.OnWall()) && !input.IsKeyPressed(ebiten.KeyDown) {
+		if ((p.playerData.jumpMax > p.jumpCnt) || p.OnWall()) && !input.IsKeyPressed(ebiten.KeyDown) {
 			p.speed.Y = PLAYER_JUMP // ジャンプ
 			if !p.OnWall() {
 				p.jumpCnt++
@@ -374,7 +377,7 @@ func (p *Player) checkCollision() {
 			// アイテム獲得(STATE_ITEMGETへ遷移)
 			if p.field.IsItem(p.toFieldX()+xx, p.toFieldY()+yy) {
 				// 隠しアイテムは条件が必要
-				if !p.field.IsItemGettable(p.toFieldX()+xx, p.toFieldY()+yy, p.game.playerData) {
+				if !p.field.IsItemGettable(p.toFieldX()+xx, p.toFieldY()+yy, p.playerData) {
 					continue
 				}
 
@@ -384,18 +387,18 @@ func (p *Player) checkCollision() {
 				p.itemGet = p.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy)
 				switch p.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy) {
 				case FIELD_ITEM_POWERUP:
-					p.game.playerData.jumpMax++
+					p.playerData.jumpMax++
 				case FIELD_ITEM_LIFE:
-					p.game.playerData.lifeMax++
-					p.life = p.game.playerData.lifeMax * LIFE_RATIO
+					p.playerData.lifeMax++
+					p.life = p.playerData.lifeMax * LIFE_RATIO
 				default:
-					p.game.playerData.itemGetFlags[p.itemGet] = true
+					p.playerData.itemGetFlags[p.itemGet] = true
 				}
 				p.field.EraseField(p.toFieldX()+xx, p.toFieldY()+yy)
 				p.waitTimer = 0
 
 				// TODO(hajimehoshi): Stop BGM
-				if p.game.playerData.IsItemForClear(p.itemGet) || p.itemGet == FIELD_ITEM_POWERUP {
+				if p.playerData.IsItemForClear(p.itemGet) || p.itemGet == FIELD_ITEM_POWERUP {
 					// TODO(hajimehoshi): Play SE 'itemget'
 				} else {
 					// TODO(hajimehoshi): Play SE 'itemget2'
@@ -437,14 +440,14 @@ func (p *Player) GetOnField() FieldType {
 	}
 }
 
-func (p *Player) Draw() {
+func (p *Player) Draw(game *Game) {
 	v := p.view.ToScreenPosition(Position{int(p.position.X), int(p.position.Y)})
 	if p.state == PLAYERSTATE_DEAD { // 死亡
 		anime := (p.timer / 6) % 4
-		if p.game.playerData.lunkerMode {
-			p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+		if game.playerData.lunkerMode {
+			game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 		} else {
-			p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
+			game.Draw("ino", v.X, v.Y, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
 		}
 	} else { // 生存
 		if p.state != PLAYERSTATE_MUTEKI || p.timer%10 < 5 {
@@ -453,50 +456,50 @@ func (p *Player) Draw() {
 				anime = 0
 			}
 			if p.direction < 0 {
-				if p.game.playerData.lunkerMode {
-					p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+				if game.playerData.lunkerMode {
+					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 				} else {
-					p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
+					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
 				}
 			} else {
-				if p.game.playerData.lunkerMode {
-					p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
+				if game.playerData.lunkerMode {
+					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
 				} else {
-					p.game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
+					game.Draw("ino", v.X, v.Y, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 				}
 			}
 		}
 	}
 
 	// ライフ表示
-	for t := 0; t < p.game.playerData.lifeMax; t++ {
-		if p.life < LIFE_RATIO*2 && p.timer%10 < 5 && p.game.playerData.lifeMax > 1 {
+	for t := 0; t < game.playerData.lifeMax; t++ {
+		if p.life < LIFE_RATIO*2 && p.timer%10 < 5 && game.playerData.lifeMax > 1 {
 			continue
 		}
 
 		if p.life >= (t+1)*LIFE_RATIO {
-			p.game.Draw("ino", CHAR_SIZE*t, 0, CHAR_SIZE*3, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
+			game.Draw("ino", CHAR_SIZE*t, 0, CHAR_SIZE*3, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
 		} else {
-			p.game.Draw("ino", CHAR_SIZE*t, 0, CHAR_SIZE*4, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
+			game.Draw("ino", CHAR_SIZE*t, 0, CHAR_SIZE*4, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
 		}
 	}
 
 	// 取ったアイテム一覧
 	for t := FIELD_ITEM_FUJI; t < FIELD_ITEM_MAX; t++ {
-		if !p.game.playerData.itemGetFlags[t] {
-			p.game.Draw("ino", g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 無
+		if !game.playerData.itemGetFlags[t] {
+			game.Draw("ino", g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 無
 				CHAR_SIZE*5, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 		} else {
-			if p.game.playerData.IsItemForClear(t) {
+			if game.playerData.IsItemForClear(t) {
 				// クリア条件アイテムは専用グラフィック
 				for i, c := range clearFlagItems {
 					if c == t {
-						p.game.Draw("ino", g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0,
+						game.Draw("ino", g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0,
 							CHAR_SIZE*5+CHAR_SIZE/4*(i+2), 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 					}
 				}
 			} else {
-				p.game.Draw("ino", g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 有
+				game.Draw("ino", g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 有
 					CHAR_SIZE*5+CHAR_SIZE/4, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 			}
 		}
@@ -505,23 +508,23 @@ func (p *Player) Draw() {
 	// アイテム獲得メッセージ
 	if p.state == PLAYERSTATE_ITEMGET {
 		t := WAIT_TIMER_INTERVAL - p.waitTimer
-		p.game.Draw("msg", (g_width-256)/2, (g_height-96)/2-t*t+24,
+		game.Draw("msg", (g_width-256)/2, (g_height-96)/2-t*t+24,
 			256, 96*(int(p.itemGet)-int(FIELD_ITEM_BORDER)-1), 256, 96)
-		p.game.FillRect((g_width-32)/2, (g_height-96)/2-t*t-24, 32, 32, color.RGBA{0, 0, 0, 255})
-		p.game.FillRect((g_width-32)/2+2, (g_height-96)/2-t*t-24+2, 32-4, 32-4, color.RGBA{255, 255, 255, 255})
+		game.FillRect((g_width-32)/2, (g_height-96)/2-t*t-24, 32, 32, color.RGBA{0, 0, 0, 255})
+		game.FillRect((g_width-32)/2+2, (g_height-96)/2-t*t-24+2, 32-4, 32-4, color.RGBA{255, 255, 255, 255})
 
 		it := int(p.itemGet) - (int(FIELD_ITEM_BORDER) + 1)
-		p.game.Draw("ino", (g_width-16)/2, (g_height-96)/2-int(t)*int(t)-16,
+		game.Draw("ino", (g_width-16)/2, (g_height-96)/2-int(t)*int(t)-16,
 			(it%16)*CHAR_SIZE, (it/16+4)*CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 	}
 
 	// ゲーム開始メッセージ
 	if p.state == PLAYERSTATE_START {
-		p.game.Draw("msg", (g_width-256)/2, 64+(g_height-240)/2, 0, 96, 256, 32)
+		game.Draw("msg", (g_width-256)/2, 64+(g_height-240)/2, 0, 96, 256, 32)
 	}
 
 	// ゲームオーバーメッセージ
 	if p.state == PLAYERSTATE_DEAD {
-		p.game.Draw("msg", (g_width-256)/2, 64+(g_height-240)/2, 0, 128, 256, 32)
+		game.Draw("msg", (g_width-256)/2, 64+(g_height-240)/2, 0, 128, 256, 32)
 	}
 }
