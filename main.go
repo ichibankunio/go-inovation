@@ -225,20 +225,16 @@ func (s *SecretMain) GetMsg() GameStateMsg {
 type GameMain struct {
 	gameStateMsg GameStateMsg
 	player       *Player
-	field        *Field
 }
 
 func NewGameMain(game *Game) *GameMain {
-	f := NewField(field_data)
 	g := &GameMain{
-		player: NewPlayer(game.playerData, f),
-		field:  f,
+		player: NewPlayer(game.playerData),
 	}
 	return g
 }
 
 func (g *GameMain) Update(game *Game) {
-	g.field.Move()
 	g.player.Move(g)
 }
 
@@ -248,9 +244,6 @@ func (g *GameMain) Draw(game *Game) {
 	} else {
 		game.Draw("bg", 0, 0, 0, 0, g_width, g_height)
 	}
-
-	p := g.player.view.GetPosition()
-	g.field.Draw(game, Position{X: int(p.X), Y: int(p.Y)})
 	g.player.Draw(game)
 }
 

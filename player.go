@@ -50,10 +50,10 @@ type Player struct {
 	field       *Field
 }
 
-func NewPlayer(playerData *PlayerData, field *Field) *Player {
+func NewPlayer(playerData *PlayerData) *Player {
 	p := &Player{
 		playerData: playerData,
-		field:      field,
+		field:      NewField(field_data),
 		life:       playerData.lifeMax * LIFE_RATIO,
 	}
 
@@ -171,6 +171,7 @@ func (p *Player) toFieldOfsY() int {
 }
 
 func (p *Player) Move(gameMain *GameMain) {
+	p.field.Move()
 	switch p.state {
 	case PLAYERSTATE_START:
 		p.waitTimer++
@@ -445,6 +446,9 @@ func (p *Player) getOnField() FieldType {
 }
 
 func (p *Player) Draw(game *Game) {
+	po := p.view.GetPosition()
+	p.field.Draw(game, Position{X: int(po.X), Y: int(po.Y)})
+
 	v := p.view.ToScreenPosition(p.position)
 	vx, vy := int(v.X), int(v.Y)
 	if p.state == PLAYERSTATE_DEAD { // 死亡
