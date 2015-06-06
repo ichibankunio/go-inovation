@@ -21,8 +21,20 @@ const (
 	ENDINGMAIN_STATE_RESULT
 )
 
+type GameStateMsg int
+
+const (
+	GAMESTATE_MSG_NONE GameStateMsg = iota
+	GAMESTATE_MSG_REQ_TITLE
+	GAMESTATE_MSG_REQ_GAME
+	GAMESTATE_MSG_REQ_OPENING
+	GAMESTATE_MSG_REQ_ENDING
+	GAMESTATE_MSG_REQ_SECRET1
+	GAMESTATE_MSG_REQ_SECRET2
+)
+
 type TitleMain struct {
-	gameState     GameState
+	gameStateMsg  GameStateMsg
 	timer         int
 	offsetX       int
 	offsetY       int
@@ -42,7 +54,7 @@ func (t *TitleMain) Update(game *Game) {
 	}
 
 	if input.IsActionKeyPushed() && t.timer > 5 {
-		t.gameState.SetMsg(GAMESTATE_MSG_REQ_OPENING)
+		t.gameStateMsg = GAMESTATE_MSG_REQ_OPENING
 
 		if t.lunkerMode {
 			game.playerData = NewPlayerData(GAMEMODE_LUNKER)
@@ -86,16 +98,16 @@ func (t *TitleMain) Draw(game *Game) {
 }
 
 func (t *TitleMain) GetMsg() GameStateMsg {
-	return t.gameState.GetMsg()
+	return t.gameStateMsg
 }
 
 func (t *TitleMain) SetMsg(msg GameStateMsg) {
-	t.gameState.SetMsg(msg)
+	t.gameStateMsg = msg
 }
 
 type OpeningMain struct {
-	gameState GameState
-	timer     int
+	gameStateMsg GameStateMsg
+	timer        int
 }
 
 const (
@@ -110,7 +122,7 @@ func (o *OpeningMain) Update(game *Game) {
 		o.timer += 20
 	}
 	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+g_height {
-		o.gameState.SetMsg(GAMESTATE_MSG_REQ_GAME)
+		o.gameStateMsg = GAMESTATE_MSG_REQ_GAME
 		// TODO(hajimehoshi): Stop BGM
 	}
 }
@@ -121,17 +133,17 @@ func (o *OpeningMain) Draw(game *Game) {
 }
 
 func (o *OpeningMain) GetMsg() GameStateMsg {
-	return o.gameState.GetMsg()
+	return o.gameStateMsg
 }
 
 func (o *OpeningMain) SetMsg(msg GameStateMsg) {
-	o.gameState.SetMsg(msg)
+	o.gameStateMsg = msg
 }
 
 type EndingMain struct {
-	gameState GameState
-	timer     int
-	state     int
+	gameStateMsg GameStateMsg
+	timer        int
+	state        int
 }
 
 const (
@@ -156,12 +168,12 @@ func (e *EndingMain) Update(game *Game) {
 			// 条件を満たしていると隠し画面へ
 			if game.playerData.IsGetOmega() {
 				if game.playerData.lunkerMode {
-					e.gameState.SetMsg(GAMESTATE_MSG_REQ_SECRET2)
+					e.gameStateMsg = GAMESTATE_MSG_REQ_SECRET2
 				} else {
-					e.gameState.SetMsg(GAMESTATE_MSG_REQ_SECRET1)
+					e.gameStateMsg = GAMESTATE_MSG_REQ_SECRET1
 				}
 			} else {
-				e.gameState.SetMsg(GAMESTATE_MSG_REQ_TITLE)
+				e.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
 			}
 		}
 	}
@@ -182,17 +194,17 @@ func (e *EndingMain) Draw(game *Game) {
 }
 
 func (e *EndingMain) GetMsg() GameStateMsg {
-	return e.gameState.GetMsg()
+	return e.gameStateMsg
 }
 
 func (e *EndingMain) SetMsg(msg GameStateMsg) {
-	e.gameState.SetMsg(msg)
+	e.gameStateMsg = msg
 }
 
 type SecretMain struct {
-	gameState GameState
-	timer     int
-	number    int
+	gameStateMsg GameStateMsg
+	timer        int
+	number       int
 }
 
 func NewSecretMain(number int) *SecretMain {
@@ -204,7 +216,7 @@ func NewSecretMain(number int) *SecretMain {
 func (s *SecretMain) Update(game *Game) {
 	s.timer++
 	if input.IsActionKeyPushed() && s.timer > 5 {
-		s.gameState.SetMsg(GAMESTATE_MSG_REQ_TITLE)
+		s.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
 	}
 }
 
@@ -219,15 +231,15 @@ func (s *SecretMain) Draw(game *Game) {
 }
 
 func (s *SecretMain) GetMsg() GameStateMsg {
-	return s.gameState.GetMsg()
+	return s.gameStateMsg
 }
 
 func (s *SecretMain) SetMsg(msg GameStateMsg) {
-	s.gameState.SetMsg(msg)
+	s.gameStateMsg = msg
 }
 
 type GameMain struct {
-	gameState GameState
+	gameStateMsg GameStateMsg
 }
 
 func NewGameMain(game *Game) *GameMain {
@@ -257,14 +269,14 @@ func (g *GameMain) Draw(game *Game) {
 }
 
 func (g *GameMain) GetMsg() GameStateMsg {
-	return g.gameState.GetMsg()
+	return g.gameStateMsg
 }
 
 func (g *GameMain) SetMsg(msg GameStateMsg) {
-	g.gameState.SetMsg(msg)
+	g.gameStateMsg = msg
 }
 
-type IGameState interface {
+type GameState interface {
 	Update(g *Game)
 	Draw(g *Game)
 	GetMsg() GameStateMsg
@@ -272,7 +284,7 @@ type IGameState interface {
 }
 
 type Game struct {
-	gameState  IGameState
+	gameState  GameState
 	field      *Field
 	player     *Player
 	playerData *PlayerData
