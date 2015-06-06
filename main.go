@@ -228,13 +228,9 @@ type GameMain struct {
 }
 
 func NewGameMain(game *Game) *GameMain {
-	g := &GameMain{}
-	f := &Field{}
-	f.LoadFieldData(field_data)
-	game.field = f
-
-	g.player = NewPlayer(game)
-	return g
+	return &GameMain{
+		player: NewPlayer(game),
+	}
 }
 
 func (g *GameMain) Update(game *Game) {
@@ -278,13 +274,19 @@ type Game struct {
 }
 
 func NewGame() *Game {
-	return &Game{
+	g := &Game{
 		playerData: NewPlayerData(GAMEMODE_NORMAL),
 	}
+	return g
 }
 
 func (g *Game) Start() error {
 	return ebiten.Run(g.Loop, g_width, g_height, 2, "Inovation 5")
+}
+
+func (g *Game) ResetField() {
+	g.field = &Field{}
+	g.field.LoadFieldData(field_data)
 }
 
 func (g *Game) Loop(screen *ebiten.Image) error {
@@ -303,6 +305,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 			g.gameState = &OpeningMain{}
 			break
 		case GAMESTATE_MSG_REQ_GAME:
+			g.ResetField()
 			g.gameState = NewGameMain(g)
 			break
 		case GAMESTATE_MSG_REQ_ENDING:

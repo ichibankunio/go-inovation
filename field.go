@@ -95,7 +95,7 @@ func (f *Field) GetStartPoint() Position {
 			}
 		}
 	}
-	return Position{}
+	panic("no start point")
 }
 
 func (f *Field) IsWall(x, y int) bool {
