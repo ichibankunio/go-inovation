@@ -225,7 +225,7 @@ func (p *Player) Move(gameMain *GameMain) {
 
 func (p *Player) moveNormal() {
 	p.timer++
-	p.playerData.playtime = (p.timer / 50)
+	p.playerData.playtime = (p.timer / 60)
 
 	// 移動＆落下
 	p.speed.Y += PLAYER_GRAVITY
@@ -268,8 +268,7 @@ func (p *Player) moveNormal() {
 			p.jumpCnt = 0
 		}
 
-		p.jumpedPoint.X = p.position.X
-		p.jumpedPoint.Y = p.position.Y
+		p.jumpedPoint = p.position
 	}
 	if p.isLeftWall() && p.speed.X < 0 {
 		hitLeft = true
