@@ -34,24 +34,6 @@ const (
 	LUNKER_JUMP_DAMAGE2 = 96.0
 )
 
-type View struct {
-	position PositionF
-}
-
-func (v *View) ToScreenPosition(p Position) Position {
-	x := p.X - int(v.position.X) + g_width/2
-	y := p.Y - int(v.position.Y) + g_height/2
-	return Position{x, y}
-}
-
-func (v *View) GetPosition() PositionF {
-	return v.position
-}
-
-func (v *View) SetPosition(p PositionF) {
-	v.position = p
-}
-
 type Player struct {
 	life        int
 	jumpCnt     int
@@ -272,9 +254,7 @@ func (p *Player) moveNormal() {
 			}
 		}
 
-		if p.game.key.IsActionKeyPressed() && p.game.key.IsKeyPressed(ebiten.KeyDown) && p.IsFallable() {
-			// 落下
-		} else {
+		if !p.game.key.IsActionKeyPressed() || !p.game.key.IsKeyPressed(ebiten.KeyDown) || !p.IsFallable() {
 			if p.speed.Y > 0 {
 				p.speed.Y = 0
 			}
