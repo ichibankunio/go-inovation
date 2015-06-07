@@ -1,4 +1,4 @@
-package inovation5
+package main
 
 type GameMode int
 

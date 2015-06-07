@@ -1,4 +1,4 @@
-package inovation5
+package main
 
 var field_data = `
  UUUU                    UUUUUUUUUUUUUUUUUUUBBB

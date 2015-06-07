@@ -1,4 +1,4 @@
-package inovation5
+package main
 
 import (
 	"fmt"
@@ -362,7 +362,7 @@ func Run() error {
 	// TODO(hajimehoshi): Load SE
 	// TODO(hajimehoshi): Load BGM
 
-	const imgDir = "../resource/image/color"
+	const imgDir = "resource/image/color"
 
 	game := &Game{
 		img: map[string]*ebiten.Image{},
@@ -376,8 +376,14 @@ func Run() error {
 	}
 
 	game.font = NewFont()
-	if err := game.font.Load("../resource/font"); err != nil {
+	if err := game.font.Load("resource/font"); err != nil {
 		return err
 	}
 	return game.Start()
+}
+
+func main() {
+	if err := Run(); err != nil {
+		panic(err)
+	}
 }
