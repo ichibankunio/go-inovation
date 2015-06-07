@@ -164,9 +164,9 @@ func (e *EndingMain) Update(game *Game) {
 				} else {
 					e.gameStateMsg = GAMESTATE_MSG_REQ_SECRET1
 				}
-			} else {
-				e.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
+				return
 			}
+			e.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
 		}
 	}
 }
@@ -265,12 +265,6 @@ type Game struct {
 	screen    *ebiten.Image
 }
 
-func NewGame() *Game {
-	return &Game{
-		gameData: NewGameData(GAMEMODE_NORMAL),
-	}
-}
-
 func (g *Game) Start() error {
 	return ebiten.Run(g.Loop, g_width, g_height, 2, "Inovation 5")
 }
@@ -285,26 +279,20 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		switch g.gameState.GetMsg() {
 		case GAMESTATE_MSG_REQ_TITLE:
 			g.gameState = &TitleMain{}
-			break
 		case GAMESTATE_MSG_REQ_OPENING:
 			// TODO(hajimehoshi): Play BGM 'bgm1'
 			g.gameState = &OpeningMain{}
-			break
 		case GAMESTATE_MSG_REQ_GAME:
 			g.gameState = NewGameMain(g)
-			break
 		case GAMESTATE_MSG_REQ_ENDING:
 			// TODO(hajimehoshi): Play BGM 'bgm1'
 			g.gameState = &EndingMain{}
-			break
 		case GAMESTATE_MSG_REQ_SECRET1:
 			// TODO(hajimehoshi): Play BGM 'bgm1'
 			g.gameState = NewSecretMain(1)
-			break
 		case GAMESTATE_MSG_REQ_SECRET2:
 			// TODO(hajimehoshi): Play BGM 'bgm1'
 			g.gameState = NewSecretMain(2)
-			break
 		}
 	}
 	g.gameState.Update(g)
@@ -376,8 +364,9 @@ func Run() error {
 
 	const imgDir = "../resource/image/color"
 
-	game := NewGame()
-	game.img = map[string]*ebiten.Image{}
+	game := &Game{
+		img: map[string]*ebiten.Image{},
+	}
 	for _, f := range []string{"ino", "msg", "bg"} {
 		var err error
 		game.img[f], _, err = ebitenutil.NewImageFromFile(filepath.Join(imgDir, f+".png"), ebiten.FilterNearest)

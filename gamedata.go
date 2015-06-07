@@ -13,6 +13,15 @@ var clearFlagItems = [...]FieldType{
 	FIELD_ITEM_NASU,
 }
 
+func IsItemForClear(it FieldType) bool {
+	for _, e := range clearFlagItems {
+		if e == it {
+			return true
+		}
+	}
+	return false
+}
+
 type GameData struct {
 	itemGetFlags [FIELD_ITEM_MAX]bool
 	time         int
@@ -50,15 +59,6 @@ func (g *GameData) IsGameClear() bool {
 		}
 	}
 	return true
-}
-
-func (g *GameData) IsItemForClear(it FieldType) bool {
-	for _, e := range clearFlagItems {
-		if e == it {
-			return true
-		}
-	}
-	return false
 }
 
 func (g *GameData) IsGetOmega() bool {

@@ -18,17 +18,16 @@ const (
 )
 
 const (
-	PLAYER_SPEED          = 2.0
-	PLAYER_GRD_ACCRATIO   = 0.04
-	PLAYER_AIR_ACCRATIO   = 0.01
-	PLAYER_JUMP           = -4.0
-	PLAYER_GRAVITY        = 0.2
-	PLAYER_FALL_SPEEDMAX  = 4.0
-	VIEW_DIRECTION_OFFSET = 30.0
-	WAIT_TIMER_INTERVAL   = 10
-	LIFE_RATIO            = 400
-	MUTEKI_INTERVAL       = 50
-	START_WAIT_INTERVAL   = 50
+	PLAYER_SPEED         = 2.0
+	PLAYER_GRD_ACCRATIO  = 0.04
+	PLAYER_AIR_ACCRATIO  = 0.01
+	PLAYER_JUMP          = -4.0
+	PLAYER_GRAVITY       = 0.2
+	PLAYER_FALL_SPEEDMAX = 4.0
+	WAIT_TIMER_INTERVAL  = 10
+	LIFE_RATIO           = 400
+	MUTEKI_INTERVAL      = 50
+	START_WAIT_INTERVAL  = 50
 
 	LUNKER_JUMP_DAMAGE1 = 40.0
 	LUNKER_JUMP_DAMAGE2 = 96.0
@@ -38,7 +37,7 @@ type Player struct {
 	life        int
 	jumpCnt     int
 	timer       int
-	position    PositionF // TODO(hajimehoshi): This can be a Position.
+	position    PositionF
 	speed       PositionF
 	direction   int
 	jumpedPoint PositionF
@@ -51,21 +50,19 @@ type Player struct {
 }
 
 func NewPlayer(gameData *GameData) *Player {
-	p := &Player{
-		gameData: gameData,
-		field:    NewField(field_data),
-		life:     gameData.lifeMax * LIFE_RATIO,
-	}
-
-	startPoint := p.field.GetStartPoint()
+	f := NewField(field_data)
+	startPoint := f.GetStartPoint()
 	startPointF := PositionF{float64(startPoint.X), float64(startPoint.Y)}
-	p.position = startPointF
-	p.jumpedPoint = startPointF
 
-	p.view = &View{}
-	p.view.SetPosition(p.position)
+	return &Player{
+		gameData:    gameData,
+		field:       f,
+		life:        gameData.lifeMax * LIFE_RATIO,
+		position:    startPointF,
+		jumpedPoint: startPointF,
+		view:        NewView(startPointF),
+	}
 	// TODO(hajimehoshi): Play BGM 'bgm0'
-	return p
 }
 
 func (p *Player) onWall() bool {
@@ -328,11 +325,7 @@ func (p *Player) moveNormal() {
 		p.speed.X = p.speed.X*(1.0-PLAYER_GRD_ACCRATIO) + float64(p.direction*PLAYER_SPEED)*PLAYER_GRD_ACCRATIO
 	}
 
-	// ビューの更新
-	v := p.view.GetPosition()
-	v.X = v.X*0.95 + (p.position.X+p.speed.X*VIEW_DIRECTION_OFFSET)*0.05
-	v.Y = v.Y*0.95 + p.position.Y*0.05
-	p.view.SetPosition(v)
+	p.view.Update(p.position, p.speed)
 }
 
 func (p *Player) moveItemGet() {
@@ -404,7 +397,7 @@ func (p *Player) checkCollision() {
 				p.waitTimer = 0
 
 				// TODO(hajimehoshi): Stop BGM
-				if p.gameData.IsItemForClear(p.itemGet) || p.itemGet == FIELD_ITEM_POWERUP {
+				if IsItemForClear(p.itemGet) || p.itemGet == FIELD_ITEM_POWERUP {
 					// TODO(hajimehoshi): Play SE 'itemget'
 				} else {
 					// TODO(hajimehoshi): Play SE 'itemget2'
@@ -499,7 +492,7 @@ func (p *Player) drawItems(game *Game) {
 			continue
 		}
 		// クリア条件アイテムは専用グラフィック
-		if game.gameData.IsItemForClear(t) {
+		if IsItemForClear(t) {
 			for i, c := range clearFlagItems {
 				if c == t {
 					game.Draw("ino", g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0,
