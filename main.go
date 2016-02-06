@@ -302,8 +302,37 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	return nil
 }
 
+var (
+	imageEmpty *ebiten.Image
+)
+
+func init() {
+	var err error
+	imageEmpty, err = ebiten.NewImage(16, 16, ebiten.FilterNearest)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func toNRGBA(clr color.Color) (fr, fg, fb, fa float64) {
+	r, g, b, a := clr.RGBA()
+	fr = float64(r) / float64(a)
+	fg = float64(g) / float64(a)
+	fb = float64(b) / float64(a)
+	fa = float64(a) / 0xff
+	return
+}
+
 func (g *Game) FillRect(x, y, w, h int, clr color.Color) error {
-	return g.screen.DrawRect(x, y, w, h, clr)
+	op := &ebiten.DrawImageOptions{}
+	ew, eh := imageEmpty.Size()
+	op.GeoM.Scale(float64(w)/float64(ew), float64(h)/float64(eh))
+	cr, cg, cb, ca := toNRGBA(clr)
+	if ca == 0 {
+		return nil
+	}
+	op.ColorM.Scale(cr, cg, cb, ca)
+	return g.screen.DrawImage(imageEmpty, op)
 }
 
 type imgPart struct {
