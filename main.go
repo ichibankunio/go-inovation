@@ -296,7 +296,9 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		}
 	}
 	g.gameState.Update(g)
-	g.gameState.Draw(g)
+	if !ebiten.IsRunningSlowly() {
+		g.gameState.Draw(g)
+	}
 
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("\n%.2f", ebiten.CurrentFPS()))
 	return nil
