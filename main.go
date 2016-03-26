@@ -99,7 +99,7 @@ func (t *TitleMain) Draw(game *Game) {
 	game.Draw("msg", (g_width-256)/2, 32+(g_height-240)/2, 0, 0, 256, 64)
 }
 
-func (t *TitleMain) GetMsg() GameStateMsg {
+func (t *TitleMain) Msg() GameStateMsg {
 	return t.gameStateMsg
 }
 
@@ -130,7 +130,7 @@ func (o *OpeningMain) Draw(game *Game) {
 	game.Draw("msg", (g_width-256)/2, g_height-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
 }
 
-func (o *OpeningMain) GetMsg() GameStateMsg {
+func (o *OpeningMain) Msg() GameStateMsg {
 	return o.gameStateMsg
 }
 
@@ -187,7 +187,7 @@ func (e *EndingMain) Draw(game *Game) {
 	}
 }
 
-func (e *EndingMain) GetMsg() GameStateMsg {
+func (e *EndingMain) Msg() GameStateMsg {
 	return e.gameStateMsg
 }
 
@@ -220,7 +220,7 @@ func (s *SecretMain) Draw(game *Game) {
 	}
 }
 
-func (s *SecretMain) GetMsg() GameStateMsg {
+func (s *SecretMain) Msg() GameStateMsg {
 	return s.gameStateMsg
 }
 
@@ -249,14 +249,14 @@ func (g *GameMain) Draw(game *Game) {
 	g.player.Draw(game)
 }
 
-func (g *GameMain) GetMsg() GameStateMsg {
+func (g *GameMain) Msg() GameStateMsg {
 	return g.gameStateMsg
 }
 
 type GameState interface {
 	Update(g *Game)
 	Draw(g *Game)
-	GetMsg() GameStateMsg
+	Msg() GameStateMsg
 }
 
 type Game struct {
@@ -278,7 +278,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	if g.gameState == nil {
 		g.gameState = &TitleMain{}
 	} else {
-		switch g.gameState.GetMsg() {
+		switch g.gameState.Msg() {
 		case GAMESTATE_MSG_REQ_TITLE:
 			g.gameState = &TitleMain{}
 		case GAMESTATE_MSG_REQ_OPENING:
