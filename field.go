@@ -179,7 +179,6 @@ func (f *Field) Draw(game *Game, viewPosition Position) {
 				(yy+8)*CHAR_SIZE + ofs_y + GRAPHIC_OFFSET_Y + (g_height-240)/2,
 				gx * 16, gy * 16, 16, 16,
 			})
-
 		}
 	}
 	game.DrawParts("ino", parts)
