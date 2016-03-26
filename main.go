@@ -12,9 +12,11 @@ import (
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 )
 
-const g_width = 320
-const g_height = 240
-const CHAR_SIZE = 16
+const (
+	g_width   = 320
+	g_height  = 240
+	CHAR_SIZE = 16
+)
 
 const (
 	ENDINGMAIN_STATE_STAFFROLL = iota
