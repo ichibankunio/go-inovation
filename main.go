@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"image/color"
-	"io"
 	"math/rand"
 	"path/filepath"
 	"strconv"
@@ -122,7 +121,7 @@ func (o *OpeningMain) Update(game *Game) {
 	}
 	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+g_height {
 		o.gameStateMsg = GAMESTATE_MSG_REQ_GAME
-		// TODO(hajimehoshi): Stop BGM
+		StopBGM()
 	}
 }
 
@@ -157,6 +156,7 @@ func (e *EndingMain) Update(game *Game) {
 			e.timer = 0
 			e.state = ENDINGMAIN_STATE_RESULT
 			// TODO(hajimehoshi): Stop BGM with fade 5000
+			StopBGM()
 		}
 	case ENDINGMAIN_STATE_RESULT:
 		if input.IsActionKeyPushed() && e.timer > 5 {
@@ -273,6 +273,7 @@ func (g *Game) Start() error {
 }
 
 func (g *Game) Loop(screen *ebiten.Image) error {
+	audioContext.Update()
 	input.Update()
 	g.screen = screen
 
@@ -283,18 +284,26 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		case GAMESTATE_MSG_REQ_TITLE:
 			g.gameState = &TitleMain{}
 		case GAMESTATE_MSG_REQ_OPENING:
-			// TODO(hajimehoshi): Play BGM 'bgm1'
+			if err := PlayBGM(BGM1); err != nil {
+				return err
+			}
 			g.gameState = &OpeningMain{}
 		case GAMESTATE_MSG_REQ_GAME:
 			g.gameState = NewGameMain(g)
 		case GAMESTATE_MSG_REQ_ENDING:
-			// TODO(hajimehoshi): Play BGM 'bgm1'
+			if err := PlayBGM(BGM1); err != nil {
+				return err
+			}
 			g.gameState = &EndingMain{}
 		case GAMESTATE_MSG_REQ_SECRET1:
-			// TODO(hajimehoshi): Play BGM 'bgm1'
+			if err := PlayBGM(BGM1); err != nil {
+				return err
+			}
 			g.gameState = NewSecretMain(1)
 		case GAMESTATE_MSG_REQ_SECRET2:
-			// TODO(hajimehoshi): Play BGM 'bgm1'
+			if err := PlayBGM(BGM1); err != nil {
+				return err
+			}
 			g.gameState = NewSecretMain(2)
 		}
 	}
@@ -392,30 +401,12 @@ func (g *Game) DrawFont(msg string, x, y int) {
 	}
 }
 
-var (
-	soundFilenames = []string{
-		"damage.wav",
-		"heal.wav",
-		"ino1.ogg",
-		"ino2.ogg",
-		"itemget.wav",
-		"itemget2.wav",
-		"jump.wav",
-	}
-	soundFiles = map[string]io.ReadSeeker{}
-)
-
 func Run() error {
-	for _, n := range soundFilenames {
-		f, err := ebitenutil.OpenFile(filepath.Join("resource/sound", n))
-		if err != nil {
-			panic(err)
-		}
-		_ = f
+	if err := initAudio(); err != nil {
+		return err
 	}
 
 	const imgDir = "resource/image/color"
-
 	game := &Game{
 		img: map[string]*ebiten.Image{},
 	}

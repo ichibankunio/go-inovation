@@ -53,7 +53,7 @@ func NewPlayer(gameData *GameData) *Player {
 	f := NewField(field_data)
 	startPoint := f.GetStartPoint()
 	startPointF := PositionF{float64(startPoint.X), float64(startPoint.Y)}
-
+	PlayBGM(BGM0)
 	return &Player{
 		gameData:    gameData,
 		field:       f,
@@ -62,7 +62,6 @@ func NewPlayer(gameData *GameData) *Player {
 		jumpedPoint: startPointF,
 		view:        NewView(startPointF),
 	}
-	// TODO(hajimehoshi): Play BGM 'bgm0'
 }
 
 func (p *Player) onWall() bool {
@@ -184,7 +183,7 @@ func (p *Player) Update() GameStateMsg {
 			o_life := p.life
 			p.life++
 			if (p.life / LIFE_RATIO) != (o_life / LIFE_RATIO) {
-				// TODO(hajimehoshi): Play SE 'heal'
+				PlaySE(SE_HEAL)
 			}
 		}
 
@@ -206,7 +205,7 @@ func (p *Player) Update() GameStateMsg {
 
 	case PLAYERSTATE_DEAD:
 		p.moveNormal()
-		// TODO(hajimehoshi): Stop BGM
+		StopBGM()
 		if input.IsActionKeyPressed() && p.waitTimer > 15 {
 			msg = GAMESTATE_MSG_REQ_TITLE
 		}
@@ -249,13 +248,13 @@ func (p *Player) moveNormal() {
 				p.state = PLAYERSTATE_MUTEKI
 				p.waitTimer = 0
 				p.life -= LIFE_RATIO
-				// TODO(hajimehoshi): Play SE 'damage'
+				PlaySE(SE_DAMAGE)
 			}
 			if p.position.Y-p.jumpedPoint.Y > LUNKER_JUMP_DAMAGE2 {
 				p.state = PLAYERSTATE_MUTEKI
 				p.waitTimer = 0
 				p.life -= LIFE_RATIO * 99
-				// TODO(hajimehoshi): Play SE 'damage'
+				PlaySE(SE_DAMAGE)
 			}
 		}
 
@@ -335,7 +334,7 @@ func (p *Player) moveItemGet() {
 	}
 	if input.IsActionKeyPushed() {
 		p.state = PLAYERSTATE_NORMAL
-		// TODO(hajimehoshi): Play BGM 'bgm0'
+		PlayBGM(BGM0)
 	}
 }
 
@@ -362,9 +361,7 @@ func (p *Player) moveByInput() {
 					p.speed.X += 0.02
 				}
 			}
-
-			// TODO(hajimehoshi): Play SE 'jump'
-
+			PlaySE(SE_JUMP)
 			p.jumpedPoint = p.position
 		}
 	}
@@ -396,11 +393,11 @@ func (p *Player) checkCollision() {
 				p.field.EraseField(p.toFieldX()+xx, p.toFieldY()+yy)
 				p.waitTimer = 0
 
-				// TODO(hajimehoshi): Stop BGM
+				StopBGM()
 				if IsItemForClear(p.itemGet) || p.itemGet == FIELD_ITEM_POWERUP {
-					// TODO(hajimehoshi): Play SE 'itemget'
+					PlaySE(SE_ITEMGET)
 				} else {
-					// TODO(hajimehoshi): Play SE 'itemget2'
+					PlaySE(SE_ITEMGET2)
 				}
 				return
 			}
@@ -411,9 +408,7 @@ func (p *Player) checkCollision() {
 				p.life -= LIFE_RATIO
 				p.speed.Y = PLAYER_JUMP
 				p.jumpCnt = -1 // ダメージ・エキストラジャンプ
-
-				// TODO(hajimehoshi): Play SE 'damage'
-
+				PlaySE(SE_DAMAGE)
 				return
 			}
 		}
