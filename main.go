@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"image/color"
+	"io"
 	"math/rand"
 	"path/filepath"
 	"strconv"
@@ -391,9 +392,27 @@ func (g *Game) DrawFont(msg string, x, y int) {
 	}
 }
 
+var (
+	soundFilenames = []string{
+		"damage.wav",
+		"heal.wav",
+		"ino1.ogg",
+		"ino2.ogg",
+		"itemget.wav",
+		"itemget2.wav",
+		"jump.wav",
+	}
+	soundFiles = map[string]io.ReadSeeker{}
+)
+
 func Run() error {
-	// TODO(hajimehoshi): Load SE
-	// TODO(hajimehoshi): Load BGM
+	for _, n := range soundFilenames {
+		f, err := ebitenutil.OpenFile(filepath.Join("resource/sound", n))
+		if err != nil {
+			panic(err)
+		}
+		_ = f
+	}
 
 	const imgDir = "resource/image/color"
 
