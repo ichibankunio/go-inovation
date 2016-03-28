@@ -1,1 +1,3 @@
-# Go port of inovation5 by Omega
+# Go port of "inovation" by Omega
+
+http://o-mega.sakura.ne.jp/product/ino.html
