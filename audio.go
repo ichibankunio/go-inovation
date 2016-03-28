@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"path/filepath"
 	"strings"
 
@@ -31,11 +30,10 @@ func initAudio() error {
 	const soundDir = "resource/sound"
 	for _, n := range soundFilenames {
 		f, err := ebitenutil.OpenFile(filepath.Join(soundDir, n))
-		// TODO: Should we close the file handler?
 		if err != nil {
 			return err
 		}
-		var s io.ReadSeeker
+		var s audio.ReadSeekCloser
 		switch {
 		case strings.HasSuffix(n, ".ogg"):
 			var err error
@@ -57,6 +55,15 @@ func initAudio() error {
 			return err
 		}
 		soundPlayers[n] = p
+	}
+	return nil
+}
+
+func finalizeAudio() error {
+	for _, p := range soundPlayers {
+		if err := p.Close(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

@@ -438,4 +438,7 @@ func main() {
 	if err := Run(); err != nil {
 		panic(err)
 	}
+	if err := finalizeAudio(); err != nil {
+		panic(err)
+	}
 }
