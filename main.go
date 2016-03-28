@@ -350,6 +350,9 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	if err := imageEmpty.Fill(color.White); err != nil {
+		panic(err)
+	}
 }
 
 func toNRGBA(clr color.Color) (fr, fg, fb, fa float64) {
@@ -365,6 +368,7 @@ func (g *Game) FillRect(x, y, w, h int, clr color.Color) error {
 	op := &ebiten.DrawImageOptions{}
 	ew, eh := imageEmpty.Size()
 	op.GeoM.Scale(float64(w)/float64(ew), float64(h)/float64(eh))
+	op.GeoM.Translate(float64(x), float64(y))
 	cr, cg, cb, ca := toNRGBA(clr)
 	if ca == 0 {
 		return nil
