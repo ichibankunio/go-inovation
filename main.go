@@ -278,7 +278,7 @@ type Game struct {
 }
 
 func (g *Game) Start() error {
-	return ebiten.Run(g.Loop, g_width, g_height, 2, "Inovation 5")
+	return ebiten.Run(g.Loop, g_width, g_height, 2, "Inovation (Go version)")
 }
 
 func (g *Game) Loop(screen *ebiten.Image) error {
