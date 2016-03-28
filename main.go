@@ -336,7 +336,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		g.gameState.Draw(g)
 	}
 
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("\n%.2f", ebiten.CurrentFPS()))
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
 	return nil
 }
 
