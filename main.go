@@ -270,11 +270,12 @@ type GameState interface {
 }
 
 type Game struct {
-	gameState GameState
-	gameData  *GameData
-	img       map[string]*ebiten.Image
-	font      *Font
-	screen    *ebiten.Image
+	audioLoadedCh chan error
+	gameState     GameState
+	gameData      *GameData
+	img           map[string]*ebiten.Image
+	font          *Font
+	screen        *ebiten.Image
 }
 
 func (g *Game) Start() error {
@@ -282,6 +283,20 @@ func (g *Game) Start() error {
 }
 
 func (g *Game) Loop(screen *ebiten.Image) error {
+	if g.audioLoadedCh != nil {
+		select {
+		case err := <-g.audioLoadedCh:
+			if err != nil {
+				return err
+			}
+			g.audioLoadedCh = nil
+		default:
+		}
+	}
+	if g.audioLoadedCh != nil  {
+		return ebitenutil.DebugPrint(screen, "Now Loading...")
+	}
+
 	audioContext.Update()
 	input.Update()
 	g.screen = screen
@@ -412,13 +427,12 @@ func (g *Game) DrawNumber(num int, x, y int) {
 }
 
 func Run() error {
-	if err := initAudio(); err != nil {
-		return err
-	}
+	ch := initAudio()
 
 	const imgDir = "resource/image/color"
 	game := &Game{
-		img: map[string]*ebiten.Image{},
+		img:           map[string]*ebiten.Image{},
+		audioLoadedCh: ch,
 	}
 	for _, f := range []string{"ino", "msg", "bg"} {
 		var err error

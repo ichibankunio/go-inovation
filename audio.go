@@ -24,39 +24,49 @@ var (
 	soundPlayers = map[string]*audio.Player{}
 )
 
-func initAudio() error {
-	const sampleRate = 44100
-	audioContext = audio.NewContext(sampleRate)
-	const soundDir = "resource/sound"
-	for _, n := range soundFilenames {
-		f, err := ebitenutil.OpenFile(filepath.Join(soundDir, n))
-		if err != nil {
-			return err
-		}
-		var s audio.ReadSeekCloser
-		switch {
-		case strings.HasSuffix(n, ".ogg"):
-			var err error
-			s, err = vorbis.Decode(audioContext, f)
+func initAudio() chan error {
+	ch := make(chan error)
+	go func() {
+		defer close(ch)
+
+		const sampleRate = 44100
+		audioContext = audio.NewContext(sampleRate)
+		const soundDir = "resource/sound"
+		for _, n := range soundFilenames {
+			f, err := ebitenutil.OpenFile(filepath.Join(soundDir, n))
 			if err != nil {
-				return err
+				ch <- err
+				return
 			}
-		case strings.HasSuffix(n, ".wav"):
-			var err error
-			s, err = wav.Decode(audioContext, f)
+			var s audio.ReadSeekCloser
+			switch {
+			case strings.HasSuffix(n, ".ogg"):
+				var err error
+				s, err = vorbis.Decode(audioContext, f)
+				if err != nil {
+					ch <- err
+					return
+				}
+			case strings.HasSuffix(n, ".wav"):
+				var err error
+				s, err = wav.Decode(audioContext, f)
+				if err != nil {
+					ch <- err
+					return
+				}
+			default:
+				panic("invalid file name")
+			}
+			p, err := audioContext.NewPlayer(s)
 			if err != nil {
-				return err
+				ch <- err
+				return
 			}
-		default:
-			panic("invalid file name")
+			soundPlayers[n] = p
 		}
-		p, err := audioContext.NewPlayer(s)
-		if err != nil {
-			return err
-		}
-		soundPlayers[n] = p
-	}
-	return nil
+		ch <- nil
+	}()
+	return ch
 }
 
 func finalizeAudio() error {
