@@ -192,8 +192,8 @@ func (e *EndingMain) Draw(game *Game) {
 	case ENDINGMAIN_STATE_RESULT:
 		game.Draw("msg", (g_width-256)/2, (g_height-160)/2, 0, 1664, 256, 160)
 
-		game.DrawFont(strconv.Itoa(game.gameData.GetItemCount()), (g_width-10*0)/2, (g_height-160)/2+13*5+2)
-		game.DrawFont(strconv.Itoa(game.gameData.TimeInSecond()), (g_width-13)/2, (g_height-160)/2+13*8+2)
+		game.DrawNumber(game.gameData.GetItemCount(), (g_width-10*0)/2, (g_height-160)/2+13*5+2)
+		game.DrawNumber(game.gameData.TimeInSecond(), (g_width-13)/2, (g_height-160)/2+13*8+2)
 	}
 }
 
@@ -392,7 +392,8 @@ func (g *Game) DrawParts(key string, parts []imgPart) error {
 	return g.screen.DrawImage(g.img[key], op)
 }
 
-func (g *Game) DrawFont(msg string, x, y int) {
+func (g *Game) DrawNumber(num int, x, y int) {
+	msg := strconv.Itoa(num)
 	for _, c := range msg {
 		if c == 32 {
 			x += 9
