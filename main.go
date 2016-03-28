@@ -135,9 +135,10 @@ func (o *OpeningMain) Msg() GameStateMsg {
 }
 
 type EndingMain struct {
-	gameStateMsg GameStateMsg
-	timer        int
-	state        int
+	gameStateMsg   GameStateMsg
+	timer          int
+	bgmFadingTimer int
+	state          int
 }
 
 const (
@@ -155,10 +156,17 @@ func (e *EndingMain) Update(game *Game) {
 		if e.timer/ENDING_SCROLL_SPEED > ENDING_SCROLL_LEN+g_height {
 			e.timer = 0
 			e.state = ENDINGMAIN_STATE_RESULT
-			// TODO(hajimehoshi): Stop BGM with fade 5000
-			StopBGM()
 		}
 	case ENDINGMAIN_STATE_RESULT:
+		const max = 5 * ebiten.FPS
+		e.bgmFadingTimer++
+		switch {
+		case e.bgmFadingTimer == max:
+			StopBGM()
+		case e.bgmFadingTimer < max:
+			vol := 1 - (float64(e.bgmFadingTimer) / max)
+			SetBGMVolume(vol)
+		}
 		if input.IsActionKeyPushed() && e.timer > 5 {
 			// 条件を満たしていると隠し画面へ
 			if game.gameData.IsGetOmega() {
@@ -170,6 +178,7 @@ func (e *EndingMain) Update(game *Game) {
 				return
 			}
 			e.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
+			StopBGM()
 		}
 	}
 }

@@ -68,6 +68,17 @@ const (
 	BGM1 BGM = "ino2.ogg"
 )
 
+func SetBGMVolume(volume float64) {
+	for _, b := range []BGM{BGM0, BGM1} {
+		p := soundPlayers[string(b)]
+		if !p.IsPlaying() {
+			continue
+		}
+		p.SetVolume(volume)
+		return
+	}
+}
+
 func StopBGM() error {
 	for _, b := range []BGM{BGM0, BGM1} {
 		p := soundPlayers[string(b)]
@@ -82,8 +93,11 @@ func StopBGM() error {
 }
 
 func PlayBGM(bgm BGM) error {
-	StopBGM()
+	if err := StopBGM(); err != nil {
+		return err
+	}
 	p := soundPlayers[string(bgm)]
+	p.SetVolume(1)
 	return p.Play()
 }
 
