@@ -30,7 +30,12 @@ func initAudio() chan error {
 		defer close(ch)
 
 		const sampleRate = 44100
-		audioContext = audio.NewContext(sampleRate)
+		var err error
+		audioContext, err = audio.NewContext(sampleRate)
+		if err != nil {
+			ch <- err
+			return
+		}
 		const soundDir = "resource/sound"
 		for _, n := range soundFilenames {
 			f, err := ebitenutil.OpenFile(filepath.Join(soundDir, n))
