@@ -41,12 +41,12 @@ func initAudio() chan error {
 			var s audio.ReadSeekCloser
 			switch {
 			case strings.HasSuffix(n, ".ogg"):
-				var err error
-				s, err = vorbis.Decode(audioContext, f)
+				stream, err := vorbis.Decode(audioContext, f)
 				if err != nil {
 					ch <- err
 					return
 				}
+				s = audio.NewLoop(stream, stream.Size())
 			case strings.HasSuffix(n, ".wav"):
 				var err error
 				s, err = wav.Decode(audioContext, f)
