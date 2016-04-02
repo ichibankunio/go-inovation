@@ -430,24 +430,34 @@ func (g *Game) DrawNumber(num int, x, y int) {
 	}
 }
 
-func Run() error {
-	ch := initAudio()
-
-	const imgDir = "resource/image/color"
-	game := &Game{
-		img:           map[string]*ebiten.Image{},
-		audioLoadedCh: ch,
-	}
+func (g *Game) loadResourced() error {
 	for _, f := range []string{"ino", "msg", "bg"} {
 		var err error
-		game.img[f], _, err = ebitenutil.NewImageFromFile(filepath.Join(imgDir, f+".png"), ebiten.FilterNearest)
+		g.img[f], _, err = ebitenutil.NewImageFromFile(filepath.Join("resource", "image", "color", f+".png"), ebiten.FilterNearest)
 		if err != nil {
 			return err
 		}
 	}
 
-	game.font = NewFont()
-	if err := game.font.Load("resource/font"); err != nil {
+	g.font = NewFont()
+	for n := 48; n < 57; n++ {
+		src := filepath.Join("resource", "font", fmt.Sprintf("%d.png", n))
+		img, _, err := ebitenutil.NewImageFromFile(src, ebiten.FilterNearest)
+		if err != nil {
+			return err
+		}
+		g.font.fonts[rune(n)] = img
+	}
+	return nil
+}
+
+func Run() error {
+	ch := initAudio()
+	game := &Game{
+		img:           map[string]*ebiten.Image{},
+		audioLoadedCh: ch,
+	}
+	if err := game.loadResourced(); err != nil {
 		return err
 	}
 	return game.Start()
