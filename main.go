@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"path/filepath"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
@@ -431,24 +432,41 @@ func (g *Game) DrawNumber(num int, x, y int) {
 }
 
 func (g *Game) loadResourced() error {
+	var err error
+	var wg sync.WaitGroup
 	for _, f := range []string{"ino", "msg", "bg"} {
-		var err error
-		g.img[f], _, err = ebitenutil.NewImageFromFile(filepath.Join("resource", "image", "color", f+".png"), ebiten.FilterNearest)
-		if err != nil {
-			return err
-		}
+		f := f
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if err != nil {
+				return
+			}
+			p := filepath.Join("resource", "image", "color", f+".png")
+			g.img[f], _, err = ebitenutil.NewImageFromFile(p, ebiten.FilterNearest)
+		}()
 	}
 
 	g.font = NewFont()
 	for n := 48; n < 57; n++ {
-		src := filepath.Join("resource", "font", fmt.Sprintf("%d.png", n))
-		img, _, err := ebitenutil.NewImageFromFile(src, ebiten.FilterNearest)
-		if err != nil {
-			return err
-		}
-		g.font.fonts[rune(n)] = img
+		n := n
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if err != nil {
+				return
+			}
+			src := filepath.Join("resource", "font", fmt.Sprintf("%d.png", n))
+			var img *ebiten.Image
+			img, _, err = ebitenutil.NewImageFromFile(src, ebiten.FilterNearest)
+			if err != nil {
+				return
+			}
+			g.font.fonts[rune(n)] = img
+		}()
 	}
-	return nil
+	wg.Wait()
+	return err
 }
 
 func Run() error {
