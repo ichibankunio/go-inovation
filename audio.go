@@ -3,6 +3,7 @@ package main
 import (
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/exp/audio"
@@ -24,54 +25,58 @@ var (
 	soundPlayers = map[string]*audio.Player{}
 )
 
-func initAudio() chan error {
-	ch := make(chan error)
-	go func() {
-		defer close(ch)
+func (g *Game) loadAudio() {
+	defer close(g.audioLoadedCh)
 
-		const sampleRate = 44100
-		var err error
-		audioContext, err = audio.NewContext(sampleRate)
-		if err != nil {
-			ch <- err
-			return
-		}
-		const soundDir = "resource/sound"
-		for _, n := range soundFilenames {
-			f, err := ebitenutil.OpenFile(filepath.Join(soundDir, n))
+	const sampleRate = 44100
+	var err error
+	audioContext, err = audio.NewContext(sampleRate)
+	if err != nil {
+		g.audioLoadedCh <- err
+		return
+	}
+	var wg sync.WaitGroup
+	for _, n := range soundFilenames {
+		n := n
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+
 			if err != nil {
-				ch <- err
+				return
+			}
+			var f ebitenutil.ReadSeekCloser
+			f, err = ebitenutil.OpenFile(filepath.Join("resource", "sound", n))
+			if err != nil {
 				return
 			}
 			var s audio.ReadSeekCloser
 			switch {
 			case strings.HasSuffix(n, ".ogg"):
-				stream, err := vorbis.Decode(audioContext, f)
+				var stream *vorbis.Stream
+				stream, err = vorbis.Decode(audioContext, f)
 				if err != nil {
-					ch <- err
 					return
 				}
 				s = audio.NewLoop(stream, stream.Size())
 			case strings.HasSuffix(n, ".wav"):
-				var err error
 				s, err = wav.Decode(audioContext, f)
 				if err != nil {
-					ch <- err
 					return
 				}
 			default:
 				panic("invalid file name")
 			}
-			p, err := audioContext.NewPlayer(s)
+			var p *audio.Player
+			p, err = audioContext.NewPlayer(s)
 			if err != nil {
-				ch <- err
 				return
 			}
 			soundPlayers[n] = p
-		}
-		ch <- nil
-	}()
-	return ch
+		}()
+	}
+	wg.Wait()
+	g.audioLoadedCh <- err
 }
 
 func finalizeAudio() error {

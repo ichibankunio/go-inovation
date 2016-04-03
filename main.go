@@ -5,7 +5,6 @@ import (
 	"image/color"
 	"math/rand"
 	"path/filepath"
-	"strconv"
 	"sync"
 	"time"
 
@@ -271,6 +270,7 @@ type GameState interface {
 }
 
 type Game struct {
+	imageLoadedCh chan error
 	audioLoadedCh chan error
 	gameState     GameState
 	gameData      *GameData
@@ -286,6 +286,11 @@ func (g *Game) Start() error {
 func (g *Game) Loop(screen *ebiten.Image) error {
 	if g.audioLoadedCh != nil {
 		select {
+		case err := <-g.imageLoadedCh:
+			if err != nil {
+				return err
+			}
+			g.imageLoadedCh = nil
 		case err := <-g.audioLoadedCh:
 			if err != nil {
 				return err
@@ -294,7 +299,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		default:
 		}
 	}
-	if g.audioLoadedCh != nil  {
+	if g.imageLoadedCh != nil || g.audioLoadedCh != nil {
 		return ebitenutil.DebugPrint(screen, "Now Loading...")
 	}
 
@@ -413,25 +418,12 @@ func (g *Game) DrawParts(key string, parts []imgPart) error {
 }
 
 func (g *Game) DrawNumber(num int, x, y int) {
-	msg := strconv.Itoa(num)
-	for _, c := range msg {
-		if c == 32 {
-			x += 9
-			continue
-		}
-		if img, ok := g.font.fonts[c]; ok {
-			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(x), float64(y))
-			g.screen.DrawImage(img, op)
-			w, _ := img.Size()
-			x += w
-		} else {
-			x += 9
-		}
-	}
+	g.font.DrawNumber(g.screen, num, x, y)
 }
 
-func (g *Game) loadResourced() error {
+func (g *Game) loadImages() {
+	defer close(g.imageLoadedCh)
+
 	var err error
 	var wg sync.WaitGroup
 	for _, f := range []string{"ino", "msg", "bg"} {
@@ -466,18 +458,21 @@ func (g *Game) loadResourced() error {
 		}()
 	}
 	wg.Wait()
-	return err
+	g.imageLoadedCh <- err
 }
 
 func Run() error {
-	ch := initAudio()
 	game := &Game{
 		img:           map[string]*ebiten.Image{},
-		audioLoadedCh: ch,
+		imageLoadedCh: make(chan error),
+		audioLoadedCh: make(chan error),
 	}
-	if err := game.loadResourced(); err != nil {
-		return err
-	}
+	go func() {
+		game.loadImages()
+	}()
+	go func() {
+		game.loadAudio()
+	}()
 	return game.Start()
 }
 
