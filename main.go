@@ -303,7 +303,9 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		return ebitenutil.DebugPrint(screen, "Now Loading...")
 	}
 
-	audioContext.Update()
+	if err := audioContext.Update(); err != nil {
+		return err
+	}
 	input.Update()
 	g.screen = screen
 
