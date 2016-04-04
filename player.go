@@ -205,7 +205,7 @@ func (p *Player) Update() GameStateMsg {
 
 	case PLAYERSTATE_DEAD:
 		p.moveNormal()
-		StopBGM()
+		PauseBGM()
 		if input.IsActionKeyPressed() && p.waitTimer > 15 {
 			msg = GAMESTATE_MSG_REQ_TITLE
 		}
@@ -334,7 +334,7 @@ func (p *Player) moveItemGet() {
 	}
 	if input.IsActionKeyPushed() {
 		p.state = PLAYERSTATE_NORMAL
-		PlayBGM(BGM0)
+		ResumeBGM(BGM0)
 	}
 }
 
@@ -393,7 +393,7 @@ func (p *Player) checkCollision() {
 				p.field.EraseField(p.toFieldX()+xx, p.toFieldY()+yy)
 				p.waitTimer = 0
 
-				StopBGM()
+				PauseBGM()
 				if IsItemForClear(p.itemGet) || p.itemGet == FIELD_ITEM_POWERUP {
 					PlaySE(SE_ITEMGET)
 				} else {

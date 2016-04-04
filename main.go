@@ -121,7 +121,7 @@ func (o *OpeningMain) Update(game *Game) {
 	}
 	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+g_height {
 		o.gameStateMsg = GAMESTATE_MSG_REQ_GAME
-		StopBGM()
+		PauseBGM()
 	}
 }
 
@@ -162,7 +162,7 @@ func (e *EndingMain) Update(game *Game) {
 		e.bgmFadingTimer++
 		switch {
 		case e.bgmFadingTimer == max:
-			StopBGM()
+			PauseBGM()
 		case e.bgmFadingTimer < max:
 			vol := 1 - (float64(e.bgmFadingTimer) / max)
 			SetBGMVolume(vol)
@@ -178,7 +178,7 @@ func (e *EndingMain) Update(game *Game) {
 				return
 			}
 			e.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
-			StopBGM()
+			PauseBGM()
 		}
 	}
 }

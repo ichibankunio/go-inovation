@@ -106,25 +106,34 @@ func SetBGMVolume(volume float64) {
 	}
 }
 
-func StopBGM() error {
+func PauseBGM() error {
 	for _, b := range []BGM{BGM0, BGM1} {
 		p := soundPlayers[string(b)]
 		if err := p.Pause(); err != nil {
-			return err
-		}
-		if err := p.Rewind(); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func PlayBGM(bgm BGM) error {
-	if err := StopBGM(); err != nil {
+func ResumeBGM(bgm BGM) error {
+	if err := PauseBGM(); err != nil {
 		return err
 	}
 	p := soundPlayers[string(bgm)]
 	p.SetVolume(1)
+	return p.Play()
+}
+
+func PlayBGM(bgm BGM) error {
+	if err := PauseBGM(); err != nil {
+		return err
+	}
+	p := soundPlayers[string(bgm)]
+	p.SetVolume(1)
+	if err := p.Rewind(); err != nil {
+		return err
+	}
 	return p.Play()
 }
 
