@@ -426,8 +426,25 @@ func (g *Game) DrawNumber(num int, x, y int) {
 func (g *Game) loadImages() {
 	defer close(g.imageLoadedCh)
 
+	type imageInfo struct{
+		image *ebiten.Image
+		key   string
+	}
+
 	var err error
 	var wg sync.WaitGroup
+	imgCh := make(chan imageInfo)
+	fontCh := make(chan imageInfo)
+	go func() {
+		for i := range imgCh {
+			g.img[i.key] = i.image
+		}
+	}()
+	go func() {
+		for i := range fontCh {
+			g.font.fonts[rune(i.key[0])] = i.image
+		}
+	}()
 	for _, f := range []string{"ino", "msg", "bg"} {
 		f := f
 		wg.Add(1)
@@ -437,7 +454,12 @@ func (g *Game) loadImages() {
 				return
 			}
 			p := filepath.Join("resource", "image", "color", f+".png")
-			g.img[f], _, err = ebitenutil.NewImageFromFile(p, ebiten.FilterNearest)
+			var img *ebiten.Image
+			img, _, err = ebitenutil.NewImageFromFile(p, ebiten.FilterNearest)
+			if err != nil {
+				return
+			}
+			imgCh <- imageInfo{img, f}
 		}()
 	}
 
@@ -456,10 +478,12 @@ func (g *Game) loadImages() {
 			if err != nil {
 				return
 			}
-			g.font.fonts[rune(n)] = img
+			fontCh <- imageInfo{img, string(rune(n))}
 		}()
 	}
 	wg.Wait()
+	close(fontCh)
+	close(imgCh)
 	g.imageLoadedCh <- err
 }
 

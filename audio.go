@@ -28,6 +28,18 @@ var (
 func (g *Game) loadAudio() {
 	defer close(g.audioLoadedCh)
 
+
+	type audioInfo struct {
+		player *audio.Player
+		key    string
+	}
+	ch := make(chan audioInfo)
+	go func() {
+		for p := range ch {
+			soundPlayers[p.key] = p.player
+		}
+	}()
+
 	const sampleRate = 44100
 	var err error
 	audioContext, err = audio.NewContext(sampleRate)
@@ -72,10 +84,11 @@ func (g *Game) loadAudio() {
 			if err != nil {
 				return
 			}
-			soundPlayers[n] = p
+			ch <- audioInfo{p, n}
 		}()
 	}
 	wg.Wait()
+	close(ch)
 	g.audioLoadedCh <- err
 }
 
