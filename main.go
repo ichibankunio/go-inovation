@@ -88,15 +88,23 @@ func (t *TitleMain) Update(game *Game) {
 	}
 }
 
-func (t *TitleMain) Draw(game *Game) {
+func (t *TitleMain) Draw(game *Game) error {
 	if t.lunkerMode {
-		game.Draw("bg", 0, 0, 0, 240, g_width, g_height)
-		game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64, 256, 16)
+		if err := game.Draw("bg", 0, 0, 0, 240, g_width, g_height); err != nil {
+			return err
+		}
+		if err := game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64, 256, 16); err != nil {
+			return err
+		}
 	} else {
-		game.Draw("bg", 0, 0, 0, 0, g_width, g_height)
-		game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64+16, 256, 16)
+		if err := game.Draw("bg", 0, 0, 0, 0, g_width, g_height); err != nil {
+			return err
+		}
+		if err := game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64+16, 256, 16); err != nil {
+			return err
+		}
 	}
-	game.Draw("msg", (g_width-256)/2, 32+(g_height-240)/2, 0, 0, 256, 64)
+	return game.Draw("msg", (g_width-256)/2, 32+(g_height-240)/2, 0, 0, 256, 64)
 }
 
 func (t *TitleMain) Msg() GameStateMsg {
@@ -125,9 +133,14 @@ func (o *OpeningMain) Update(game *Game) {
 	}
 }
 
-func (o *OpeningMain) Draw(game *Game) {
-	game.Draw("bg", 0, 0, 0, 480, 320, 240)
-	game.Draw("msg", (g_width-256)/2, g_height-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
+func (o *OpeningMain) Draw(game *Game) error {
+	if err := game.Draw("bg", 0, 0, 0, 480, 320, 240); err != nil {
+		return err
+	}
+	if err := game.Draw("msg", (g_width-256)/2, g_height-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (o *OpeningMain) Msg() GameStateMsg {
@@ -183,18 +196,29 @@ func (e *EndingMain) Update(game *Game) {
 	}
 }
 
-func (e *EndingMain) Draw(game *Game) {
-	game.Draw("bg", 0, 0, 0, 480, 320, 240)
+func (e *EndingMain) Draw(game *Game) error {
+	if err := game.Draw("bg", 0, 0, 0, 480, 320, 240); err != nil {
+		return nil
+	}
 
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		game.Draw("msg", (g_width-256)/2, g_height-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN)
+		if err := game.Draw("msg", (g_width-256)/2, g_height-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN); err != nil {
+			return err
+		}
 	case ENDINGMAIN_STATE_RESULT:
-		game.Draw("msg", (g_width-256)/2, (g_height-160)/2, 0, 1664, 256, 160)
+		if err := game.Draw("msg", (g_width-256)/2, (g_height-160)/2, 0, 1664, 256, 160); err != nil {
+			return err
+		}
 
-		game.DrawNumber(game.gameData.GetItemCount(), (g_width-10*0)/2, (g_height-160)/2+13*5+2)
-		game.DrawNumber(game.gameData.TimeInSecond(), (g_width-13)/2, (g_height-160)/2+13*8+2)
+		if err := game.DrawNumber(game.gameData.GetItemCount(), (g_width-10*0)/2, (g_height-160)/2+13*5+2); err != nil {
+			return err
+		}
+		if err := game.DrawNumber(game.gameData.TimeInSecond(), (g_width-13)/2, (g_height-160)/2+13*8+2); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 func (e *EndingMain) Msg() GameStateMsg {
@@ -220,14 +244,15 @@ func (s *SecretMain) Update(game *Game) {
 	}
 }
 
-func (s *SecretMain) Draw(game *Game) {
-	game.Draw("bg", 0, 0, 0, 240, 320, 240)
+func (s *SecretMain) Draw(game *Game) error {
+	if err := game.Draw("bg", 0, 0, 0, 240, 320, 240); err != nil {
+		return err
+	}
 
 	if s.number == 1 {
-		game.Draw("msg", (g_width-256)/2, (g_height-96)/2, 0, 2048-96*2, 256, 96)
-	} else {
-		game.Draw("msg", (g_width-256)/2, (g_height-96)/2, 0, 2048-96, 256, 96)
+		return game.Draw("msg", (g_width-256)/2, (g_height-96)/2, 0, 2048-96*2, 256, 96)
 	}
+	return game.Draw("msg", (g_width-256)/2, (g_height-96)/2, 0, 2048-96, 256, 96)
 }
 
 func (s *SecretMain) Msg() GameStateMsg {
@@ -250,13 +275,17 @@ func (g *GameMain) Update(game *Game) {
 	g.gameStateMsg = g.player.Update()
 }
 
-func (g *GameMain) Draw(game *Game) {
+func (g *GameMain) Draw(game *Game) error {
 	if game.gameData.lunkerMode {
-		game.Draw("bg", 0, 0, 0, 240, g_width, g_height)
+		if err := game.Draw("bg", 0, 0, 0, 240, g_width, g_height); err != nil {
+			return err
+		}
 	} else {
-		game.Draw("bg", 0, 0, 0, 0, g_width, g_height)
+		if err := game.Draw("bg", 0, 0, 0, 0, g_width, g_height); err != nil {
+			return err
+		}
 	}
-	g.player.Draw(game)
+	return g.player.Draw(game)
 }
 
 func (g *GameMain) Msg() GameStateMsg {
@@ -265,7 +294,7 @@ func (g *GameMain) Msg() GameStateMsg {
 
 type GameState interface {
 	Update(g *Game) // TODO: Should return errors
-	Draw(g *Game) // TODO: Should return errors
+	Draw(g *Game) error
 	Msg() GameStateMsg
 }
 
@@ -344,11 +373,12 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	}
 	g.gameState.Update(g)
 	if !ebiten.IsRunningSlowly() {
-		g.gameState.Draw(g)
+		if err := g.gameState.Draw(g); err != nil {
+			return err
+		}
 	}
 
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
-	return nil
+	return ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
 }
 
 var (
@@ -422,8 +452,8 @@ func (g *Game) DrawParts(key string, parts []imgPart) error {
 	return g.screen.DrawImage(g.img[key], op)
 }
 
-func (g *Game) DrawNumber(num int, x, y int) {
-	g.font.DrawNumber(g.screen, num, x, y)
+func (g *Game) DrawNumber(num int, x, y int) error {
+	return g.font.DrawNumber(g.screen, num, x, y)
 }
 
 func (g *Game) loadImages() {

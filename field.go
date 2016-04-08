@@ -145,7 +145,7 @@ func (f *Field) EraseField(x, y int) {
 	f.field[y*FIELD_X_MAX+x] = FIELD_NONE
 }
 
-func (f *Field) Draw(game *Game, viewPosition Position) {
+func (f *Field) Draw(game *Game, viewPosition Position) error {
 	parts := []imgPart{}
 	vx, vy := viewPosition.X, viewPosition.Y
 	ofs_x := CHAR_SIZE - vx%CHAR_SIZE
@@ -181,5 +181,5 @@ func (f *Field) Draw(game *Game, viewPosition Position) {
 			})
 		}
 	}
-	game.DrawParts("ino", parts)
+	return game.DrawParts("ino", parts)
 }

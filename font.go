@@ -17,7 +17,7 @@ func NewFont() *Font {
 	}
 }
 
-func (f *Font) DrawNumber(target *ebiten.Image, num int, x, y int) {
+func (f *Font) DrawNumber(target *ebiten.Image, num int, x, y int) error {
 	msg := strconv.Itoa(num)
 	for _, c := range msg {
 		if c == 32 {
@@ -27,11 +27,14 @@ func (f *Font) DrawNumber(target *ebiten.Image, num int, x, y int) {
 		if img, ok := f.fonts[c]; ok {
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(x), float64(y))
-			target.DrawImage(img, op)
+			if err := target.DrawImage(img, op); err != nil {
+				return err
+			}
 			w, _ := img.Size()
 			x += w
 			continue
 		}
 		panic(fmt.Sprintf("DrawNumber couldn't find font file (%d) for number %d", c, num))
 	}
+	return nil
 }
