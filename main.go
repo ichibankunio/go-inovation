@@ -264,8 +264,8 @@ func (g *GameMain) Msg() GameStateMsg {
 }
 
 type GameState interface {
-	Update(g *Game)
-	Draw(g *Game)
+	Update(g *Game) // TODO: Should return errors
+	Draw(g *Game) // TODO: Should return errors
 	Msg() GameStateMsg
 }
 
@@ -467,7 +467,7 @@ func (g *Game) loadImages() {
 	}
 
 	g.font = NewFont()
-	for n := 48; n < 57; n++ {
+	for n := 48; n <= 57; n++ {
 		n := n
 		wg.Add(1)
 		go func() {

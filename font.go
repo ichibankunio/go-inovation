@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/hajimehoshi/ebiten"
@@ -29,8 +30,8 @@ func (f *Font) DrawNumber(target *ebiten.Image, num int, x, y int) {
 			target.DrawImage(img, op)
 			w, _ := img.Size()
 			x += w
-		} else {
-			x += 9
+			continue
 		}
+		panic(fmt.Sprintf("DrawNumber couldn't find font file (%d) for number %d", c, num))
 	}
 }
