@@ -28,7 +28,6 @@ var (
 func (g *Game) loadAudio() {
 	defer close(g.audioLoadedCh)
 
-
 	type audioInfo struct {
 		player *audio.Player
 		key    string

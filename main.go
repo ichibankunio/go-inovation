@@ -314,6 +314,9 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	} else {
 		switch g.gameState.Msg() {
 		case GAMESTATE_MSG_REQ_TITLE:
+			if err := PauseBGM(); err != nil {
+				return err
+			}
 			g.gameState = &TitleMain{}
 		case GAMESTATE_MSG_REQ_OPENING:
 			if err := PlayBGM(BGM1); err != nil {
