@@ -517,7 +517,7 @@ func (p *Player) drawMessage(game *Game) error {
 			256, 96*(int(p.itemGet)-int(FIELD_ITEM_BORDER)-1), 256, 96); err != nil {
 				return err
 			}
-		if err := game.DrawItemFrame((g_width-32)/2, (g_height-96)/2-t*t-24, 32, 32); err != nil {
+		if err := game.DrawItemFrame((g_width-32)/2, (g_height-96)/2-t*t-24); err != nil {
 			return err
 		}
 

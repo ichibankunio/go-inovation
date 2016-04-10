@@ -382,16 +382,29 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 }
 
 var (
-	imageEmpty *ebiten.Image
+	imageItemFrame *ebiten.Image
 )
 
 func init() {
-	var err error
-	imageEmpty, err = ebiten.NewImage(16, 16, ebiten.FilterNearest)
+	imageEmpty, err := ebiten.NewImage(16, 16, ebiten.FilterNearest)
 	if err != nil {
 		panic(err)
 	}
 	if err := imageEmpty.Fill(color.White); err != nil {
+		panic(err)
+	}
+	imageItemFrame, err = ebiten.NewImage(32, 32, ebiten.FilterNearest)
+	if err != nil {
+		panic(err)
+	}
+	if err := imageItemFrame.Fill(color.Black); err != nil {
+		panic(err)
+	}
+	op := &ebiten.DrawImageOptions{}
+	ew, eh := imageEmpty.Size()
+	op.GeoM.Scale(float64(28)/float64(ew), float64(28)/float64(eh))
+	op.GeoM.Translate(2, 2)
+	if err := imageItemFrame.DrawImage(imageEmpty, op); err != nil {
 		panic(err)
 	}
 }
@@ -405,27 +418,10 @@ func toNRGBA(clr color.Color) (fr, fg, fb, fa float64) {
 	return
 }
 
-func (g *Game) DrawItemFrame(x, y, w, h int) error {
-	if err := g.fillRect(x, y, w, h, color.RGBA{0, 0, 0, 255}); err != nil {
-		return err
-	}
-	if err := g.fillRect(x+2, y+2, w-4, h-4, color.RGBA{255, 255, 255, 255}); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (g *Game) fillRect(x, y, w, h int, clr color.Color) error {
+func (g *Game) DrawItemFrame(x, y int) error {
 	op := &ebiten.DrawImageOptions{}
-	ew, eh := imageEmpty.Size()
-	op.GeoM.Scale(float64(w)/float64(ew), float64(h)/float64(eh))
 	op.GeoM.Translate(float64(x), float64(y))
-	cr, cg, cb, ca := toNRGBA(clr)
-	if ca == 0 {
-		return nil
-	}
-	op.ColorM.Scale(cr, cg, cb, ca)
-	return g.screen.DrawImage(imageEmpty, op)
+	return g.screen.DrawImage(imageItemFrame, op)
 }
 
 type imgPart struct {
