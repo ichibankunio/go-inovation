@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image/color"
 	"math"
 
 	"github.com/hajimehoshi/ebiten"
@@ -518,10 +517,7 @@ func (p *Player) drawMessage(game *Game) error {
 			256, 96*(int(p.itemGet)-int(FIELD_ITEM_BORDER)-1), 256, 96); err != nil {
 				return err
 			}
-		if err := game.FillRect((g_width-32)/2, (g_height-96)/2-t*t-24, 32, 32, color.RGBA{0, 0, 0, 255}); err != nil {
-			return err
-		}
-		if err := game.FillRect((g_width-32)/2+2, (g_height-96)/2-t*t-24+2, 32-4, 32-4, color.RGBA{255, 255, 255, 255}); err != nil {
+		if err := game.DrawItemFrame((g_width-32)/2, (g_height-96)/2-t*t-24, 32, 32); err != nil {
 			return err
 		}
 

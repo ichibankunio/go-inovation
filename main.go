@@ -405,7 +405,17 @@ func toNRGBA(clr color.Color) (fr, fg, fb, fa float64) {
 	return
 }
 
-func (g *Game) FillRect(x, y, w, h int, clr color.Color) error {
+func (g *Game) DrawItemFrame(x, y, w, h int) error {
+	if err := g.fillRect(x, y, w, h, color.RGBA{0, 0, 0, 255}); err != nil {
+		return err
+	}
+	if err := g.fillRect(x+2, y+2, w-4, h-4, color.RGBA{255, 255, 255, 255}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (g *Game) fillRect(x, y, w, h int, clr color.Color) error {
 	op := &ebiten.DrawImageOptions{}
 	ew, eh := imageEmpty.Size()
 	op.GeoM.Scale(float64(w)/float64(ew), float64(h)/float64(eh))
@@ -459,7 +469,7 @@ func (g *Game) DrawNumber(num int, x, y int) error {
 func (g *Game) loadImages() {
 	defer close(g.imageLoadedCh)
 
-	type imageInfo struct{
+	type imageInfo struct {
 		image *ebiten.Image
 		key   string
 	}
