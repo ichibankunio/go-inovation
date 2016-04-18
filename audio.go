@@ -69,7 +69,7 @@ func (g *Game) loadAudio() {
 				if err != nil {
 					return
 				}
-				s = audio.NewLoop(stream, stream.Size())
+				s = NewLoop(stream, stream.Size())
 			case strings.HasSuffix(n, ".wav"):
 				s, err = wav.Decode(audioContext, f)
 				if err != nil {
