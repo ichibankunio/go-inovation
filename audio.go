@@ -5,10 +5,10 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/hajimehoshi/ebiten/audio"
+	"github.com/hajimehoshi/ebiten/audio/vorbis"
+	"github.com/hajimehoshi/ebiten/audio/wav"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
-	"github.com/hajimehoshi/ebiten/exp/audio"
-	"github.com/hajimehoshi/ebiten/exp/audio/vorbis"
-	"github.com/hajimehoshi/ebiten/exp/audio/wav"
 )
 
 var (

@@ -3,7 +3,7 @@ package main
 import (
 	"io"
 
-	"github.com/hajimehoshi/ebiten/exp/audio"
+	"github.com/hajimehoshi/ebiten/audio"
 )
 
 type Loop struct {
