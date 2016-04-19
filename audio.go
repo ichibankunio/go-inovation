@@ -79,7 +79,7 @@ func (g *Game) loadAudio() {
 				panic("invalid file name")
 			}
 			var p *audio.Player
-			p, err = audioContext.NewPlayer(s)
+			p, err = audio.NewPlayer(audioContext, s)
 			if err != nil {
 				return
 			}
