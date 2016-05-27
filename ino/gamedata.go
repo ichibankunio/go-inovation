@@ -1,4 +1,4 @@
-package main
+package ino
 
 type GameMode int
 

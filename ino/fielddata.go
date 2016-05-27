@@ -1,4 +1,4 @@
-package main
+package ino
 
 var field_data = `
  UUUU                    UUUUUUUUUUUUUUUUUUUBBB

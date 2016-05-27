@@ -1,4 +1,4 @@
-package main
+package ino
 
 import (
 	"github.com/hajimehoshi/ebiten"
