@@ -1,15 +1,17 @@
 package ino
 
 import (
+	"bytes"
 	"fmt"
+	"image"
 	"image/color"
+	_ "image/png"
 	"math/rand"
-	"path/filepath"
-	"sync"
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
 )
 
 const (
@@ -463,67 +465,52 @@ func (g *Game) DrawNumber(num int, x, y int) error {
 }
 
 func (g *Game) loadImages() {
-	defer close(g.imageLoadedCh)
-
-	type imageInfo struct {
-		image *ebiten.Image
-		key   string
-	}
-
 	var err error
-	var wg sync.WaitGroup
-	imgCh := make(chan imageInfo)
-	fontCh := make(chan imageInfo)
-	go func() {
-		for i := range imgCh {
-			g.img[i.key] = i.image
+	defer func() {
+		if err != nil {
+			g.imageLoadedCh <- err			
 		}
+		close(g.imageLoadedCh)
 	}()
-	go func() {
-		for i := range fontCh {
-			g.font.fonts[rune(i.key[0])] = i.image
-		}
-	}()
+
 	for _, f := range []string{"ino", "msg", "bg"} {
-		f := f
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			if err != nil {
-				return
-			}
-			p := filepath.Join("resource", "image", "color", f+".png")
-			var img *ebiten.Image
-			img, _, err = ebitenutil.NewImageFromFile(p, ebiten.FilterNearest)
-			if err != nil {
-				return
-			}
-			imgCh <- imageInfo{img, f}
-		}()
+		var b []byte
+		b, err = assets.Asset("resources/images/color/" + f + ".png")
+		if err != nil {
+			return
+		}
+		var origImg image.Image
+		origImg, _, err = image.Decode(bytes.NewReader(b))
+		if err != nil {
+			return
+		}
+		var img *ebiten.Image
+		img, err = ebiten.NewImageFromImage(origImg, ebiten.FilterNearest)
+		if err != nil {
+			return
+		}
+		g.img[f] = img
 	}
 
 	g.font = NewFont()
 	for n := 48; n <= 57; n++ {
-		n := n
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			if err != nil {
-				return
-			}
-			src := filepath.Join("resource", "font", fmt.Sprintf("%d.png", n))
-			var img *ebiten.Image
-			img, _, err = ebitenutil.NewImageFromFile(src, ebiten.FilterNearest)
-			if err != nil {
-				return
-			}
-			fontCh <- imageInfo{img, string(rune(n))}
-		}()
+		var b []byte
+		b, err = assets.Asset(fmt.Sprintf("resources/font/%d.png", n))
+		if err != nil {
+			return
+		}
+		var origImg image.Image
+		origImg, _, err = image.Decode(bytes.NewReader(b))
+		if err != nil {
+			return
+		}
+		var img *ebiten.Image
+		img, err = ebiten.NewImageFromImage(origImg, ebiten.FilterNearest)
+		if err != nil {
+			return
+		}
+		g.img[string(rune(n))] = img
 	}
-	wg.Wait()
-	close(fontCh)
-	close(imgCh)
-	g.imageLoadedCh <- err
 }
 
 func Run() (err error) {

@@ -1,14 +1,13 @@
 package ino
 
 import (
-	"path/filepath"
+	"bytes"
 	"strings"
-	"sync"
 
 	"github.com/hajimehoshi/ebiten/audio"
 	"github.com/hajimehoshi/ebiten/audio/vorbis"
 	"github.com/hajimehoshi/ebiten/audio/wav"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
 )
 
 var (
@@ -25,70 +24,67 @@ var (
 	soundPlayers = map[string]*audio.Player{}
 )
 
-func (g *Game) loadAudio() {
-	defer close(g.audioLoadedCh)
+type bytesReadSeekCloser struct {
+	r *bytes.Reader
+}
 
-	type audioInfo struct {
-		player *audio.Player
-		key    string
-	}
-	ch := make(chan audioInfo)
-	go func() {
-		for p := range ch {
-			soundPlayers[p.key] = p.player
+func (b *bytesReadSeekCloser) Read(data []byte) (int, error) {
+	return b.r.Read(data)
+}
+
+func (b *bytesReadSeekCloser) Seek(offset int64, whence int) (int64, error) {
+	return b.r.Seek(offset, whence)
+}
+
+func (b *bytesReadSeekCloser) Close() error {
+	return nil
+}
+
+func (g *Game) loadAudio() {
+	var err error
+	defer func() {
+		if err != nil {
+			g.audioLoadedCh <- err
 		}
+		close(g.audioLoadedCh)
 	}()
 
 	const sampleRate = 44100
-	var err error
 	audioContext, err = audio.NewContext(sampleRate)
 	if err != nil {
-		g.audioLoadedCh <- err
 		return
 	}
-	var wg sync.WaitGroup
 	for _, n := range soundFilenames {
-		n := n
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-
+		var b []byte
+		b, err = assets.Asset("resources/sound/" + n)
+		if err != nil {
+			return
+		}
+		f := &bytesReadSeekCloser{bytes.NewReader(b)}
+		var s audio.ReadSeekCloser
+		switch {
+		case strings.HasSuffix(n, ".ogg"):
+			var stream *vorbis.Stream
+			stream, err = vorbis.Decode(audioContext, f)
 			if err != nil {
 				return
 			}
-			var f ebitenutil.ReadSeekCloser
-			f, err = ebitenutil.OpenFile(filepath.Join("resource", "sound", n))
+			s = NewLoop(stream, stream.Size())
+		case strings.HasSuffix(n, ".wav"):
+			s, err = wav.Decode(audioContext, f)
 			if err != nil {
 				return
 			}
-			var s audio.ReadSeekCloser
-			switch {
-			case strings.HasSuffix(n, ".ogg"):
-				var stream *vorbis.Stream
-				stream, err = vorbis.Decode(audioContext, f)
-				if err != nil {
-					return
-				}
-				s = NewLoop(stream, stream.Size())
-			case strings.HasSuffix(n, ".wav"):
-				s, err = wav.Decode(audioContext, f)
-				if err != nil {
-					return
-				}
-			default:
-				panic("invalid file name")
-			}
-			var p *audio.Player
-			p, err = audio.NewPlayer(audioContext, s)
-			if err != nil {
-				return
-			}
-			ch <- audioInfo{p, n}
-		}()
+		default:
+			panic("invalid file name")
+		}
+		var p *audio.Player
+		p, err = audio.NewPlayer(audioContext, s)
+		if err != nil {
+			return
+		}
+		soundPlayers[n] = p
 	}
-	wg.Wait()
-	close(ch)
-	g.audioLoadedCh <- err
 }
 
 func finalizeAudio() error {
