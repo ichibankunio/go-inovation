@@ -464,53 +464,40 @@ func (g *Game) DrawNumber(num int, x, y int) error {
 	return g.font.DrawNumber(g.screen, num, x, y)
 }
 
-func (g *Game) loadImages() {
-	var err error
-	defer func() {
-		if err != nil {
-			g.imageLoadedCh <- err			
-		}
-		close(g.imageLoadedCh)
-	}()
-
+func (g *Game) loadImages() error {
 	for _, f := range []string{"ino", "msg", "bg"} {
-		var b []byte
-		b, err = assets.Asset("resources/images/color/" + f + ".png")
+		b, err := assets.Asset("resources/images/color/" + f + ".png")
 		if err != nil {
-			return
+			return err
 		}
-		var origImg image.Image
-		origImg, _, err = image.Decode(bytes.NewReader(b))
+		origImg, _, err := image.Decode(bytes.NewReader(b))
 		if err != nil {
-			return
+			return err
 		}
-		var img *ebiten.Image
-		img, err = ebiten.NewImageFromImage(origImg, ebiten.FilterNearest)
+		img, err := ebiten.NewImageFromImage(origImg, ebiten.FilterNearest)
 		if err != nil {
-			return
+			return err
 		}
 		g.img[f] = img
 	}
 
 	g.font = NewFont()
 	for n := 48; n <= 57; n++ {
-		var b []byte
-		b, err = assets.Asset(fmt.Sprintf("resources/font/%d.png", n))
+		b, err := assets.Asset(fmt.Sprintf("resources/font/%d.png", n))
 		if err != nil {
-			return
+			return err
 		}
-		var origImg image.Image
-		origImg, _, err = image.Decode(bytes.NewReader(b))
+		origImg, _, err := image.Decode(bytes.NewReader(b))
 		if err != nil {
-			return
+			return err
 		}
-		var img *ebiten.Image
-		img, err = ebiten.NewImageFromImage(origImg, ebiten.FilterNearest)
+		img, err := ebiten.NewImageFromImage(origImg, ebiten.FilterNearest)
 		if err != nil {
-			return
+			return err
 		}
 		g.img[string(rune(n))] = img
 	}
+	return nil
 }
 
 func Run() (err error) {
@@ -525,10 +512,16 @@ func Run() (err error) {
 		audioLoadedCh: make(chan error),
 	}
 	go func() {
-		game.loadImages()
+		if err := game.loadImages(); err != nil {
+			game.imageLoadedCh <- err
+		}
+		close(game.imageLoadedCh)
 	}()
 	go func() {
-		game.loadAudio()
+		if err := loadAudio(); err != nil {
+			game.audioLoadedCh <- err
+		}
+		close(game.audioLoadedCh)
 	}()
 	err = game.Start()
 	return

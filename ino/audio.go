@@ -40,51 +40,46 @@ func (b *bytesReadSeekCloser) Close() error {
 	return nil
 }
 
-func (g *Game) loadAudio() {
-	var err error
-	defer func() {
-		if err != nil {
-			g.audioLoadedCh <- err
-		}
-		close(g.audioLoadedCh)
-	}()
-
+func init() {
 	const sampleRate = 44100
+	var err error
 	audioContext, err = audio.NewContext(sampleRate)
 	if err != nil {
-		return
+		panic(err)
 	}
+}
+
+func loadAudio() error {
 	for _, n := range soundFilenames {
-		var b []byte
-		b, err = assets.Asset("resources/sound/" + n)
+		b, err := assets.Asset("resources/sound/" + n)
 		if err != nil {
-			return
+			return err
 		}
 		f := &bytesReadSeekCloser{bytes.NewReader(b)}
 		var s audio.ReadSeekCloser
 		switch {
 		case strings.HasSuffix(n, ".ogg"):
-			var stream *vorbis.Stream
-			stream, err = vorbis.Decode(audioContext, f)
+			stream, err := vorbis.Decode(audioContext, f)
 			if err != nil {
-				return
+				return err
 			}
 			s = NewLoop(stream, stream.Size())
 		case strings.HasSuffix(n, ".wav"):
-			s, err = wav.Decode(audioContext, f)
+			stream, err := wav.Decode(audioContext, f)
 			if err != nil {
-				return
+				return err
 			}
+			s = stream
 		default:
 			panic("invalid file name")
 		}
-		var p *audio.Player
-		p, err = audio.NewPlayer(audioContext, s)
+		p, err := audio.NewPlayer(audioContext, s)
 		if err != nil {
-			return
+			return err
 		}
 		soundPlayers[n] = p
 	}
+	return nil
 }
 
 func finalizeAudio() error {
