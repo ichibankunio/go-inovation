@@ -21,6 +21,12 @@ const (
 )
 
 const (
+	ScreenWidth = g_width
+	ScreenHeight = g_height
+	Title = "Inovation 2007 (Go version)"
+)
+
+const (
 	ENDINGMAIN_STATE_STAFFROLL = iota
 	ENDINGMAIN_STATE_RESULT
 )
@@ -310,10 +316,6 @@ type Game struct {
 	screen        *ebiten.Image
 }
 
-func (g *Game) Start() error {
-	return ebiten.Run(g.Loop, g_width, g_height, 2, "Inovation 2007 (Go version)")
-}
-
 func (g *Game) Loop(screen *ebiten.Image) error {
 	if g.audioLoadedCh != nil {
 		select {
@@ -500,13 +502,16 @@ func (g *Game) loadImages() error {
 	return nil
 }
 
-func Run() (err error) {
+func NewGame() (game *Game, err error) {
 	defer func() {
 		if ferr := finalizeAudio(); ferr != nil && err == nil {
 			err = ferr
 		}
+		if err != nil {
+			game = nil
+		}
 	}()
-	game := &Game{
+	game = &Game{
 		img:           map[string]*ebiten.Image{},
 		imageLoadedCh: make(chan error),
 		audioLoadedCh: make(chan error),
@@ -523,6 +528,5 @@ func Run() (err error) {
 		}
 		close(game.audioLoadedCh)
 	}()
-	err = game.Start()
 	return
 }
