@@ -24,13 +24,14 @@ func (i *Input) Update() {
 	for _, t := range ebiten.Touches() {
 		x, _ := t.Position()
 		switch {
+		case 320 <= x:
 		case 240 <= x:
 			i.pressed[ebiten.KeyEnter] = true
 			i.pressed[ebiten.KeySpace] = true
 		case 160 <= x:
-			i.pressed[ebiten.KeyRight] = true
-		case 80 <= x:
 			i.pressed[ebiten.KeyDown] = true
+		case 80 <= x:
+			i.pressed[ebiten.KeyRight] = true
 		default:
 			i.pressed[ebiten.KeyLeft] = true
 		}
