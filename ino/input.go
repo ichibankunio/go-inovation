@@ -20,6 +20,21 @@ func (i *Input) Update() {
 		k := ebiten.Key(k)
 		i.pressed[k] = ebiten.IsKeyPressed(k)
 	}
+	// Emulates the keys by touching
+	for _, t := range ebiten.Touches() {
+		x, _ := t.Position()
+		switch {
+		case 240 <= x:
+			i.pressed[ebiten.KeyEnter] = true
+			i.pressed[ebiten.KeySpace] = true
+		case 160 <= x:
+			i.pressed[ebiten.KeyRight] = true
+		case 80 <= x:
+			i.pressed[ebiten.KeyDown] = true
+		default:
+			i.pressed[ebiten.KeyLeft] = true
+		}
+	}
 }
 
 func (i *Input) IsKeyPressed(key ebiten.Key) bool {
