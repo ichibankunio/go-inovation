@@ -497,7 +497,7 @@ func (g *Game) loadImages() error {
 		if err != nil {
 			return err
 		}
-		g.img[string(rune(n))] = img
+		g.font.fonts[rune(n)] = img
 	}
 	return nil
 }
