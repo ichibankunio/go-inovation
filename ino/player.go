@@ -537,7 +537,6 @@ func (p *Player) Draw(game *Game) error {
 	if err := p.field.Draw(game, Position{X: int(po.X), Y: int(po.Y)}); err != nil {
 		return err
 	}
-
 	if err := p.drawPlayer(game); err != nil {
 		return err
 	}

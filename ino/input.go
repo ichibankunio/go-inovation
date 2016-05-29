@@ -63,7 +63,7 @@ func (i *Input) IsKeyPushed(key ebiten.Key) bool {
 		return false
 	}
 	_, ok = i.prevPressed[key]
-	return ok
+	return !ok
 }
 
 func (i *Input) IsActionKeyPressed() bool {
