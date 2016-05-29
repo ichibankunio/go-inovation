@@ -4,21 +4,34 @@ import (
 	"github.com/hajimehoshi/ebiten"
 )
 
-var input = &Input{}
+var input = &Input{
+	pressed:     map[ebiten.Key]struct{}{},
+	prevPressed: map[ebiten.Key]struct{}{},
+}
 
-// TODO(hajimehoshi): 256 is an arbitrary number.
-const maxKey = 256
+var keys = []ebiten.Key{
+	ebiten.KeyEnter,
+	ebiten.KeySpace,
+	ebiten.KeyLeft,
+	ebiten.KeyDown,
+	ebiten.KeyRight,
+}
 
 type Input struct {
-	pressed     [maxKey]bool
-	prevPressed [maxKey]bool
+	pressed     map[ebiten.Key]struct{}
+	prevPressed map[ebiten.Key]struct{}
 }
 
 func (i *Input) Update() {
-	i.prevPressed = i.pressed
+	i.prevPressed = map[ebiten.Key]struct{}{}
 	for k, _ := range i.pressed {
-		k := ebiten.Key(k)
-		i.pressed[k] = ebiten.IsKeyPressed(k)
+		i.prevPressed[k] = struct{}{}
+	}
+	i.pressed = map[ebiten.Key]struct{}{}
+	for _, k := range keys {
+		if ebiten.IsKeyPressed(k) {
+			i.pressed[k] = struct{}{}
+		}
 	}
 	// Emulates the keys by touching
 	for _, t := range ebiten.Touches() {
@@ -26,25 +39,31 @@ func (i *Input) Update() {
 		switch {
 		case 320 <= x:
 		case 240 <= x:
-			i.pressed[ebiten.KeyEnter] = true
-			i.pressed[ebiten.KeySpace] = true
+			i.pressed[ebiten.KeyEnter] = struct{}{}
+			i.pressed[ebiten.KeySpace] = struct{}{}
 		case 160 <= x:
-			i.pressed[ebiten.KeyDown] = true
+			i.pressed[ebiten.KeyDown] = struct{}{}
 		case 80 <= x:
-			i.pressed[ebiten.KeyRight] = true
+			i.pressed[ebiten.KeyRight] = struct{}{}
 		default:
-			i.pressed[ebiten.KeyLeft] = true
+			i.pressed[ebiten.KeyLeft] = struct{}{}
 		}
 	}
 }
 
 func (i *Input) IsKeyPressed(key ebiten.Key) bool {
-	return i.pressed[key]
+	_, ok := i.pressed[key]
+	return ok
 }
 
 // TODO(hajimehoshi): Rename this to IsKeyTrigger?
 func (i *Input) IsKeyPushed(key ebiten.Key) bool {
-	return i.pressed[key] && !i.prevPressed[key]
+	_, ok := i.pressed[key]
+	if !ok {
+		return false
+	}
+	_, ok = i.prevPressed[key]
+	return ok
 }
 
 func (i *Input) IsActionKeyPressed() bool {
