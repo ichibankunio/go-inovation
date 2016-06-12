@@ -23,15 +23,30 @@ func max(a, b int) int {
 	return b
 }
 
-func Start(width, height int) (EventDispatcher, error) {
+var (
+	running         bool
+	eventDispatcher EventDispatcher
+)
+
+func IsRunning() bool {
+	return running
+}
+
+func Start(width, height int) error {
+	running = true
 	game, err := ino.NewGame()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	scale := max(1, min(width/ino.ScreenWidth, height/ino.ScreenHeight))
 	e, err := mobile.Start(game.Loop, ino.ScreenWidth, ino.ScreenHeight, scale, ino.Title)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return e, nil
+	eventDispatcher = e
+	return nil
+}
+
+func CurrentEventDispatcher() EventDispatcher {
+	return eventDispatcher;
 }
