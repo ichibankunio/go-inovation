@@ -18,8 +18,16 @@ var keys = []ebiten.Key{
 }
 
 type Input struct {
-	pressed     map[ebiten.Key]struct{}
-	prevPressed map[ebiten.Key]struct{}
+	pressed      map[ebiten.Key]struct{}
+	prevPressed  map[ebiten.Key]struct{}
+	touchEnabled bool
+}
+
+func (i *Input) TouchEnabled() bool {
+	if isTouchPrimaryInput() {
+		return true
+	}
+	return i.touchEnabled
 }
 
 func (i *Input) Update() {

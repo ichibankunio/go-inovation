@@ -108,7 +108,11 @@ func (t *TitleMain) Draw(game *Game) error {
 		if err := game.Draw("bg", 0, 0, 0, 0, g_width, g_height); err != nil {
 			return err
 		}
-		if err := game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64+16, 256, 16); err != nil {
+		sy := 64 + 16
+		if input.TouchEnabled() {
+			sy = 64 - 16
+		}
+		if err := game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, sy, 256, 16); err != nil {
 			return err
 		}
 	}
