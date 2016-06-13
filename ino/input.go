@@ -23,7 +23,7 @@ type Input struct {
 	touchEnabled bool
 }
 
-func (i *Input) TouchEnabled() bool {
+func (i *Input) IsTouchEnabled() bool {
 	if isTouchPrimaryInput() {
 		return true
 	}

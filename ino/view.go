@@ -11,13 +11,17 @@ func NewView(position PositionF) *View {
 }
 
 func (v *View) ToScreenPosition(p PositionF) PositionF {
-	x := p.X - v.position.X + g_width/2
-	y := p.Y - v.position.Y + g_height/2
+	x := p.X - v.GetPosition().X + g_width/2
+	y := p.Y - v.GetPosition().Y + g_height/2
 	return PositionF{x, y}
 }
 
 func (v *View) GetPosition() PositionF {
-	return v.position
+	p := v.position
+	if input.IsTouchEnabled() {
+		p.Y += 16
+	}
+	return p
 }
 
 func (v *View) Update(position, speed PositionF) {

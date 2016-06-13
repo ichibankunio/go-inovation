@@ -109,7 +109,7 @@ func (t *TitleMain) Draw(game *Game) error {
 			return err
 		}
 		sy := 64 + 16
-		if input.TouchEnabled() {
+		if input.IsTouchEnabled() {
 			sy = 64 - 16
 		}
 		if err := game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, sy, 256, 16); err != nil {
@@ -297,7 +297,20 @@ func (g *GameMain) Draw(game *Game) error {
 			return err
 		}
 	}
-	return g.player.Draw(game)
+	if err := g.player.Draw(game); err != nil {
+		return err
+	}
+	if input.IsTouchEnabled() {
+		img := game.img["touch"]
+		_, h := img.Size()
+		op := &ebiten.DrawImageOptions{}
+		op.ImageParts = imgParts([]imgPart{
+			imgPart{0, g_height - h, 0, 0, g_width, h},
+		})
+		op.ColorM.Scale(1, 1, 1, 0.25)
+		return game.screen.DrawImage(img, op)
+	}
+	return nil
 }
 
 func (g *GameMain) Msg() GameStateMsg {
@@ -471,7 +484,7 @@ func (g *Game) DrawNumber(num int, x, y int) error {
 }
 
 func (g *Game) loadImages() error {
-	for _, f := range []string{"ino", "msg", "bg"} {
+	for _, f := range []string{"ino", "msg", "bg", "touch"} {
 		b, err := assets.Asset("resources/images/color/" + f + ".png")
 		if err != nil {
 			return err
