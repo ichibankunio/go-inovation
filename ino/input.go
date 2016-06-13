@@ -42,7 +42,8 @@ func (i *Input) Update() {
 		}
 	}
 	// Emulates the keys by touching
-	for _, t := range ebiten.Touches() {
+	touches := ebiten.Touches()
+	for _, t := range touches {
 		x, _ := t.Position()
 		switch {
 		case 320 <= x:
@@ -56,6 +57,9 @@ func (i *Input) Update() {
 		default:
 			i.pressed[ebiten.KeyLeft] = struct{}{}
 		}
+	}
+	if 0 < len(touches) {
+		i.touchEnabled = true
 	}
 }
 
