@@ -112,7 +112,7 @@ func (t *TitleMain) Draw(game *Game) error {
 			return err
 		}
 	}
-	return game.Draw("msg", (g_width-256)/2, 32+(g_height-240)/2, 0, 0, 256, 64)
+	return game.Draw("msg", (g_width-256)/2, 32+(g_height-240)/2, 0, 0, 256, 48)
 }
 
 func (t *TitleMain) Msg() GameStateMsg {
