@@ -9,3 +9,9 @@ http://o-mega.sakura.ne.jp/product/ino.html
 :; cd $GOPATH/src/github.com/hajimehoshi/go-invation
 :; go run *.go
 ```
+
+# How to build for Android
+
+```
+:; gomobile bind -javapkg com.hajimehoshi.goinovation.go -o /path/to/mobile.aar .
+```

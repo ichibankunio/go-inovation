@@ -1,3 +1,4 @@
+// +build darwin,!arm,!arm64 linux windows
 // +build !android
 
 package main
