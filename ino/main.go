@@ -15,15 +15,10 @@ import (
 )
 
 const (
-	g_width   = 320
-	g_height  = 240
-	CHAR_SIZE = 16
-)
-
-const (
-	ScreenWidth = g_width
-	ScreenHeight = g_height
-	Title = "Inovation 2007 (Go version)"
+	ScreenWidth  = 320
+	ScreenHeight = 240
+	CHAR_SIZE    = 16
+	Title        = "Inovation 2007 (Go version)"
 )
 
 const (
@@ -98,25 +93,25 @@ func (t *TitleMain) Update(game *Game) {
 
 func (t *TitleMain) Draw(game *Game) error {
 	if t.lunkerMode {
-		if err := game.Draw("bg", 0, 0, 0, 240, g_width, g_height); err != nil {
+		if err := game.Draw("bg", 0, 0, 0, 240, ScreenWidth, ScreenHeight); err != nil {
 			return err
 		}
-		if err := game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, 64, 256, 16); err != nil {
+		if err := game.Draw("msg", (ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(ScreenHeight-240)/2, 0, 64, 256, 16); err != nil {
 			return err
 		}
 	} else {
-		if err := game.Draw("bg", 0, 0, 0, 0, g_width, g_height); err != nil {
+		if err := game.Draw("bg", 0, 0, 0, 0, ScreenWidth, ScreenHeight); err != nil {
 			return err
 		}
 		sy := 64 + 16
 		if input.IsTouchEnabled() {
 			sy = 64 - 16
 		}
-		if err := game.Draw("msg", (g_width-256)/2+t.offsetX, 160+t.offsetY+(g_height-240)/2, 0, sy, 256, 16); err != nil {
+		if err := game.Draw("msg", (ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(ScreenHeight-240)/2, 0, sy, 256, 16); err != nil {
 			return err
 		}
 	}
-	return game.Draw("msg", (g_width-256)/2, 32+(g_height-240)/2, 0, 0, 256, 48)
+	return game.Draw("msg", (ScreenWidth-256)/2, 32+(ScreenHeight-240)/2, 0, 0, 256, 48)
 }
 
 func (t *TitleMain) Msg() GameStateMsg {
@@ -139,7 +134,7 @@ func (o *OpeningMain) Update(game *Game) {
 	if input.IsActionKeyPressed() {
 		o.timer += 20
 	}
-	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+g_height {
+	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+ScreenHeight {
 		o.gameStateMsg = GAMESTATE_MSG_REQ_GAME
 		PauseBGM()
 	}
@@ -149,7 +144,7 @@ func (o *OpeningMain) Draw(game *Game) error {
 	if err := game.Draw("bg", 0, 0, 0, 480, 320, 240); err != nil {
 		return err
 	}
-	if err := game.Draw("msg", (g_width-256)/2, g_height-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN); err != nil {
+	if err := game.Draw("msg", (ScreenWidth-256)/2, ScreenHeight-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN); err != nil {
 		return err
 	}
 	return nil
@@ -178,7 +173,7 @@ func (e *EndingMain) Update(game *Game) {
 		if input.IsActionKeyPressed() {
 			e.timer += 20
 		}
-		if e.timer/ENDING_SCROLL_SPEED > ENDING_SCROLL_LEN+g_height {
+		if e.timer/ENDING_SCROLL_SPEED > ENDING_SCROLL_LEN+ScreenHeight {
 			e.timer = 0
 			e.state = ENDINGMAIN_STATE_RESULT
 		}
@@ -215,18 +210,18 @@ func (e *EndingMain) Draw(game *Game) error {
 
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		if err := game.Draw("msg", (g_width-256)/2, g_height-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN); err != nil {
+		if err := game.Draw("msg", (ScreenWidth-256)/2, ScreenHeight-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN); err != nil {
 			return err
 		}
 	case ENDINGMAIN_STATE_RESULT:
-		if err := game.Draw("msg", (g_width-256)/2, (g_height-160)/2, 0, 1664, 256, 160); err != nil {
+		if err := game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-160)/2, 0, 1664, 256, 160); err != nil {
 			return err
 		}
 
-		if err := game.DrawNumber(game.gameData.GetItemCount(), (g_width-10*0)/2, (g_height-160)/2+13*5+2); err != nil {
+		if err := game.DrawNumber(game.gameData.GetItemCount(), (ScreenWidth-10*0)/2, (ScreenHeight-160)/2+13*5+2); err != nil {
 			return err
 		}
-		if err := game.DrawNumber(game.gameData.TimeInSecond(), (g_width-13)/2, (g_height-160)/2+13*8+2); err != nil {
+		if err := game.DrawNumber(game.gameData.TimeInSecond(), (ScreenWidth-13)/2, (ScreenHeight-160)/2+13*8+2); err != nil {
 			return err
 		}
 	}
@@ -262,9 +257,9 @@ func (s *SecretMain) Draw(game *Game) error {
 	}
 
 	if s.number == 1 {
-		return game.Draw("msg", (g_width-256)/2, (g_height-96)/2, 0, 2048-96*2, 256, 96)
+		return game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2, 0, 2048-96*2, 256, 96)
 	}
-	return game.Draw("msg", (g_width-256)/2, (g_height-96)/2, 0, 2048-96, 256, 96)
+	return game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2, 0, 2048-96, 256, 96)
 }
 
 func (s *SecretMain) Msg() GameStateMsg {
@@ -289,11 +284,11 @@ func (g *GameMain) Update(game *Game) {
 
 func (g *GameMain) Draw(game *Game) error {
 	if game.gameData.lunkerMode {
-		if err := game.Draw("bg", 0, 0, 0, 240, g_width, g_height); err != nil {
+		if err := game.Draw("bg", 0, 0, 0, 240, ScreenWidth, ScreenHeight); err != nil {
 			return err
 		}
 	} else {
-		if err := game.Draw("bg", 0, 0, 0, 0, g_width, g_height); err != nil {
+		if err := game.Draw("bg", 0, 0, 0, 0, ScreenWidth, ScreenHeight); err != nil {
 			return err
 		}
 	}
@@ -305,7 +300,7 @@ func (g *GameMain) Draw(game *Game) error {
 		_, h := img.Size()
 		op := &ebiten.DrawImageOptions{}
 		op.ImageParts = imgParts([]imgPart{
-			imgPart{0, g_height - h, 0, 0, g_width, h},
+			imgPart{0, ScreenHeight - h, 0, 0, ScreenWidth, h},
 		})
 		op.ColorM.Scale(1, 1, 1, 0.25)
 		return game.screen.DrawImage(img, op)

@@ -484,7 +484,7 @@ func (p *Player) drawItems(game *Game) error {
 	for t := FIELD_ITEM_FUJI; t < FIELD_ITEM_MAX; t++ {
 		if !game.gameData.itemGetFlags[t] {
 			parts = append(parts, imgPart{
-				g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 無
+				ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 無
 				CHAR_SIZE*5, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2,
 			})
 			continue
@@ -494,7 +494,7 @@ func (p *Player) drawItems(game *Game) error {
 			for i, c := range clearFlagItems {
 				if c == t {
 					parts = append(parts, imgPart{
-						g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0,
+						ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0,
 						CHAR_SIZE*5+CHAR_SIZE/4*(i+2), 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2,
 					})
 				}
@@ -502,7 +502,7 @@ func (p *Player) drawItems(game *Game) error {
 			continue
 		}
 		parts = append(parts, imgPart{
-			g_width-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 有
+			ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 有
 			CHAR_SIZE*5+CHAR_SIZE/4, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2,
 		})
 	}
@@ -513,21 +513,21 @@ func (p *Player) drawMessage(game *Game) error {
 	switch p.state {
 	case PLAYERSTATE_ITEMGET:
 		t := WAIT_TIMER_INTERVAL - p.waitTimer
-		if err := game.Draw("msg", (g_width-256)/2, (g_height-96)/2-t*t+24,
+		if err := game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2-t*t+24,
 			256, 96*(int(p.itemGet)-int(FIELD_ITEM_BORDER)-1), 256, 96); err != nil {
 				return err
 			}
-		if err := game.DrawItemFrame((g_width-32)/2, (g_height-96)/2-t*t-24); err != nil {
+		if err := game.DrawItemFrame((ScreenWidth-32)/2, (ScreenHeight-96)/2-t*t-24); err != nil {
 			return err
 		}
 
 		it := int(p.itemGet) - (int(FIELD_ITEM_BORDER) + 1)
-		return game.Draw("ino", (g_width-16)/2, (g_height-96)/2-int(t)*int(t)-16,
+		return game.Draw("ino", (ScreenWidth-16)/2, (ScreenHeight-96)/2-int(t)*int(t)-16,
 			(it%16)*CHAR_SIZE, (it/16+4)*CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 	case PLAYERSTATE_START:
-		return game.Draw("msg", (g_width-256)/2, 64+(g_height-240)/2, 0, 96, 256, 32)
+		return game.Draw("msg", (ScreenWidth-256)/2, 64+(ScreenHeight-240)/2, 0, 96, 256, 32)
 	case PLAYERSTATE_DEAD:
-		return game.Draw("msg", (g_width-256)/2, 64+(g_height-240)/2, 0, 128, 256, 32)
+		return game.Draw("msg", (ScreenWidth-256)/2, 64+(ScreenHeight-240)/2, 0, 128, 256, 32)
 	}
 	return nil
 }

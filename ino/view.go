@@ -11,8 +11,8 @@ func NewView(position PositionF) *View {
 }
 
 func (v *View) ToScreenPosition(p PositionF) PositionF {
-	x := p.X - v.GetPosition().X + g_width/2
-	y := p.Y - v.GetPosition().Y + g_height/2
+	x := p.X - v.GetPosition().X + ScreenWidth/2
+	y := p.Y - v.GetPosition().Y + ScreenHeight/2
 	return PositionF{x, y}
 }
 

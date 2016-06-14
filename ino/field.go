@@ -150,12 +150,12 @@ func (f *Field) Draw(game *Game, viewPosition Position) error {
 	vx, vy := viewPosition.X, viewPosition.Y
 	ofs_x := CHAR_SIZE - vx%CHAR_SIZE
 	ofs_y := CHAR_SIZE - vy%CHAR_SIZE
-	for xx := -(g_width/CHAR_SIZE/2 + 2); xx < (g_width/CHAR_SIZE/2 + 2); xx++ {
+	for xx := -(ScreenWidth/CHAR_SIZE/2 + 2); xx < (ScreenWidth/CHAR_SIZE/2 + 2); xx++ {
 		fx := xx + vx/CHAR_SIZE
 		if fx < 0 || fx >= FIELD_X_MAX {
 			continue
 		}
-		for yy := -(g_height/CHAR_SIZE/2 + 2); yy < (g_height/CHAR_SIZE/2 + 2); yy++ {
+		for yy := -(ScreenHeight/CHAR_SIZE/2 + 2); yy < (ScreenHeight/CHAR_SIZE/2 + 2); yy++ {
 			fy := yy + vy/CHAR_SIZE
 			if fy < 0 || fy >= FIELD_Y_MAX {
 				continue
@@ -175,8 +175,8 @@ func (f *Field) Draw(game *Game, viewPosition Position) error {
 			}
 
 			parts = append(parts, imgPart{
-				(xx+12)*CHAR_SIZE + ofs_x + GRAPHIC_OFFSET_X + (g_width-320)/2,
-				(yy+8)*CHAR_SIZE + ofs_y + GRAPHIC_OFFSET_Y + (g_height-240)/2,
+				(xx+12)*CHAR_SIZE + ofs_x + GRAPHIC_OFFSET_X + (ScreenWidth-320)/2,
+				(yy+8)*CHAR_SIZE + ofs_y + GRAPHIC_OFFSET_Y + (ScreenHeight-240)/2,
 				gx * 16, gy * 16, 16, 16,
 			})
 		}
