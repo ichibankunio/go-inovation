@@ -71,6 +71,16 @@ func (i *Input) Update() {
 	}
 }
 
+func (i *Input) IsSpaceTouched() bool {
+	for _, t := range ebiten.Touches() {
+		_, y := t.Position()
+		if y < 240-64 {
+			return true
+		}
+	}
+	return false
+}
+
 func (i *Input) IsKeyPressed(key ebiten.Key) bool {
 	_, ok := i.pressed[key]
 	return ok

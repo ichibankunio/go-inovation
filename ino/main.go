@@ -58,7 +58,7 @@ func (t *TitleMain) Update(game *Game) {
 		t.offsetY = rand.Intn(5) - 3
 	}
 
-	if input.Current().IsActionKeyPushed() && t.timer > 5 {
+	if (input.Current().IsActionKeyPushed() || input.Current().IsSpaceTouched()) && t.timer > 5 {
 		t.gameStateMsg = GAMESTATE_MSG_REQ_OPENING
 
 		if t.lunkerMode {
@@ -131,7 +131,7 @@ const (
 func (o *OpeningMain) Update(game *Game) {
 	o.timer++
 
-	if input.Current().IsActionKeyPressed() {
+	if input.Current().IsActionKeyPressed() || input.Current().IsSpaceTouched() {
 		o.timer += 20
 	}
 	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+ScreenHeight {
@@ -170,7 +170,7 @@ func (e *EndingMain) Update(game *Game) {
 	e.timer++
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		if input.Current().IsActionKeyPressed() {
+		if input.Current().IsActionKeyPressed() || input.Current().IsSpaceTouched() {
 			e.timer += 20
 		}
 		if e.timer/ENDING_SCROLL_SPEED > ENDING_SCROLL_LEN+ScreenHeight {
@@ -187,7 +187,7 @@ func (e *EndingMain) Update(game *Game) {
 			vol := 1 - (float64(e.bgmFadingTimer) / max)
 			SetBGMVolume(vol)
 		}
-		if input.Current().IsActionKeyPushed() && e.timer > 5 {
+		if (input.Current().IsActionKeyPushed() || input.Current().IsSpaceTouched()) && e.timer > 5 {
 			// 条件を満たしていると隠し画面へ
 			if game.gameData.IsGetOmega() {
 				if game.gameData.lunkerMode {
@@ -246,7 +246,7 @@ func NewSecretMain(number int) *SecretMain {
 
 func (s *SecretMain) Update(game *Game) {
 	s.timer++
-	if input.Current().IsActionKeyPushed() && s.timer > 5 {
+	if (input.Current().IsActionKeyPushed() || input.Current().IsSpaceTouched()) && s.timer > 5 {
 		s.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
 	}
 }
@@ -296,14 +296,9 @@ func (g *GameMain) Draw(game *Game) error {
 		return err
 	}
 	if input.Current().IsTouchEnabled() {
-		img := game.img["touch"]
-		_, h := img.Size()
-		op := &ebiten.DrawImageOptions{}
-		op.ImageParts = imgParts([]imgPart{
-			imgPart{0, ScreenHeight - h, 0, 0, ScreenWidth, h},
-		})
-		op.ColorM.Scale(1, 1, 1, 0.25)
-		return game.screen.DrawImage(img, op)
+		if err := game.DrawTouchButtons(); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -476,6 +471,38 @@ func (g *Game) DrawParts(key string, parts []imgPart) error {
 
 func (g *Game) DrawNumber(num int, x, y int) error {
 	return g.font.DrawNumber(g.screen, num, x, y)
+}
+
+func (g *Game) DrawTouchButtons() error {
+	img := g.img["touch"]
+	w, h := img.Size()
+	w /= 4
+	x := 0
+	y := ScreenHeight - h
+	parts := make([]imgPart, 4)
+	for i := 0; i < 4; i++ {
+		parts[i] = imgPart{x + i*w, y, i*w, 0, w, h}
+	}
+	op := &ebiten.DrawImageOptions{}
+	op.ImageParts = imgParts([]imgPart{parts[0], parts[1], parts[3]})
+	op.ColorM.Scale(1, 1, 1, 0.4)
+	if err := g.screen.DrawImage(img, op); err != nil {
+		return err
+	}
+	// Render 'down' button
+	op = &ebiten.DrawImageOptions{}
+	op.ImageParts = imgParts([]imgPart{parts[2]})
+	alpha := 0.0
+	if input.Current().IsKeyPressed(ebiten.KeySpace) {
+		alpha = 0.4
+	} else {
+		alpha = 0.1
+	}
+	op.ColorM.Scale(1, 1, 1, alpha)
+	if err := g.screen.DrawImage(img, op); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (g *Game) loadImages() error {
