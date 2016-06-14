@@ -3,7 +3,6 @@ package ino
 import (
 	"math"
 
-	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
@@ -258,7 +257,7 @@ func (p *Player) moveNormal() {
 			}
 		}
 
-		if !input.Current().IsActionKeyPressed() || !input.Current().IsKeyPressed(ebiten.KeyDown) || !p.isFallable() {
+		if !input.Current().IsActionKeyPressed() || !input.Current().IsDirectionKeyPressed(input.DirectionDown) || !p.isFallable() {
 			if p.speed.Y > 0 {
 				p.speed.Y = 0
 			}
@@ -339,15 +338,15 @@ func (p *Player) moveItemGet() {
 }
 
 func (p *Player) moveByInput() {
-	if input.Current().IsKeyPressed(ebiten.KeyLeft) {
+	if input.Current().IsDirectionKeyPressed(input.DirectionLeft) {
 		p.direction = -1
 	}
-	if input.Current().IsKeyPressed(ebiten.KeyRight) {
+	if input.Current().IsDirectionKeyPressed(input.DirectionRight) {
 		p.direction = 1
 	}
 
 	if input.Current().IsActionKeyPushed() {
-		if ((p.gameData.jumpMax > p.jumpCnt) || p.onWall()) && !input.Current().IsKeyPressed(ebiten.KeyDown) {
+		if ((p.gameData.jumpMax > p.jumpCnt) || p.onWall()) && !input.Current().IsDirectionKeyPressed(input.DirectionDown) {
 			p.speed.Y = PLAYER_JUMP // ジャンプ
 			if !p.onWall() {
 				p.jumpCnt++

@@ -493,7 +493,7 @@ func (g *Game) DrawTouchButtons() error {
 	op = &ebiten.DrawImageOptions{}
 	op.ImageParts = imgParts([]imgPart{parts[2]})
 	alpha := 0.0
-	if input.Current().IsKeyPressed(ebiten.KeySpace) {
+	if input.Current().IsActionKeyPressed() {
 		alpha = 0.4
 	} else {
 		alpha = 0.1

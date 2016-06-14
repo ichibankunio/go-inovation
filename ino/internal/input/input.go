@@ -13,6 +13,14 @@ func Current() *Input {
 	return theInput
 }
 
+type Direction int
+
+const (
+	DirectionLeft Direction = iota
+	DirectionRight
+	DirectionDown
+)
+
 var keys = []ebiten.Key{
 	ebiten.KeyEnter,
 	ebiten.KeySpace,
@@ -81,7 +89,7 @@ func (i *Input) IsSpaceTouched() bool {
 	return false
 }
 
-func (i *Input) IsKeyPressed(key ebiten.Key) bool {
+func (i *Input) isKeyPressed(key ebiten.Key) bool {
 	_, ok := i.pressed[key]
 	return ok
 }
@@ -97,9 +105,22 @@ func (i *Input) IsKeyPushed(key ebiten.Key) bool {
 }
 
 func (i *Input) IsActionKeyPressed() bool {
-	return i.IsKeyPressed(ebiten.KeyEnter) || i.IsKeyPressed(ebiten.KeySpace)
+	return i.isKeyPressed(ebiten.KeyEnter) || i.isKeyPressed(ebiten.KeySpace)
 }
 
 func (i *Input) IsActionKeyPushed() bool {
 	return i.IsKeyPushed(ebiten.KeyEnter) || i.IsKeyPushed(ebiten.KeySpace)
+}
+
+func (i *Input) IsDirectionKeyPressed(dir Direction) bool {
+	switch dir {
+	case DirectionLeft:
+		return i.isKeyPressed(ebiten.KeyLeft)
+	case DirectionRight:
+		return i.isKeyPressed(ebiten.KeyRight)
+	case DirectionDown:
+		return i.isKeyPressed(ebiten.KeyDown)
+	default:
+		panic("not reach")
+	}
 }
