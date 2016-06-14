@@ -1,12 +1,16 @@
-package ino
+package input
 
 import (
 	"github.com/hajimehoshi/ebiten"
 )
 
-var input = &Input{
+var theInput = &Input{
 	pressed:     map[ebiten.Key]struct{}{},
 	prevPressed: map[ebiten.Key]struct{}{},
+}
+
+func Current() *Input {
+	return theInput
 }
 
 var keys = []ebiten.Key{
@@ -45,8 +49,8 @@ func (i *Input) Update() {
 	touches := ebiten.Touches()
 	for _, t := range touches {
 		x, y := t.Position()
-		// TODO: 64 is a magic number
-		if y < ScreenHeight - 64 {
+		// TODO(hajimehoshi): 240 and 64 are magic numbers
+		if y < 240 - 64 {
 			continue
 		}
 		switch {

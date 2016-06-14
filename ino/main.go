@@ -12,12 +12,12 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
+	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
 const (
 	ScreenWidth  = 320
 	ScreenHeight = 240
-	CHAR_SIZE    = 16
 	Title        = "Inovation 2007 (Go version)"
 )
 
@@ -58,7 +58,7 @@ func (t *TitleMain) Update(game *Game) {
 		t.offsetY = rand.Intn(5) - 3
 	}
 
-	if input.IsActionKeyPushed() && t.timer > 5 {
+	if input.Current().IsActionKeyPushed() && t.timer > 5 {
 		t.gameStateMsg = GAMESTATE_MSG_REQ_OPENING
 
 		if t.lunkerMode {
@@ -71,15 +71,15 @@ func (t *TitleMain) Update(game *Game) {
 	// ランカー・モード・コマンド
 	switch t.lunkerCommand {
 	case 0, 1, 2, 6:
-		if input.IsKeyPushed(ebiten.KeyLeft) {
+		if input.Current().IsKeyPushed(ebiten.KeyLeft) {
 			t.lunkerCommand++
-		} else if input.IsKeyPushed(ebiten.KeyRight) || input.IsKeyPushed(ebiten.KeyUp) || input.IsKeyPushed(ebiten.KeyDown) {
+		} else if input.Current().IsKeyPushed(ebiten.KeyRight) || input.Current().IsKeyPushed(ebiten.KeyUp) || input.Current().IsKeyPushed(ebiten.KeyDown) {
 			t.lunkerCommand = 0
 		}
 	case 3, 4, 5, 7:
-		if input.IsKeyPushed(ebiten.KeyRight) {
+		if input.Current().IsKeyPushed(ebiten.KeyRight) {
 			t.lunkerCommand++
-		} else if input.IsKeyPushed(ebiten.KeyLeft) || input.IsKeyPushed(ebiten.KeyUp) || input.IsKeyPushed(ebiten.KeyDown) {
+		} else if input.Current().IsKeyPushed(ebiten.KeyLeft) || input.Current().IsKeyPushed(ebiten.KeyUp) || input.Current().IsKeyPushed(ebiten.KeyDown) {
 			t.lunkerCommand = 0
 		}
 	default:
@@ -104,7 +104,7 @@ func (t *TitleMain) Draw(game *Game) error {
 			return err
 		}
 		sy := 64 + 16
-		if input.IsTouchEnabled() {
+		if input.Current().IsTouchEnabled() {
 			sy = 64 - 16
 		}
 		if err := game.Draw("msg", (ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(ScreenHeight-240)/2, 0, sy, 256, 16); err != nil {
@@ -131,7 +131,7 @@ const (
 func (o *OpeningMain) Update(game *Game) {
 	o.timer++
 
-	if input.IsActionKeyPressed() {
+	if input.Current().IsActionKeyPressed() {
 		o.timer += 20
 	}
 	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+ScreenHeight {
@@ -170,7 +170,7 @@ func (e *EndingMain) Update(game *Game) {
 	e.timer++
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		if input.IsActionKeyPressed() {
+		if input.Current().IsActionKeyPressed() {
 			e.timer += 20
 		}
 		if e.timer/ENDING_SCROLL_SPEED > ENDING_SCROLL_LEN+ScreenHeight {
@@ -187,7 +187,7 @@ func (e *EndingMain) Update(game *Game) {
 			vol := 1 - (float64(e.bgmFadingTimer) / max)
 			SetBGMVolume(vol)
 		}
-		if input.IsActionKeyPushed() && e.timer > 5 {
+		if input.Current().IsActionKeyPushed() && e.timer > 5 {
 			// 条件を満たしていると隠し画面へ
 			if game.gameData.IsGetOmega() {
 				if game.gameData.lunkerMode {
@@ -246,7 +246,7 @@ func NewSecretMain(number int) *SecretMain {
 
 func (s *SecretMain) Update(game *Game) {
 	s.timer++
-	if input.IsActionKeyPushed() && s.timer > 5 {
+	if input.Current().IsActionKeyPushed() && s.timer > 5 {
 		s.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
 	}
 }
@@ -295,7 +295,7 @@ func (g *GameMain) Draw(game *Game) error {
 	if err := g.player.Draw(game); err != nil {
 		return err
 	}
-	if input.IsTouchEnabled() {
+	if input.Current().IsTouchEnabled() {
 		img := game.img["touch"]
 		_, h := img.Size()
 		op := &ebiten.DrawImageOptions{}
@@ -351,7 +351,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	if err := audioContext.Update(); err != nil {
 		return err
 	}
-	input.Update()
+	input.Current().Update()
 	g.screen = screen
 
 	if g.gameState == nil {

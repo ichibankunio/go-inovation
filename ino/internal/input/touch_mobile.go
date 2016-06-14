@@ -1,6 +1,6 @@
 // +build android
 
-package ino
+package input
 
 func isTouchPrimaryInput() bool {
 	return true

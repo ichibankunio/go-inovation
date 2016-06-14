@@ -1,5 +1,9 @@
 package ino
 
+import (
+	"github.com/hajimehoshi/go-inovation/ino/internal/input"
+)
+
 type View struct {
 	position PositionF
 }
@@ -18,7 +22,7 @@ func (v *View) ToScreenPosition(p PositionF) PositionF {
 
 func (v *View) GetPosition() PositionF {
 	p := v.position
-	if input.IsTouchEnabled() {
+	if input.Current().IsTouchEnabled() {
 		p.Y += 16
 	}
 	return p

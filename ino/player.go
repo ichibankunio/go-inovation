@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
 type PlayerState int
@@ -205,7 +206,7 @@ func (p *Player) Update() GameStateMsg {
 	case PLAYERSTATE_DEAD:
 		p.moveNormal()
 		PauseBGM()
-		if input.IsActionKeyPressed() && p.waitTimer > 15 {
+		if input.Current().IsActionKeyPressed() && p.waitTimer > 15 {
 			msg = GAMESTATE_MSG_REQ_TITLE
 		}
 	}
@@ -257,7 +258,7 @@ func (p *Player) moveNormal() {
 			}
 		}
 
-		if !input.IsActionKeyPressed() || !input.IsKeyPressed(ebiten.KeyDown) || !p.isFallable() {
+		if !input.Current().IsActionKeyPressed() || !input.Current().IsKeyPressed(ebiten.KeyDown) || !p.isFallable() {
 			if p.speed.Y > 0 {
 				p.speed.Y = 0
 			}
@@ -331,22 +332,22 @@ func (p *Player) moveItemGet() {
 		p.waitTimer++
 		return
 	}
-	if input.IsActionKeyPushed() {
+	if input.Current().IsActionKeyPushed() {
 		p.state = PLAYERSTATE_NORMAL
 		ResumeBGM(BGM0)
 	}
 }
 
 func (p *Player) moveByInput() {
-	if input.IsKeyPressed(ebiten.KeyLeft) {
+	if input.Current().IsKeyPressed(ebiten.KeyLeft) {
 		p.direction = -1
 	}
-	if input.IsKeyPressed(ebiten.KeyRight) {
+	if input.Current().IsKeyPressed(ebiten.KeyRight) {
 		p.direction = 1
 	}
 
-	if input.IsActionKeyPushed() {
-		if ((p.gameData.jumpMax > p.jumpCnt) || p.onWall()) && !input.IsKeyPressed(ebiten.KeyDown) {
+	if input.Current().IsActionKeyPushed() {
+		if ((p.gameData.jumpMax > p.jumpCnt) || p.onWall()) && !input.Current().IsKeyPressed(ebiten.KeyDown) {
 			p.speed.Y = PLAYER_JUMP // ジャンプ
 			if !p.onWall() {
 				p.jumpCnt++

@@ -47,6 +47,7 @@ const (
 )
 
 const (
+	CHAR_SIZE         = 16
 	FIELD_X_MAX       = 128
 	FIELD_Y_MAX       = 128
 	GRAPHIC_OFFSET_X  = -16 - 16*2
