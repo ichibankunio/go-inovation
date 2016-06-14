@@ -44,7 +44,11 @@ func (i *Input) Update() {
 	// Emulates the keys by touching
 	touches := ebiten.Touches()
 	for _, t := range touches {
-		x, _ := t.Position()
+		x, y := t.Position()
+		// TODO: 64 is a magic number
+		if y < ScreenHeight - 64 {
+			continue
+		}
 		switch {
 		case 320 <= x:
 		case 240 <= x:
