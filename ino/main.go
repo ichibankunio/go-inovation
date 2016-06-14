@@ -58,7 +58,7 @@ func (t *TitleMain) Update(game *Game) {
 		t.offsetY = rand.Intn(5) - 3
 	}
 
-	if (input.Current().IsActionKeyPushed() || input.Current().IsSpaceTouched()) && t.timer > 5 {
+	if (input.Current().IsActionKeyPushed() || input.Current().IsSpacePushed()) && t.timer > 5 {
 		t.gameStateMsg = GAMESTATE_MSG_REQ_OPENING
 
 		if t.lunkerMode {
@@ -187,7 +187,7 @@ func (e *EndingMain) Update(game *Game) {
 			vol := 1 - (float64(e.bgmFadingTimer) / max)
 			SetBGMVolume(vol)
 		}
-		if (input.Current().IsActionKeyPushed() || input.Current().IsSpaceTouched()) && e.timer > 5 {
+		if (input.Current().IsActionKeyPushed() || input.Current().IsSpacePushed()) && e.timer > 5 {
 			// 条件を満たしていると隠し画面へ
 			if game.gameData.IsGetOmega() {
 				if game.gameData.lunkerMode {
@@ -246,7 +246,7 @@ func NewSecretMain(number int) *SecretMain {
 
 func (s *SecretMain) Update(game *Game) {
 	s.timer++
-	if (input.Current().IsActionKeyPushed() || input.Current().IsSpaceTouched()) && s.timer > 5 {
+	if (input.Current().IsActionKeyPushed() || input.Current().IsSpacePushed()) && s.timer > 5 {
 		s.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
 	}
 }

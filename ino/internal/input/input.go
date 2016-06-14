@@ -30,9 +30,11 @@ var keys = []ebiten.Key{
 }
 
 type Input struct {
-	pressed      map[ebiten.Key]struct{}
-	prevPressed  map[ebiten.Key]struct{}
-	touchEnabled bool
+	pressed          map[ebiten.Key]struct{}
+	prevPressed      map[ebiten.Key]struct{}
+	spaceTouched     bool
+	prevSpaceTouched bool
+	touchEnabled     bool
 }
 
 func (i *Input) IsTouchEnabled() bool {
@@ -74,19 +76,26 @@ func (i *Input) Update() {
 			i.pressed[ebiten.KeyLeft] = struct{}{}
 		}
 	}
+	i.prevSpaceTouched = i.spaceTouched
+	i.spaceTouched = false
+	for _, t := range touches {
+		_, y := t.Position()
+		if y < 240-64 {
+			i.spaceTouched = true
+			break
+		}
+	}
 	if 0 < len(touches) {
 		i.touchEnabled = true
 	}
 }
 
 func (i *Input) IsSpaceTouched() bool {
-	for _, t := range ebiten.Touches() {
-		_, y := t.Position()
-		if y < 240-64 {
-			return true
-		}
-	}
-	return false
+	return i.spaceTouched
+}
+
+func (i *Input) IsSpacePushed() bool {
+	return i.spaceTouched && !i.prevSpaceTouched
 }
 
 func (i *Input) isKeyPressed(key ebiten.Key) bool {
