@@ -50,7 +50,7 @@ func (i *Input) Update() {
 	for _, t := range touches {
 		x, y := t.Position()
 		// TODO(hajimehoshi): 240 and 64 are magic numbers
-		if y < 240 - 64 {
+		if y < 240-64 {
 			continue
 		}
 		switch {

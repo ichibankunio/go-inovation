@@ -3,8 +3,8 @@
 package main
 
 import (
-	"os"
 	"flag"
+	"os"
 	"runtime/pprof"
 
 	"github.com/hajimehoshi/ebiten"

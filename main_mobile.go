@@ -10,7 +10,7 @@ import (
 type EventDispatcher mobile.EventDispatcher
 
 const (
-	ScreenWidth = ino.ScreenWidth
+	ScreenWidth  = ino.ScreenWidth
 	ScreenHeight = ino.ScreenHeight
 )
 
@@ -38,5 +38,5 @@ func Start(scale int) error {
 }
 
 func CurrentEventDispatcher() EventDispatcher {
-	return eventDispatcher;
+	return eventDispatcher
 }
