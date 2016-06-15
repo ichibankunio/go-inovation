@@ -1,4 +1,4 @@
-// +build android darwin,arm darwin,arm64
+// +build android ios darwin,arm darwin,arm64
 
 package inovation
 
@@ -7,8 +7,6 @@ import (
 	"github.com/hajimehoshi/go-inovation/ino"
 )
 
-type EventDispatcher mobile.EventDispatcher
-
 const (
 	ScreenWidth  = ino.ScreenWidth
 	ScreenHeight = ino.ScreenHeight
@@ -16,7 +14,7 @@ const (
 
 var (
 	running         bool
-	eventDispatcher EventDispatcher
+	eventDispatcher mobile.EventDispatcher
 )
 
 func IsRunning() bool {
@@ -37,6 +35,10 @@ func Start(scale int) error {
 	return nil
 }
 
-func CurrentEventDispatcher() EventDispatcher {
-	return eventDispatcher
+func Render() error {
+	return eventDispatcher.Render()
+}
+
+func UpdateTouchesOnAndroid(action int, id int, x, y int) {
+	eventDispatcher.UpdateTouchesOnAndroid(action, id, x, y)
 }
