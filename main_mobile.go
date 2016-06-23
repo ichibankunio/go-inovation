@@ -42,3 +42,7 @@ func Render() error {
 func UpdateTouchesOnAndroid(action int, id int, x, y int) {
 	eventDispatcher.UpdateTouchesOnAndroid(action, id, x, y)
 }
+
+func UpdateTouchesOnIOS(phase int, ptr int, x, y int) {
+	eventDispatcher.UpdateTouchesOnIOS(phase, ptr, x, y)
+}
