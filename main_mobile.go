@@ -13,8 +13,7 @@ const (
 )
 
 var (
-	running         bool
-	eventDispatcher mobile.EventDispatcher
+	running bool
 )
 
 func IsRunning() bool {
@@ -27,22 +26,20 @@ func Start(scale float64) error {
 	if err != nil {
 		return err
 	}
-	e, err := mobile.Start(game.Loop, ino.ScreenWidth, ino.ScreenHeight, scale, ino.Title)
-	if err != nil {
+	if err := mobile.Start(game.Loop, ino.ScreenWidth, ino.ScreenHeight, scale, ino.Title); err != nil {
 		return err
 	}
-	eventDispatcher = e
 	return nil
 }
 
 func Render() error {
-	return eventDispatcher.Render()
+	return mobile.Render()
 }
 
 func UpdateTouchesOnAndroid(action int, id int, x, y int) {
-	eventDispatcher.UpdateTouchesOnAndroid(action, id, x, y)
+	mobile.UpdateTouchesOnAndroid(action, id, x, y)
 }
 
 func UpdateTouchesOnIOS(phase int, ptr int, x, y int) {
-	eventDispatcher.UpdateTouchesOnIOS(phase, ptr, x, y)
+	mobile.UpdateTouchesOnIOS(phase, ptr, x, y)
 }
