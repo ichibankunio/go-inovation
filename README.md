@@ -12,12 +12,20 @@ http://o-mega.sakura.ne.jp/product/ino.html
 
 # How to build for Android
 
+At this directory, run
+
 ```
-:; gomobile bind -target android -javapkg com.hajimehoshi.goinovation.go -o /path/to/inovation.aar ./mobile
+:; gomobile bind -target android -javapkg com.hajimehoshi.goinovation.go -o ./mobile/android/inovation/inovation.aar ./mobile
 ```
+
+and run the Android studio project in `./mobile/android`.
 
 # How to build for iOS
 
+At this directory, run
+
 ```
-:; gomobile bind -target ios -o /path/to/Inovation.framework ./mobile
+:; gomobile bind -target ios -o ./mobile/ios/Inovation.framework ./mobile
 ```
+
+and run the Xcode project in `./mobile/ios`.
