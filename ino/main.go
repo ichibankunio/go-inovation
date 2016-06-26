@@ -324,7 +324,7 @@ type Game struct {
 }
 
 func (g *Game) Loop(screen *ebiten.Image) error {
-	if g.audioLoadedCh != nil {
+	if g.imageLoadedCh != nil || g.audioLoadedCh != nil {
 		select {
 		case err := <-g.imageLoadedCh:
 			if err != nil {
