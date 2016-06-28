@@ -7,7 +7,7 @@ http://o-mega.sakura.ne.jp/product/ino.html
 ```
 :; go get github.com/hajimehoshi/go-invation
 :; cd $GOPATH/src/github.com/hajimehoshi/go-invation
-:; go run *.go
+:; go run main.go
 ```
 
 # How to build for Android
