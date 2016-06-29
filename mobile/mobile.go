@@ -30,8 +30,8 @@ func Start(scale float64) error {
 	return nil
 }
 
-func Render() error {
-	return mobile.Render()
+func Update() error {
+	return mobile.Update()
 }
 
 func UpdateTouchesOnAndroid(action int, id int, x, y int) {

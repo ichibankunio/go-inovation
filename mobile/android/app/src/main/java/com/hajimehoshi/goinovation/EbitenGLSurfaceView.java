@@ -24,7 +24,7 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
                 return;
             }
             try {
-                Inovation.Render();
+                Inovation.Update();
             } catch (Exception e) {
                 Log.e("Go Error", e.toString());
                 mErrored = true;

@@ -18,7 +18,7 @@ At this directory, run
 :; gomobile bind -target android -javapkg com.hajimehoshi.goinovation.go -o ./mobile/android/inovation/inovation.aar ./mobile
 ```
 
-and run the Android studio project in `./mobile/android`.
+and run the Android Studio project in `./mobile/android`.
 
 # How to build for iOS
 

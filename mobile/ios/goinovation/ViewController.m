@@ -63,7 +63,7 @@
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
     NSError* err = nil;
-    GoInovationRender(&err);
+    GoInovationUpdate(&err);
     if (err != nil) {
         NSLog(@"Error: %@", err);
     }
