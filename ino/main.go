@@ -389,7 +389,8 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		}
 	}
 
-	return ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
+	//return ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
+	return nil
 }
 
 var (
