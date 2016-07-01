@@ -45,10 +45,12 @@
     CGRect glkViewRect = CGRectMake(x, y, width, height);
     [[self glkView] setFrame:glkViewRect];
     
-    NSError* err = nil;
-    GoInovationStart(scale, &err);
-    if (err != nil) {
-        NSLog(@"Error: %@", err);
+    if (!GoInovationIsRunning()) {
+        NSError* err = nil;
+        GoInovationStart(scale, &err);
+        if (err != nil) {
+            NSLog(@"Error: %@", err);
+        }
     }
 }
 
