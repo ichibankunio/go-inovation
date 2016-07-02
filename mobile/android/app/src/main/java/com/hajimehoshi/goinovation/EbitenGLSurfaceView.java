@@ -40,6 +40,8 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
         }
     }
 
+    private double mDeviceScale = 0.0;
+
     public EbitenGLSurfaceView(Context context) {
         super(context);
         initialize();
@@ -56,7 +58,14 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
         setRenderer(new EbitenRenderer());
     }
 
-    public double getScale() {
+    private double pxToDp(double x) {
+        if (mDeviceScale == 0.0) {
+            mDeviceScale = getResources().getDisplayMetrics().density;
+        }
+        return x / mDeviceScale;
+    }
+
+    public double getScaleInPx() {
         View parent = (View)getParent();
         return Math.max(1,
                 Math.min(parent.getWidth() / (double)Inovation.ScreenWidth,
@@ -66,12 +75,12 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        double scale = getScale();
-        getLayoutParams().width = (int)(Inovation.ScreenWidth * scale);
-        getLayoutParams().height = (int)(Inovation.ScreenHeight * scale);
+        double scaleInPx = getScaleInPx();
+        getLayoutParams().width = (int)(Inovation.ScreenWidth * scaleInPx);
+        getLayoutParams().height = (int)(Inovation.ScreenHeight * scaleInPx);
         try {
             if (!Inovation.IsRunning()) {
-                Inovation.Start(scale);
+                Inovation.Start(pxToDp(scaleInPx));
             }
         } catch (Exception e) {
             Log.e("Go Error", e.toString());
@@ -84,7 +93,7 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
             int id = e.getPointerId(i);
             int x = (int) e.getX(i);
             int y = (int) e.getY(i);
-            Inovation.UpdateTouchesOnAndroid(e.getActionMasked(), id, x, y);
+            Inovation.UpdateTouchesOnAndroid(e.getActionMasked(), id, (int)pxToDp(x), (int)pxToDp(y));
         }
         return true;
     }

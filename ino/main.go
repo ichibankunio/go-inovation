@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	_ "image/png"
 	"math/rand"
 	"time"
 
