@@ -4,7 +4,7 @@
 
 http://o-mega.sakura.ne.jp/product/ino.html
 
-## Relases
+## Releases
 
 ### Web Browsers
 
