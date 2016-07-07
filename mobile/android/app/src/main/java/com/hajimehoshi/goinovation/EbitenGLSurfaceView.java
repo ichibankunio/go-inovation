@@ -10,8 +10,6 @@ import android.view.View;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import com.hajimehoshi.goinovation.go.Inovation;
-
 public class EbitenGLSurfaceView extends GLSurfaceView {
 
     private class EbitenRenderer implements Renderer {
@@ -24,7 +22,7 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
                 return;
             }
             try {
-                Inovation.Update();
+                Mobile.Update();
             } catch (Exception e) {
                 Log.e("Go Error", e.toString());
                 mErrored = true;
@@ -68,19 +66,19 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
     public double getScaleInPx() {
         View parent = (View)getParent();
         return Math.max(1,
-                Math.min(parent.getWidth() / (double)Inovation.ScreenWidth,
-                        parent.getHeight() / (double)Inovation.ScreenHeight));
+                Math.min(parent.getWidth() / (double)Mobile.ScreenWidth,
+                        parent.getHeight() / (double)Mobile.ScreenHeight));
     }
 
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         double scaleInPx = getScaleInPx();
-        getLayoutParams().width = (int)(Inovation.ScreenWidth * scaleInPx);
-        getLayoutParams().height = (int)(Inovation.ScreenHeight * scaleInPx);
+        getLayoutParams().width = (int)(Mobile.ScreenWidth * scaleInPx);
+        getLayoutParams().height = (int)(Mobile.ScreenHeight * scaleInPx);
         try {
-            if (!Inovation.IsRunning()) {
-                Inovation.Start(pxToDp(scaleInPx));
+            if (!Mobile.IsRunning()) {
+                Mobile.Start(pxToDp(scaleInPx));
             }
         } catch (Exception e) {
             Log.e("Go Error", e.toString());
@@ -91,9 +89,9 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
     public boolean onTouchEvent(MotionEvent e) {
         for (int i = 0; i < e.getPointerCount(); i++) {
             int id = e.getPointerId(i);
-            int x = (int) e.getX(i);
-            int y = (int) e.getY(i);
-            Inovation.UpdateTouchesOnAndroid(e.getActionMasked(), id, (int)pxToDp(x), (int)pxToDp(y));
+            int x = (int)e.getX(i);
+            int y = (int)e.getY(i);
+            Mobile.UpdateTouchesOnAndroid(e.getActionMasked(), id, (int)pxToDp(x), (int)pxToDp(y));
         }
         return true;
     }

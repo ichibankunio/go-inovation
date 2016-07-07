@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 
-#import "Inovation/Inovation.h"
+#import "Mobile/Mobile.h"
 
 @interface ViewController ()
 
@@ -35,19 +35,19 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     CGRect viewRect = [[self view] frame];
-    double scaleX = (double)viewRect.size.width / (double)GoInovationScreenWidth;
-    double scaleY = (double)viewRect.size.height / (double)GoInovationScreenHeight;
+    double scaleX = (double)viewRect.size.width / (double)GoMobileScreenWidth;
+    double scaleY = (double)viewRect.size.height / (double)GoMobileScreenHeight;
     double scale = MAX(1, MIN(scaleX, scaleY));
-    int width = (int)GoInovationScreenWidth * scale;
-    int height = (int)GoInovationScreenHeight * scale;
+    int width = (int)GoMobileScreenWidth * scale;
+    int height = (int)GoMobileScreenHeight * scale;
     int x = (viewRect.size.width - width) / 2;
     int y = (viewRect.size.height - height) / 2;
     CGRect glkViewRect = CGRectMake(x, y, width, height);
     [[self glkView] setFrame:glkViewRect];
     
-    if (!GoInovationIsRunning()) {
+    if (!GoMobileIsRunning()) {
         NSError* err = nil;
-        GoInovationStart(scale, &err);
+        GoMobileStart(scale, &err);
         if (err != nil) {
             NSLog(@"Error: %@", err);
         }
@@ -65,7 +65,7 @@
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
     NSError* err = nil;
-    GoInovationUpdate(&err);
+    GoMobileUpdate(&err);
     if (err != nil) {
         NSLog(@"Error: %@", err);
     }
@@ -77,7 +77,7 @@
             continue;
         }
         CGPoint location = [touch locationInView:[self glkView]];
-        GoInovationUpdateTouchesOnIOS(touch.phase, (int64_t)touch, location.x, location.y);
+        GoMobileUpdateTouchesOnIOS(touch.phase, (int64_t)touch, location.x, location.y);
     }
 }
 

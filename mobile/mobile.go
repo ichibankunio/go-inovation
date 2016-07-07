@@ -1,4 +1,4 @@
-package inovation
+package mobile
 
 import (
 	"github.com/hajimehoshi/ebiten/mobile"

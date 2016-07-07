@@ -14,9 +14,9 @@
 		8C7185C71D11C56C00F98056 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C7185C51D11C56C00F98056 /* Main.storyboard */; settings = {ASSET_TAGS = (1, ); }; };
 		8C7185C91D11C56C00F98056 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C7185C81D11C56C00F98056 /* Assets.xcassets */; };
 		8CC68AFE1D131440009D2DDE /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CC68AFD1D131440009D2DDE /* OpenAL.framework */; };
-		8CCC17FF1D11CDEA003B0469 /* Inovation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CCC17FE1D11CDEA003B0469 /* Inovation.framework */; };
 		8CCC18011D11DBCD003B0469 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CCC18001D11DBCD003B0469 /* OpenGLES.framework */; };
 		8CCC18031D11DC45003B0469 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CCC18021D11DC45003B0469 /* GLKit.framework */; };
+		8CEB8FF51D2ED60600E86B12 /* Mobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CEB8FF41D2ED60600E86B12 /* Mobile.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,9 +31,9 @@
 		8C7185C81D11C56C00F98056 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8C7185CD1D11C56C00F98056 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8CC68AFD1D131440009D2DDE /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
-		8CCC17FE1D11CDEA003B0469 /* Inovation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Inovation.framework; sourceTree = "<group>"; };
 		8CCC18001D11DBCD003B0469 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		8CCC18021D11DC45003B0469 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		8CEB8FF41D2ED60600E86B12 /* Mobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Mobile.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,10 +41,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CEB8FF51D2ED60600E86B12 /* Mobile.framework in Frameworks */,
 				8CC68AFE1D131440009D2DDE /* OpenAL.framework in Frameworks */,
 				8CCC18031D11DC45003B0469 /* GLKit.framework in Frameworks */,
 				8CCC18011D11DBCD003B0469 /* OpenGLES.framework in Frameworks */,
-				8CCC17FF1D11CDEA003B0469 /* Inovation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,10 +54,10 @@
 		8C7185B01D11C56C00F98056 = {
 			isa = PBXGroup;
 			children = (
+				8CEB8FF41D2ED60600E86B12 /* Mobile.framework */,
 				8CC68AFD1D131440009D2DDE /* OpenAL.framework */,
 				8CCC18021D11DC45003B0469 /* GLKit.framework */,
 				8CCC18001D11DBCD003B0469 /* OpenGLES.framework */,
-				8CCC17FE1D11CDEA003B0469 /* Inovation.framework */,
 				8C7185BB1D11C56C00F98056 /* goinovation */,
 				8C7185BA1D11C56C00F98056 /* Products */,
 			);
