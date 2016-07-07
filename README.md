@@ -18,7 +18,7 @@ http://hajimehoshi.github.io/go-inovation/
 
 (TBD)
 
-# How to install and run
+## How to install and run on desktops
 
 ```
 :; go get github.com/hajimehoshi/go-invation
@@ -26,7 +26,7 @@ http://hajimehoshi.github.io/go-inovation/
 :; go run main.go
 ```
 
-# How to build for Android
+## How to build for Android
 
 At this directory, run
 
@@ -36,7 +36,7 @@ At this directory, run
 
 and run the Android Studio project in `./mobile/android`.
 
-# How to build for iOS
+## How to build for iOS
 
 At this directory, run
 
