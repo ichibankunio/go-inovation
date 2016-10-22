@@ -75,12 +75,24 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+        int oldWidth = getLayoutParams().width;
+        int oldHeight = getLayoutParams().height;
         double scaleInPx = getScaleInPx();
-        getLayoutParams().width = (int)(Mobile.ScreenWidth * scaleInPx);
-        getLayoutParams().height = (int)(Mobile.ScreenHeight * scaleInPx);
+        int newWidth = (int)(Mobile.ScreenWidth * scaleInPx);
+        int newHeight = (int)(Mobile.ScreenHeight * scaleInPx);
+        if (oldWidth != newWidth || oldHeight != newHeight) {
+            getLayoutParams().width = newWidth;
+            getLayoutParams().height = newHeight;
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    requestLayout();
+                }
+            });
+        }
         try {
             if (!Mobile.IsRunning()) {
-                Mobile.Start(pxToDp(scaleInPx));
+                Mobile.Start(pxToDp(getScaleInPx()));
             }
         } catch (Exception e) {
             Log.e("Go Error", e.toString());
