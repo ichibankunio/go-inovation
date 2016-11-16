@@ -24,7 +24,7 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
                 return;
             }
             try {
-                Mobile.Update();
+                Mobile.update();
             } catch (Exception e) {
                 Log.e("Go Error", e.toString());
                 mErrored = true;
@@ -91,8 +91,8 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
             });
         }
         try {
-            if (!Mobile.IsRunning()) {
-                Mobile.Start(pxToDp(getScaleInPx()));
+            if (!Mobile.isRunning()) {
+                Mobile.start(pxToDp(getScaleInPx()));
             }
         } catch (Exception e) {
             Log.e("Go Error", e.toString());
@@ -105,7 +105,7 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
             int id = e.getPointerId(i);
             int x = (int)e.getX(i);
             int y = (int)e.getY(i);
-            Mobile.UpdateTouchesOnAndroid(e.getActionMasked(), id, (int)pxToDp(x), (int)pxToDp(y));
+            Mobile.updateTouchesOnAndroid(e.getActionMasked(), id, (int)pxToDp(x), (int)pxToDp(y));
         }
         return true;
     }
