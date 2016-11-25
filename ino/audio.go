@@ -49,6 +49,22 @@ func init() {
 	}
 }
 
+type emptyAudio struct {
+}
+
+func (e *emptyAudio) Read(b []byte) (int, error) {
+	// TODO: Clear b?
+	return len(b), nil
+}
+
+func (e *emptyAudio) Seek(offset int64, whence int) (int64, error) {
+	return 0, nil
+}
+
+func (e *emptyAudio) Close() error {
+	return nil
+}
+
 func loadAudio() error {
 	for _, n := range soundFilenames {
 		b, err := assets.Asset("resources/sound/" + n)
@@ -61,9 +77,10 @@ func loadAudio() error {
 		case strings.HasSuffix(n, ".ogg"):
 			stream, err := vorbis.Decode(audioContext, f)
 			if err != nil {
-				return err
+				s = &emptyAudio{}
+			} else {
+				s = NewLoop(stream, stream.Size())
 			}
-			s = NewLoop(stream, stream.Size())
 		case strings.HasSuffix(n, ".wav"):
 			stream, err := wav.Decode(audioContext, f)
 			if err != nil {
