@@ -6,6 +6,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"runtime/pprof"
 
@@ -13,7 +14,10 @@ import (
 	"github.com/hajimehoshi/go-inovation/ino"
 )
 
-var cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
+var (
+	cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
+	memProfile = flag.String("memprofile", "", "write memory profile to file")
+)
 
 func main() {
 	flag.Parse()
@@ -22,6 +26,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+		defer f.Close()
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
 	}
@@ -32,5 +37,15 @@ func main() {
 	}
 	if err := ebiten.Run(game.Loop, ino.ScreenWidth, ino.ScreenHeight, 2, ino.Title); err != nil {
 		panic(err)
+	}
+	if *memProfile != "" {
+		f, err := os.Create(*memProfile)
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+		if err := pprof.WriteHeapProfile(f); err != nil {
+			panic(fmt.Sprintf("could not write memory profile: %s", err))
+		}
 	}
 }
