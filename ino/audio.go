@@ -24,22 +24,6 @@ var (
 	soundPlayers = map[string]*audio.Player{}
 )
 
-type bytesReadSeekCloser struct {
-	r *bytes.Reader
-}
-
-func (b *bytesReadSeekCloser) Read(data []byte) (int, error) {
-	return b.r.Read(data)
-}
-
-func (b *bytesReadSeekCloser) Seek(offset int64, whence int) (int64, error) {
-	return b.r.Seek(offset, whence)
-}
-
-func (b *bytesReadSeekCloser) Close() error {
-	return nil
-}
-
 func init() {
 	const sampleRate = 44100
 	var err error
@@ -71,7 +55,7 @@ func loadAudio() error {
 		if err != nil {
 			return err
 		}
-		f := &bytesReadSeekCloser{bytes.NewReader(b)}
+		f := audio.NopCloser(bytes.NewReader(b))
 		var s audio.ReadSeekCloser
 		switch {
 		case strings.HasSuffix(n, ".ogg"):
