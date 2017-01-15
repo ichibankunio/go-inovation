@@ -1,7 +1,6 @@
 package ino
 
 import (
-	"bytes"
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/audio"
@@ -55,7 +54,7 @@ func loadAudio() error {
 		if err != nil {
 			return err
 		}
-		f := audio.NopCloser(bytes.NewReader(b))
+		f := audio.BytesReadSeekCloser(b)
 		var s audio.ReadSeekCloser
 		switch {
 		case strings.HasSuffix(n, ".ogg"):
