@@ -35,19 +35,19 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     CGRect viewRect = [[self view] frame];
-    double scaleX = (double)viewRect.size.width / (double)GoMobileScreenWidth;
-    double scaleY = (double)viewRect.size.height / (double)GoMobileScreenHeight;
+    double scaleX = (double)viewRect.size.width / (double)MobileScreenWidth;
+    double scaleY = (double)viewRect.size.height / (double)MobileScreenHeight;
     double scale = MAX(1, MIN(scaleX, scaleY));
-    int width = (int)GoMobileScreenWidth * scale;
-    int height = (int)GoMobileScreenHeight * scale;
+    int width = (int)MobileScreenWidth * scale;
+    int height = (int)MobileScreenHeight * scale;
     int x = (viewRect.size.width - width) / 2;
     int y = (viewRect.size.height - height) / 2;
     CGRect glkViewRect = CGRectMake(x, y, width, height);
     [[self glkView] setFrame:glkViewRect];
     
-    if (!GoMobileIsRunning()) {
+    if (!MobileIsRunning()) {
         NSError* err = nil;
-        GoMobileStart(scale, &err);
+        MobileStart(scale, &err);
         if (err != nil) {
             NSLog(@"Error: %@", err);
         }
@@ -65,7 +65,7 @@
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
     NSError* err = nil;
-    GoMobileUpdate(&err);
+    MobileUpdate(&err);
     if (err != nil) {
         NSLog(@"Error: %@", err);
     }
@@ -77,7 +77,7 @@
             continue;
         }
         CGPoint location = [touch locationInView:[self glkView]];
-        GoMobileUpdateTouchesOnIOS(touch.phase, (int64_t)touch, location.x, location.y);
+        MobileUpdateTouchesOnIOS(touch.phase, (int64_t)touch, location.x, location.y);
     }
 }
 
