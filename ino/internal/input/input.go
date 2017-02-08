@@ -46,7 +46,7 @@ func (i *Input) IsTouchEnabled() bool {
 
 func (i *Input) Update() {
 	i.prevPressed = map[ebiten.Key]struct{}{}
-	for k, _ := range i.pressed {
+	for k := range i.pressed {
 		i.prevPressed[k] = struct{}{}
 	}
 	i.pressed = map[ebiten.Key]struct{}{}

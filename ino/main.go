@@ -457,7 +457,7 @@ func (i imgParts) Src(idx int) (int, int, int, int) {
 func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) error {
 	op := &ebiten.DrawImageOptions{}
 	op.ImageParts = imgParts([]imgPart{
-		imgPart{px, py, sx, sy, sw, sh},
+		{px, py, sx, sy, sw, sh},
 	})
 	return g.screen.DrawImage(g.img[key], op)
 }
@@ -480,7 +480,7 @@ func (g *Game) DrawTouchButtons() error {
 	y := ScreenHeight - h
 	parts := make([]imgPart, 4)
 	for i := 0; i < 4; i++ {
-		parts[i] = imgPart{x + i*w, y, i*w, 0, w, h}
+		parts[i] = imgPart{x + i*w, y, i * w, 0, w, h}
 	}
 	op := &ebiten.DrawImageOptions{}
 	op.ImageParts = imgParts([]imgPart{parts[0], parts[1], parts[3]})
