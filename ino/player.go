@@ -431,15 +431,17 @@ func (p *Player) getOnField() FieldType {
 	return p.field.GetField(x, y+1)
 }
 
-func (p *Player) drawPlayer(game *Game) error {
+func (p *Player) drawPlayer(game *Game) {
 	v := p.view.ToScreenPosition(p.position)
 	vx, vy := int(v.X), int(v.Y)
 	if p.state == PLAYERSTATE_DEAD { // 死亡
 		anime := (p.timer / 6) % 4
 		if game.gameData.lunkerMode {
-			return game.Draw("ino", vx, vy, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+			game.Draw("ino", vx, vy, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+			return
 		}
-		return game.Draw("ino", vx, vy, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
+		game.Draw("ino", vx, vy, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
+		return
 	}
 	if p.state != PLAYERSTATE_MUTEKI || p.timer%10 < 5 {
 		anime := (p.timer / 6) % 2
@@ -448,19 +450,22 @@ func (p *Player) drawPlayer(game *Game) error {
 		}
 		if p.direction < 0 {
 			if game.gameData.lunkerMode {
-				return game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+				game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+				return
 			}
-			return game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
+			game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
+			return
 		}
 		if game.gameData.lunkerMode {
-			return game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
+			game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
+			return
 		}
-		return game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
+		game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
+		return
 	}
-	return nil
 }
 
-func (p *Player) drawLife(game *Game) error {
+func (p *Player) drawLife(game *Game) {
 	parts := []imgPart{}
 	for t := 0; t < game.gameData.lifeMax; t++ {
 		if p.life < LIFE_RATIO*2 && p.timer%10 < 5 && game.gameData.lifeMax > 1 {
@@ -476,10 +481,10 @@ func (p *Player) drawLife(game *Game) error {
 			CHAR_SIZE * t, 0, CHAR_SIZE * 4, 128 + CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE,
 		})
 	}
-	return game.DrawParts("ino", parts)
+	game.DrawParts("ino", parts)
 }
 
-func (p *Player) drawItems(game *Game) error {
+func (p *Player) drawItems(game *Game) {
 	parts := []imgPart{}
 	for t := FIELD_ITEM_FUJI; t < FIELD_ITEM_MAX; t++ {
 		if !game.gameData.itemGetFlags[t] {
@@ -506,48 +511,31 @@ func (p *Player) drawItems(game *Game) error {
 			CHAR_SIZE*5 + CHAR_SIZE/4, 128 + CHAR_SIZE, CHAR_SIZE / 4, CHAR_SIZE / 2,
 		})
 	}
-	return game.DrawParts("ino", parts)
+	game.DrawParts("ino", parts)
 }
 
-func (p *Player) drawMessage(game *Game) error {
+func (p *Player) drawMessage(game *Game) {
 	switch p.state {
 	case PLAYERSTATE_ITEMGET:
 		t := WAIT_TIMER_INTERVAL - p.waitTimer
-		if err := game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2-t*t+24,
-			256, 96*(int(p.itemGet)-int(FIELD_ITEM_BORDER)-1), 256, 96); err != nil {
-			return err
-		}
-		if err := game.DrawItemFrame((ScreenWidth-32)/2, (ScreenHeight-96)/2-t*t-24); err != nil {
-			return err
-		}
-
+		game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2-t*t+24,
+			256, 96*(int(p.itemGet)-int(FIELD_ITEM_BORDER)-1), 256, 96)
+		game.DrawItemFrame((ScreenWidth-32)/2, (ScreenHeight-96)/2-t*t-24)
 		it := int(p.itemGet) - (int(FIELD_ITEM_BORDER) + 1)
-		return game.Draw("ino", (ScreenWidth-16)/2, (ScreenHeight-96)/2-int(t)*int(t)-16,
+		game.Draw("ino", (ScreenWidth-16)/2, (ScreenHeight-96)/2-int(t)*int(t)-16,
 			(it%16)*CHAR_SIZE, (it/16+4)*CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 	case PLAYERSTATE_START:
-		return game.Draw("msg", (ScreenWidth-256)/2, 64+(ScreenHeight-240)/2, 0, 96, 256, 32)
+		game.Draw("msg", (ScreenWidth-256)/2, 64+(ScreenHeight-240)/2, 0, 96, 256, 32)
 	case PLAYERSTATE_DEAD:
-		return game.Draw("msg", (ScreenWidth-256)/2, 64+(ScreenHeight-240)/2, 0, 128, 256, 32)
+		game.Draw("msg", (ScreenWidth-256)/2, 64+(ScreenHeight-240)/2, 0, 128, 256, 32)
 	}
-	return nil
 }
 
-func (p *Player) Draw(game *Game) error {
+func (p *Player) Draw(game *Game) {
 	po := p.view.GetPosition()
-	if err := p.field.Draw(game, Position{X: int(po.X), Y: int(po.Y)}); err != nil {
-		return err
-	}
-	if err := p.drawPlayer(game); err != nil {
-		return err
-	}
-	if err := p.drawLife(game); err != nil {
-		return err
-	}
-	if err := p.drawItems(game); err != nil {
-		return err
-	}
-	if err := p.drawMessage(game); err != nil {
-		return err
-	}
-	return nil
+	p.field.Draw(game, Position{X: int(po.X), Y: int(po.Y)})
+	p.drawPlayer(game)
+	p.drawLife(game)
+	p.drawItems(game)
+	p.drawMessage(game)
 }

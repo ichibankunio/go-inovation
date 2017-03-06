@@ -90,27 +90,19 @@ func (t *TitleMain) Update(game *Game) {
 	}
 }
 
-func (t *TitleMain) Draw(game *Game) error {
+func (t *TitleMain) Draw(game *Game) {
 	if t.lunkerMode {
-		if err := game.Draw("bg", 0, 0, 0, 240, ScreenWidth, ScreenHeight); err != nil {
-			return err
-		}
-		if err := game.Draw("msg", (ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(ScreenHeight-240)/2, 0, 64, 256, 16); err != nil {
-			return err
-		}
+		game.Draw("bg", 0, 0, 0, 240, ScreenWidth, ScreenHeight)
+		game.Draw("msg", (ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(ScreenHeight-240)/2, 0, 64, 256, 16)
 	} else {
-		if err := game.Draw("bg", 0, 0, 0, 0, ScreenWidth, ScreenHeight); err != nil {
-			return err
-		}
+		game.Draw("bg", 0, 0, 0, 0, ScreenWidth, ScreenHeight)
 		sy := 64 + 16
 		if input.Current().IsTouchEnabled() {
 			sy = 64 - 16
 		}
-		if err := game.Draw("msg", (ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(ScreenHeight-240)/2, 0, sy, 256, 16); err != nil {
-			return err
-		}
+		game.Draw("msg", (ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(ScreenHeight-240)/2, 0, sy, 256, 16)
 	}
-	return game.Draw("msg", (ScreenWidth-256)/2, 32+(ScreenHeight-240)/2, 0, 0, 256, 48)
+	game.Draw("msg", (ScreenWidth-256)/2, 32+(ScreenHeight-240)/2, 0, 0, 256, 48)
 }
 
 func (t *TitleMain) Msg() GameStateMsg {
@@ -139,14 +131,9 @@ func (o *OpeningMain) Update(game *Game) {
 	}
 }
 
-func (o *OpeningMain) Draw(game *Game) error {
-	if err := game.Draw("bg", 0, 0, 0, 480, 320, 240); err != nil {
-		return err
-	}
-	if err := game.Draw("msg", (ScreenWidth-256)/2, ScreenHeight-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN); err != nil {
-		return err
-	}
-	return nil
+func (o *OpeningMain) Draw(game *Game) {
+	game.Draw("bg", 0, 0, 0, 480, 320, 240)
+	game.Draw("msg", (ScreenWidth-256)/2, ScreenHeight-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
 }
 
 func (o *OpeningMain) Msg() GameStateMsg {
@@ -202,29 +189,17 @@ func (e *EndingMain) Update(game *Game) {
 	}
 }
 
-func (e *EndingMain) Draw(game *Game) error {
-	if err := game.Draw("bg", 0, 0, 0, 480, 320, 240); err != nil {
-		return nil
-	}
+func (e *EndingMain) Draw(game *Game) {
+	game.Draw("bg", 0, 0, 0, 480, 320, 240)
 
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		if err := game.Draw("msg", (ScreenWidth-256)/2, ScreenHeight-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN); err != nil {
-			return err
-		}
+		game.Draw("msg", (ScreenWidth-256)/2, ScreenHeight-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN)
 	case ENDINGMAIN_STATE_RESULT:
-		if err := game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-160)/2, 0, 1664, 256, 160); err != nil {
-			return err
-		}
-
-		if err := game.DrawNumber(game.gameData.GetItemCount(), (ScreenWidth-10*0)/2, (ScreenHeight-160)/2+13*5+2); err != nil {
-			return err
-		}
-		if err := game.DrawNumber(game.gameData.TimeInSecond(), (ScreenWidth-13)/2, (ScreenHeight-160)/2+13*8+2); err != nil {
-			return err
-		}
+		game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-160)/2, 0, 1664, 256, 160)
+		game.DrawNumber(game.gameData.GetItemCount(), (ScreenWidth-10*0)/2, (ScreenHeight-160)/2+13*5+2)
+		game.DrawNumber(game.gameData.TimeInSecond(), (ScreenWidth-13)/2, (ScreenHeight-160)/2+13*8+2)
 	}
-	return nil
 }
 
 func (e *EndingMain) Msg() GameStateMsg {
@@ -250,15 +225,12 @@ func (s *SecretMain) Update(game *Game) {
 	}
 }
 
-func (s *SecretMain) Draw(game *Game) error {
-	if err := game.Draw("bg", 0, 0, 0, 240, 320, 240); err != nil {
-		return err
-	}
-
+func (s *SecretMain) Draw(game *Game) {
+	game.Draw("bg", 0, 0, 0, 240, 320, 240)
 	if s.number == 1 {
-		return game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2, 0, 2048-96*2, 256, 96)
+		game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2, 0, 2048-96*2, 256, 96)
 	}
-	return game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2, 0, 2048-96, 256, 96)
+	game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2, 0, 2048-96, 256, 96)
 }
 
 func (s *SecretMain) Msg() GameStateMsg {
@@ -281,25 +253,16 @@ func (g *GameMain) Update(game *Game) {
 	g.gameStateMsg = g.player.Update()
 }
 
-func (g *GameMain) Draw(game *Game) error {
+func (g *GameMain) Draw(game *Game) {
 	if game.gameData.lunkerMode {
-		if err := game.Draw("bg", 0, 0, 0, 240, ScreenWidth, ScreenHeight); err != nil {
-			return err
-		}
+		game.Draw("bg", 0, 0, 0, 240, ScreenWidth, ScreenHeight)
 	} else {
-		if err := game.Draw("bg", 0, 0, 0, 0, ScreenWidth, ScreenHeight); err != nil {
-			return err
-		}
+		game.Draw("bg", 0, 0, 0, 0, ScreenWidth, ScreenHeight)
 	}
-	if err := g.player.Draw(game); err != nil {
-		return err
-	}
+	g.player.Draw(game)
 	if input.Current().IsTouchEnabled() {
-		if err := game.DrawTouchButtons(); err != nil {
-			return err
-		}
+		game.DrawTouchButtons()
 	}
-	return nil
 }
 
 func (g *GameMain) Msg() GameStateMsg {
@@ -308,7 +271,7 @@ func (g *GameMain) Msg() GameStateMsg {
 
 type GameState interface {
 	Update(g *Game) // TODO: Should return errors
-	Draw(g *Game) error
+	Draw(g *Game)
 	Msg() GameStateMsg
 }
 
@@ -383,12 +346,11 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	}
 	g.gameState.Update(g)
 	if !ebiten.IsRunningSlowly() {
-		if err := g.gameState.Draw(g); err != nil {
-			return err
-		}
+		g.gameState.Draw(g)
 	}
 
-	return ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
+	return nil
 }
 
 var (
@@ -428,10 +390,10 @@ func toNRGBA(clr color.Color) (fr, fg, fb, fa float64) {
 	return
 }
 
-func (g *Game) DrawItemFrame(x, y int) error {
+func (g *Game) DrawItemFrame(x, y int) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(x), float64(y))
-	return g.screen.DrawImage(imageItemFrame, op)
+	g.screen.DrawImage(imageItemFrame, op)
 }
 
 type imgPart struct {
@@ -454,25 +416,25 @@ func (i imgParts) Src(idx int) (int, int, int, int) {
 	return p.sx, p.sy, p.sx + p.sw, p.sy + p.sh
 }
 
-func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) error {
+func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) {
 	op := &ebiten.DrawImageOptions{}
 	op.ImageParts = imgParts([]imgPart{
 		{px, py, sx, sy, sw, sh},
 	})
-	return g.screen.DrawImage(g.img[key], op)
+	g.screen.DrawImage(g.img[key], op)
 }
 
-func (g *Game) DrawParts(key string, parts []imgPart) error {
+func (g *Game) DrawParts(key string, parts []imgPart) {
 	op := &ebiten.DrawImageOptions{}
 	op.ImageParts = imgParts(parts)
-	return g.screen.DrawImage(g.img[key], op)
+	g.screen.DrawImage(g.img[key], op)
 }
 
-func (g *Game) DrawNumber(num int, x, y int) error {
-	return g.font.DrawNumber(g.screen, num, x, y)
+func (g *Game) DrawNumber(num int, x, y int) {
+	g.font.DrawNumber(g.screen, num, x, y)
 }
 
-func (g *Game) DrawTouchButtons() error {
+func (g *Game) DrawTouchButtons() {
 	img := g.img["touch"]
 	w, h := img.Size()
 	w /= 4
@@ -485,9 +447,7 @@ func (g *Game) DrawTouchButtons() error {
 	op := &ebiten.DrawImageOptions{}
 	op.ImageParts = imgParts([]imgPart{parts[0], parts[1], parts[3]})
 	op.ColorM.Scale(1, 1, 1, 0.4)
-	if err := g.screen.DrawImage(img, op); err != nil {
-		return err
-	}
+	g.screen.DrawImage(img, op)
 	// Render 'down' button
 	op = &ebiten.DrawImageOptions{}
 	op.ImageParts = imgParts([]imgPart{parts[2]})
@@ -498,10 +458,7 @@ func (g *Game) DrawTouchButtons() error {
 		alpha = 0.1
 	}
 	op.ColorM.Scale(1, 1, 1, alpha)
-	if err := g.screen.DrawImage(img, op); err != nil {
-		return err
-	}
-	return nil
+	g.screen.DrawImage(img, op)
 }
 
 func (g *Game) loadImages() error {
