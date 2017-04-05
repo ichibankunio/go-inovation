@@ -31,7 +31,7 @@ https://itunes.apple.com/us/app/id1132624266
 At this directory, run
 
 ```
-:; gomobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar ./mobile
+:; gomobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar github.com/hajimehoshi/go-inovation/mobile
 ```
 
 and run the Android Studio project in `./mobile/android`.
@@ -41,7 +41,7 @@ and run the Android Studio project in `./mobile/android`.
 At this directory, run
 
 ```
-:; gomobile bind -target ios -o ./mobile/ios/Mobile.framework ./mobile
+:; gomobile bind -target ios -o ./mobile/ios/Mobile.framework github.com/hajimehoshi/go-inovation/mobile
 ```
 
 and run the Xcode project in `./mobile/ios`.
