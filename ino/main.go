@@ -400,34 +400,23 @@ type imgPart struct {
 	px, py, sx, sy, sw, sh int
 }
 
-type imgParts []imgPart
-
-func (i imgParts) Len() int {
-	return len(i)
-}
-
-func (i imgParts) Dst(idx int) (int, int, int, int) {
-	p := i[idx]
-	return p.px, p.py, p.px + p.sw, p.py + p.sh
-}
-
-func (i imgParts) Src(idx int) (int, int, int, int) {
-	p := i[idx]
-	return p.sx, p.sy, p.sx + p.sw, p.sy + p.sh
-}
-
 func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) {
 	op := &ebiten.DrawImageOptions{}
-	op.ImageParts = imgParts([]imgPart{
-		{px, py, sx, sy, sw, sh},
-	})
+	r := image.Rect(sx, sy, sx+sw, sy+sh)
+	op.SourceRect = &r
+	op.GeoM.Translate(float64(px), float64(py))
 	g.screen.DrawImage(g.img[key], op)
 }
 
 func (g *Game) DrawParts(key string, parts []imgPart) {
 	op := &ebiten.DrawImageOptions{}
-	op.ImageParts = imgParts(parts)
-	g.screen.DrawImage(g.img[key], op)
+	for _, p := range parts {
+		r := image.Rect(p.sx, p.sy, p.sx+p.sw, p.sy+p.sh)
+		op.SourceRect = &r
+		op.GeoM.Reset()
+		op.GeoM.Translate(float64(p.px), float64(p.py))
+		g.screen.DrawImage(g.img[key], op)
+	}
 }
 
 func (g *Game) DrawNumber(num int, x, y int) {
@@ -438,19 +427,22 @@ func (g *Game) DrawTouchButtons() {
 	img := g.img["touch"]
 	w, h := img.Size()
 	w /= 4
-	x := 0
-	y := ScreenHeight - h
-	parts := make([]imgPart, 4)
-	for i := 0; i < 4; i++ {
-		parts[i] = imgPart{x + i*w, y, i * w, 0, w, h}
-	}
+	dx := 0
+	dy := ScreenHeight - h
 	op := &ebiten.DrawImageOptions{}
-	op.ImageParts = imgParts([]imgPart{parts[0], parts[1], parts[3]})
 	op.ColorM.Scale(1, 1, 1, 0.4)
-	g.screen.DrawImage(img, op)
+	for _, i := range []int{0, 1, 3} {
+		r := image.Rect(i*w, 0, (i+1)*w, h)
+		op.SourceRect = &r
+		op.GeoM.Reset()
+		op.GeoM.Translate(float64(dx+i*w), float64(dy))
+		g.screen.DrawImage(img, op)
+	}
 	// Render 'down' button
 	op = &ebiten.DrawImageOptions{}
-	op.ImageParts = imgParts([]imgPart{parts[2]})
+	r := image.Rect(2*w, 0, 3*w, h)
+	op.SourceRect = &r
+	op.GeoM.Translate(float64(dx+2*w), float64(dy))
 	alpha := 0.0
 	if input.Current().IsActionKeyPressed() {
 		alpha = 0.4
