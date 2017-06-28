@@ -15,21 +15,11 @@ import (
 )
 
 var (
-	cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
 	memProfile = flag.String("memprofile", "", "write memory profile to file")
 )
 
 func main() {
 	flag.Parse()
-	if *cpuProfile != "" {
-		f, err := os.Create(*cpuProfile)
-		if err != nil {
-			panic(err)
-		}
-		defer f.Close()
-		pprof.StartCPUProfile(f)
-		defer pprof.StopCPUProfile()
-	}
 
 	game, err := ino.NewGame()
 	if err != nil {

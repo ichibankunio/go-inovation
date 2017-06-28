@@ -2,10 +2,13 @@ package ino
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"image"
 	"image/color"
 	"math/rand"
+	"os"
+	"runtime/pprof"
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
@@ -283,7 +286,10 @@ type Game struct {
 	img           map[string]*ebiten.Image
 	font          *Font
 	screen        *ebiten.Image
+	cpup          *os.File
 }
+
+var cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func (g *Game) Loop(screen *ebiten.Image) error {
 	if g.imageLoadedCh != nil || g.audioLoadedCh != nil {
@@ -309,8 +315,25 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		return err
 	}
 	input.Current().Update()
-	g.screen = screen
 
+	if input.Current().IsKeyPushed(ebiten.KeyP) && *cpuProfile != "" && g.cpup == nil {
+		f, err := os.Create(*cpuProfile)
+		if err != nil {
+			panic(err)
+		}
+		g.cpup = f
+		pprof.StartCPUProfile(f)
+		fmt.Println("Start CPU Profiling")
+	}
+
+	if input.Current().IsKeyPushed(ebiten.KeyQ) && g.cpup != nil {
+		pprof.StopCPUProfile()
+		g.cpup.Close()
+		g.cpup = nil
+		fmt.Println("Stop CPU Profiling")
+	}
+
+	g.screen = screen
 	if g.gameState == nil {
 		g.gameState = &TitleMain{}
 	} else {

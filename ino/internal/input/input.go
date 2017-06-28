@@ -27,6 +27,10 @@ var keys = []ebiten.Key{
 	ebiten.KeyLeft,
 	ebiten.KeyDown,
 	ebiten.KeyRight,
+
+	// Profiling
+	ebiten.KeyP,
+	ebiten.KeyQ,
 }
 
 type Input struct {
@@ -98,7 +102,7 @@ func (i *Input) IsSpacePushed() bool {
 	return i.spaceTouched && !i.prevSpaceTouched
 }
 
-func (i *Input) isKeyPressed(key ebiten.Key) bool {
+func (i *Input) IsKeyPressed(key ebiten.Key) bool {
 	_, ok := i.pressed[key]
 	return ok
 }
@@ -114,7 +118,7 @@ func (i *Input) IsKeyPushed(key ebiten.Key) bool {
 }
 
 func (i *Input) IsActionKeyPressed() bool {
-	return i.isKeyPressed(ebiten.KeyEnter) || i.isKeyPressed(ebiten.KeySpace)
+	return i.IsKeyPressed(ebiten.KeyEnter) || i.IsKeyPressed(ebiten.KeySpace)
 }
 
 func (i *Input) IsActionKeyPushed() bool {
@@ -124,11 +128,11 @@ func (i *Input) IsActionKeyPushed() bool {
 func (i *Input) IsDirectionKeyPressed(dir Direction) bool {
 	switch dir {
 	case DirectionLeft:
-		return i.isKeyPressed(ebiten.KeyLeft)
+		return i.IsKeyPressed(ebiten.KeyLeft)
 	case DirectionRight:
-		return i.isKeyPressed(ebiten.KeyRight)
+		return i.IsKeyPressed(ebiten.KeyRight)
 	case DirectionDown:
-		return i.isKeyPressed(ebiten.KeyDown)
+		return i.IsKeyPressed(ebiten.KeyDown)
 	default:
 		panic("not reach")
 	}
