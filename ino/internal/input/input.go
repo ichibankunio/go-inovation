@@ -28,6 +28,9 @@ var keys = []ebiten.Key{
 	ebiten.KeyDown,
 	ebiten.KeyRight,
 
+	// Fullscreen
+	ebiten.KeyF,
+
 	// Profiling
 	ebiten.KeyP,
 	ebiten.KeyQ,
