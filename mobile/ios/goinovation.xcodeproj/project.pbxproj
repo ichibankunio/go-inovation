@@ -129,7 +129,7 @@
 				TargetAttributes = {
 					8C7185B81D11C56C00F98056 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = JF56W8HGC5;
+						DevelopmentTeam = M89F6KFPW7;
 					};
 				};
 			};
@@ -295,6 +295,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = M89F6KFPW7;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -307,6 +308,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.hajimehoshi.goinovation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "66cbd4cd-94b8-4d65-a8d2-61f9d7cd4c6c";
+				PROVISIONING_PROFILE_SPECIFIER = "iPod Touch";
 			};
 			name = Debug;
 		};
