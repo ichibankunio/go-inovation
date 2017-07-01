@@ -317,7 +317,9 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	input.Current().Update()
 
 	if input.Current().IsKeyPushed(ebiten.KeyF) {
-		ebiten.SetFullscreen(!ebiten.IsFullscreen())
+		f := ebiten.IsFullscreen()
+		ebiten.SetFullscreen(!f)
+		ebiten.SetCursorVisibility(f)
 	}
 
 	if input.Current().IsKeyPushed(ebiten.KeyP) && *cpuProfile != "" && g.cpup == nil {
