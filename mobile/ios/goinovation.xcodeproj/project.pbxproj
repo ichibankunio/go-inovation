@@ -307,7 +307,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hajimehoshi.goinovation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "66cbd4cd-94b8-4d65-a8d2-61f9d7cd4c6c";
+				PROVISIONING_PROFILE = "e6406961-ca62-49f3-bf80-21307a36bfb3";
 				PROVISIONING_PROFILE_SPECIFIER = "iPod Touch";
 			};
 			name = Debug;
