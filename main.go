@@ -15,7 +15,6 @@ import (
 )
 
 var (
-	fullscreen = flag.Bool("fullscreen", false, "fullscreen mode")
 	memProfile = flag.String("memprofile", "", "write memory profile to file")
 )
 
@@ -26,7 +25,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	ebiten.SetFullscreen(*fullscreen)
 	if err := ebiten.Run(game.Loop, ino.ScreenWidth, ino.ScreenHeight, ino.Scale(), ino.Title); err != nil {
 		panic(err)
 	}
