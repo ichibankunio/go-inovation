@@ -27,7 +27,7 @@ func main() {
 		panic(err)
 	}
 	ebiten.SetFullscreen(*fullscreen)
-	if err := ebiten.Run(game.Loop, ino.ScreenWidth, ino.ScreenHeight, 2, ino.Title); err != nil {
+	if err := ebiten.Run(game.Loop, ino.ScreenWidth, ino.ScreenHeight, ino.Scale(), ino.Title); err != nil {
 		panic(err)
 	}
 	if *memProfile != "" {
