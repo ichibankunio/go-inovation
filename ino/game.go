@@ -55,13 +55,13 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	}
 	input.Current().Update()
 
-	if input.Current().IsKeyPushed(ebiten.KeyF) {
+	if input.Current().IsKeyJustPressed(ebiten.KeyF) {
 		f := ebiten.IsFullscreen()
 		ebiten.SetFullscreen(!f)
 		ebiten.SetCursorVisibility(f)
 	}
 
-	if input.Current().IsKeyPushed(ebiten.KeyP) && *cpuProfile != "" && g.cpup == nil {
+	if input.Current().IsKeyJustPressed(ebiten.KeyP) && *cpuProfile != "" && g.cpup == nil {
 		f, err := os.Create(*cpuProfile)
 		if err != nil {
 			panic(err)
@@ -71,7 +71,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		fmt.Println("Start CPU Profiling")
 	}
 
-	if input.Current().IsKeyPushed(ebiten.KeyQ) && g.cpup != nil {
+	if input.Current().IsKeyJustPressed(ebiten.KeyQ) && g.cpup != nil {
 		pprof.StopCPUProfile()
 		g.cpup.Close()
 		g.cpup = nil

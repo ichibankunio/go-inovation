@@ -101,7 +101,7 @@ func (i *Input) IsSpaceTouched() bool {
 	return i.spaceTouched
 }
 
-func (i *Input) IsSpacePushed() bool {
+func (i *Input) IsSpaceJustPressed() bool {
 	return i.spaceTouched && !i.prevSpaceTouched
 }
 
@@ -110,8 +110,7 @@ func (i *Input) IsKeyPressed(key ebiten.Key) bool {
 	return ok
 }
 
-// TODO(hajimehoshi): Rename this to IsKeyTrigger?
-func (i *Input) IsKeyPushed(key ebiten.Key) bool {
+func (i *Input) IsKeyJustPressed(key ebiten.Key) bool {
 	_, ok := i.pressed[key]
 	if !ok {
 		return false
@@ -124,8 +123,8 @@ func (i *Input) IsActionKeyPressed() bool {
 	return i.IsKeyPressed(ebiten.KeyEnter) || i.IsKeyPressed(ebiten.KeySpace)
 }
 
-func (i *Input) IsActionKeyPushed() bool {
-	return i.IsKeyPushed(ebiten.KeyEnter) || i.IsKeyPushed(ebiten.KeySpace)
+func (i *Input) IsActionKeyJustPressed() bool {
+	return i.IsKeyJustPressed(ebiten.KeyEnter) || i.IsKeyJustPressed(ebiten.KeySpace)
 }
 
 func (i *Input) IsDirectionKeyPressed(dir Direction) bool {

@@ -331,7 +331,7 @@ func (p *Player) moveItemGet() {
 		p.waitTimer++
 		return
 	}
-	if input.Current().IsActionKeyPushed() {
+	if input.Current().IsActionKeyJustPressed() {
 		p.state = PLAYERSTATE_NORMAL
 		ResumeBGM(BGM0)
 	}
@@ -345,7 +345,7 @@ func (p *Player) moveByInput() {
 		p.direction = 1
 	}
 
-	if input.Current().IsActionKeyPushed() {
+	if input.Current().IsActionKeyJustPressed() {
 		if ((p.gameData.jumpMax > p.jumpCnt) || p.onWall()) && !input.Current().IsDirectionKeyPressed(input.DirectionDown) {
 			p.speed.Y = PLAYER_JUMP // ジャンプ
 			if !p.onWall() {

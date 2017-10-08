@@ -52,7 +52,7 @@ func (t *TitleMain) Update(game *Game) {
 		t.offsetY = rand.Intn(5) - 3
 	}
 
-	if (input.Current().IsActionKeyPushed() || input.Current().IsSpacePushed()) && t.timer > 5 {
+	if (input.Current().IsActionKeyJustPressed() || input.Current().IsSpaceJustPressed()) && t.timer > 5 {
 		t.gameStateMsg = GAMESTATE_MSG_REQ_OPENING
 
 		if t.lunkerMode {
@@ -65,15 +65,15 @@ func (t *TitleMain) Update(game *Game) {
 	// ランカー・モード・コマンド
 	switch t.lunkerCommand {
 	case 0, 1, 2, 6:
-		if input.Current().IsKeyPushed(ebiten.KeyLeft) {
+		if input.Current().IsKeyJustPressed(ebiten.KeyLeft) {
 			t.lunkerCommand++
-		} else if input.Current().IsKeyPushed(ebiten.KeyRight) || input.Current().IsKeyPushed(ebiten.KeyUp) || input.Current().IsKeyPushed(ebiten.KeyDown) {
+		} else if input.Current().IsKeyJustPressed(ebiten.KeyRight) || input.Current().IsKeyJustPressed(ebiten.KeyUp) || input.Current().IsKeyJustPressed(ebiten.KeyDown) {
 			t.lunkerCommand = 0
 		}
 	case 3, 4, 5, 7:
-		if input.Current().IsKeyPushed(ebiten.KeyRight) {
+		if input.Current().IsKeyJustPressed(ebiten.KeyRight) {
 			t.lunkerCommand++
-		} else if input.Current().IsKeyPushed(ebiten.KeyLeft) || input.Current().IsKeyPushed(ebiten.KeyUp) || input.Current().IsKeyPushed(ebiten.KeyDown) {
+		} else if input.Current().IsKeyJustPressed(ebiten.KeyLeft) || input.Current().IsKeyJustPressed(ebiten.KeyUp) || input.Current().IsKeyJustPressed(ebiten.KeyDown) {
 			t.lunkerCommand = 0
 		}
 	default:
@@ -168,7 +168,7 @@ func (e *EndingMain) Update(game *Game) {
 			vol := 1 - (float64(e.bgmFadingTimer) / max)
 			SetBGMVolume(vol)
 		}
-		if (input.Current().IsActionKeyPushed() || input.Current().IsSpacePushed()) && e.timer > 5 {
+		if (input.Current().IsActionKeyJustPressed() || input.Current().IsSpaceJustPressed()) && e.timer > 5 {
 			// 条件を満たしていると隠し画面へ
 			if game.gameData.IsGetOmega() {
 				if game.gameData.lunkerMode {
@@ -215,7 +215,7 @@ func NewSecretMain(number int) *SecretMain {
 
 func (s *SecretMain) Update(game *Game) {
 	s.timer++
-	if (input.Current().IsActionKeyPushed() || input.Current().IsSpacePushed()) && s.timer > 5 {
+	if (input.Current().IsActionKeyJustPressed() || input.Current().IsSpaceJustPressed()) && s.timer > 5 {
 		s.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
 	}
 }
