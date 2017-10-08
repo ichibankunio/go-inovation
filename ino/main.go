@@ -387,27 +387,9 @@ var (
 )
 
 func init() {
-	imageEmpty, err := ebiten.NewImage(16, 16, ebiten.FilterNearest)
-	if err != nil {
-		panic(err)
-	}
-	if err := imageEmpty.Fill(color.White); err != nil {
-		panic(err)
-	}
-	imageItemFrame, err = ebiten.NewImage(32, 32, ebiten.FilterNearest)
-	if err != nil {
-		panic(err)
-	}
-	if err := imageItemFrame.Fill(color.Black); err != nil {
-		panic(err)
-	}
-	op := &ebiten.DrawImageOptions{}
-	ew, eh := imageEmpty.Size()
-	op.GeoM.Scale(float64(28)/float64(ew), float64(28)/float64(eh))
-	op.GeoM.Translate(2, 2)
-	if err := imageItemFrame.DrawImage(imageEmpty, op); err != nil {
-		panic(err)
-	}
+	imageItemFrame, _ = ebiten.NewImage(32, 32, ebiten.FilterNearest)
+	imageItemFrame.Fill(color.Black)
+	ebitenutil.DrawRect(imageItemFrame, 2, 2, 28, 28, color.White)
 }
 
 func toNRGBA(clr color.Color) (fr, fg, fb, fa float64) {
