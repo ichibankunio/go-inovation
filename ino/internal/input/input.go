@@ -122,7 +122,7 @@ func (i *Input) IsSpaceTouched() bool {
 	return i.spaceTouched
 }
 
-func (i *Input) IsSpaceJustPressed() bool {
+func (i *Input) IsSpaceJustTouched() bool {
 	return i.spaceTouched && !i.prevSpaceTouched
 }
 
