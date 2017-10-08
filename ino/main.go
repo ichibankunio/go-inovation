@@ -1,15 +1,10 @@
 package ino
 
 import (
-	"flag"
-	"fmt"
 	"math/rand"
-	"os"
-	"runtime/pprof"
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
@@ -273,108 +268,4 @@ type GameState interface {
 	Update(g *Game) // TODO: Should return errors
 	Draw(g *Game)
 	Msg() GameStateMsg
-}
-
-type Game struct {
-	imageLoadedCh chan error
-	audioLoadedCh chan error
-	gameState     GameState
-	gameData      *GameData
-	img           map[string]*ebiten.Image
-	font          *Font
-	screen        *ebiten.Image
-	cpup          *os.File
-}
-
-var cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
-
-func (g *Game) Loop(screen *ebiten.Image) error {
-	if g.imageLoadedCh != nil || g.audioLoadedCh != nil {
-		select {
-		case err := <-g.imageLoadedCh:
-			if err != nil {
-				return err
-			}
-			g.imageLoadedCh = nil
-		case err := <-g.audioLoadedCh:
-			if err != nil {
-				return err
-			}
-			g.audioLoadedCh = nil
-		default:
-		}
-	}
-	if g.imageLoadedCh != nil || g.audioLoadedCh != nil {
-		return ebitenutil.DebugPrint(screen, "Now Loading...")
-	}
-
-	if err := audioContext.Update(); err != nil {
-		return err
-	}
-	input.Current().Update()
-
-	if input.Current().IsKeyPushed(ebiten.KeyF) {
-		f := ebiten.IsFullscreen()
-		ebiten.SetFullscreen(!f)
-		ebiten.SetCursorVisibility(f)
-	}
-
-	if input.Current().IsKeyPushed(ebiten.KeyP) && *cpuProfile != "" && g.cpup == nil {
-		f, err := os.Create(*cpuProfile)
-		if err != nil {
-			panic(err)
-		}
-		g.cpup = f
-		pprof.StartCPUProfile(f)
-		fmt.Println("Start CPU Profiling")
-	}
-
-	if input.Current().IsKeyPushed(ebiten.KeyQ) && g.cpup != nil {
-		pprof.StopCPUProfile()
-		g.cpup.Close()
-		g.cpup = nil
-		fmt.Println("Stop CPU Profiling")
-	}
-
-	g.screen = screen
-	if g.gameState == nil {
-		g.gameState = &TitleMain{}
-	} else {
-		switch g.gameState.Msg() {
-		case GAMESTATE_MSG_REQ_TITLE:
-			if err := PauseBGM(); err != nil {
-				return err
-			}
-			g.gameState = &TitleMain{}
-		case GAMESTATE_MSG_REQ_OPENING:
-			if err := PlayBGM(BGM1); err != nil {
-				return err
-			}
-			g.gameState = &OpeningMain{}
-		case GAMESTATE_MSG_REQ_GAME:
-			g.gameState = NewGameMain(g)
-		case GAMESTATE_MSG_REQ_ENDING:
-			if err := PlayBGM(BGM1); err != nil {
-				return err
-			}
-			g.gameState = &EndingMain{}
-		case GAMESTATE_MSG_REQ_SECRET1:
-			if err := PlayBGM(BGM1); err != nil {
-				return err
-			}
-			g.gameState = NewSecretMain(1)
-		case GAMESTATE_MSG_REQ_SECRET2:
-			if err := PlayBGM(BGM1); err != nil {
-				return err
-			}
-			g.gameState = NewSecretMain(2)
-		}
-	}
-	g.gameState.Update(g)
-	if !ebiten.IsRunningSlowly() {
-		g.gameState.Draw(g)
-	}
-
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
-	return nil
 }

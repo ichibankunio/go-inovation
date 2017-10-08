@@ -1,4 +1,4 @@
-package ino
+package font
 
 import (
 	"fmt"
@@ -8,12 +8,12 @@ import (
 )
 
 type Font struct {
-	fonts map[rune]*ebiten.Image
+	imgs map[rune]*ebiten.Image
 }
 
-func NewFont() *Font {
+func NewFont(imgs map[rune]*ebiten.Image) *Font {
 	return &Font{
-		fonts: map[rune]*ebiten.Image{},
+		imgs: imgs,
 	}
 }
 
@@ -24,7 +24,7 @@ func (f *Font) DrawNumber(target *ebiten.Image, num int, x, y int) {
 			x += 9
 			continue
 		}
-		if img, ok := f.fonts[c]; ok {
+		if img, ok := f.imgs[c]; ok {
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(x), float64(y))
 			target.DrawImage(img, op)
