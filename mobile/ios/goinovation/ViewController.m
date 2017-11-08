@@ -35,9 +35,9 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     CGRect viewRect = [[self view] frame];
-    double scaleX = (double)viewRect.size.width / (double)MobileScreenWidth;
-    double scaleY = (double)viewRect.size.height / (double)MobileScreenHeight;
-    double scale = MAX(1, MIN(scaleX, scaleY));
+    double scaleX = viewRect.size.width / (double)MobileScreenWidth;
+    double scaleY = viewRect.size.height / (double)MobileScreenHeight;
+    double scale = MIN(scaleX, scaleY);
     int width = (int)MobileScreenWidth * scale;
     int height = (int)MobileScreenHeight * scale;
     int x = (viewRect.size.width - width) / 2;
