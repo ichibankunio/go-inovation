@@ -224,6 +224,7 @@ func (s *SecretMain) Draw(game *Game) {
 	game.Draw("bg", 0, 0, 0, 240, 320, 240)
 	if s.number == 1 {
 		game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2, 0, 2048-96*2, 256, 96)
+		return
 	}
 	game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2, 0, 2048-96, 256, 96)
 }
