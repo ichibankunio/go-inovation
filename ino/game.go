@@ -50,9 +50,6 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		return ebitenutil.DebugPrint(screen, "Now Loading...")
 	}
 
-	if err := audioContext.Update(); err != nil {
-		return err
-	}
 	input.Current().Update()
 
 	if input.Current().IsKeyJustPressed(ebiten.KeyF) {
