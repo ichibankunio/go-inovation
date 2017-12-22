@@ -7,6 +7,7 @@ import (
 	"image"
 	"image/color"
 	"os"
+	"runtime"
 	"runtime/pprof"
 
 	"github.com/hajimehoshi/ebiten"
@@ -44,6 +45,9 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 			}
 			g.audioLoadedCh = nil
 		default:
+			// Force scheduling here or other goroutines never run on Chrome (#11).
+			// Not sure but this might be GopherJS scheduling problem
+			runtime.Gosched()
 		}
 	}
 	if g.imageLoadedCh != nil || g.audioLoadedCh != nil {
