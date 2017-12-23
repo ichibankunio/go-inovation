@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"runtime/pprof"
+	"runtime/trace"
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/go-inovation/ino"
@@ -16,10 +17,22 @@ import (
 
 var (
 	memProfile = flag.String("memprofile", "", "write memory profile to file")
+	traceOut   = flag.String("trace", "", "write trace to file")
 )
 
 func main() {
 	flag.Parse()
+
+	if *traceOut != "" {
+		f, err := os.Create(*traceOut)
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+
+		trace.Start(f)
+		defer trace.Stop()
+	}
 
 	game, err := ino.NewGame()
 	if err != nil {
