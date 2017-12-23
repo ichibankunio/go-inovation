@@ -18,8 +18,7 @@ import (
 )
 
 type Game struct {
-	imageLoadedCh chan error
-	audioLoadedCh chan error
+	resourceLoadedCh chan error
 	gameState     GameState
 	gameData      *GameData
 	img           map[string]*ebiten.Image
@@ -31,22 +30,17 @@ type Game struct {
 var cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func (g *Game) Loop(screen *ebiten.Image) error {
-	if g.imageLoadedCh != nil || g.audioLoadedCh != nil {
+	if g.resourceLoadedCh != nil {
 		select {
-		case err := <-g.imageLoadedCh:
+		case err := <-g.resourceLoadedCh:
 			if err != nil {
 				return err
 			}
-			g.imageLoadedCh = nil
-		case err := <-g.audioLoadedCh:
-			if err != nil {
-				return err
-			}
-			g.audioLoadedCh = nil
+			g.resourceLoadedCh = nil
 		default:
 		}
 	}
-	if g.imageLoadedCh != nil || g.audioLoadedCh != nil {
+	if g.resourceLoadedCh != nil {
 		return ebitenutil.DebugPrint(screen, "Now Loading...")
 	}
 
@@ -231,22 +225,18 @@ func (g *Game) loadImages() error {
 func NewGame() (*Game, error) {
 	game := &Game{
 		img:           map[string]*ebiten.Image{},
-		imageLoadedCh: make(chan error),
-		audioLoadedCh: make(chan error),
+		resourceLoadedCh: make(chan error),
 	}
 	go func() {
 		if err := game.loadImages(); err != nil {
-			game.imageLoadedCh <- err
-		} else {
-			close(game.imageLoadedCh)
+			game.resourceLoadedCh <- err
+			return
 		}
-	}()
-	go func() {
 		if err := loadAudio(); err != nil {
-			game.audioLoadedCh <- err
-		} else {
-			close(game.audioLoadedCh)
+			game.resourceLoadedCh <- err
+			return
 		}
+		close(game.resourceLoadedCh)
 	}()
 	if err := finalizeAudio(); err != nil {
 		return nil, err
