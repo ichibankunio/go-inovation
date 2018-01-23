@@ -16,7 +16,7 @@ http://hajimehoshi.github.io/go-inovation/
 
 ### iOS
 
-https://itunes.apple.com/us/app/id1132624266
+<a href="https://itunes.apple.com/us/app/%E3%81%84%E3%81%AE-%E3%81%B9%E3%83%BC%E3%81%97%E3%82%87%E3%82%93-2007/id1132624266?mt=8" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg) no-repeat;width:135px;height:40px;background-size:contain;"></a>
 
 ## How to install and run on desktops
 
