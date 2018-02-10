@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	_ "image/png"
 	"os"
 	"runtime/pprof"
 
