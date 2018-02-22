@@ -2,39 +2,8 @@ Copyright 2015 Omega (The original auther)
 Copyright 2015 Haneda3 (JavaScript port)
 Copyright 2015 Hajime Hoshi (Go port)
 
-http://o-mega.sakura.ne.jp/product/ino.html
-http://www5.atwiki.jp/yaruhara/pages/56.html
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-# にほんご
-
-免責・著作・配布 
-　柔かいコト 
-　　本ゲームは「みんなで楽しく」やわらかいです。
-
-　　本ゲームを改造したりイジったバージョンを配布しても、何らOKです。改造たのしーい！ 
-　　改造したところや改造した人の名前を、分かりやすいところに書いておくと 
-　　いいかもしれません。
-
-　　ナイスな改造が出来たら　メールなどで教えて。俺にも遊ばせてください。
-
-　　改造とか一切してないものは好きにコピーして配布しちゃって結構結構。
-
-
-# English
-
-Disclaimer / Copyright / Redistribution
-
-　This game is under the "Yawaraka(flexible)" license.
-
-　　Use at your own risk. 
-　　You can freely modify and redistribute it. Conversions are really Fun! 
-　　You should write the changes and the person who did them in the 
-　　readme file or in a place that was obvious to find.
-
-　　If you make a cool modification, please tell me via mail or by any 
-　　other means, even though that's not a condition of the license. 
-　　Let me enjoy your changes too.
-
-　　If you have not done any modifications, you can freely distribute 
-　　without problems.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
