@@ -8,7 +8,7 @@ http://o-mega.sakura.ne.jp/product/ino.html
 
 ### Web Browsers
 
-http://hajimehoshi.github.io/go-inovation/
+https://jsgo.io/github.com/hajimehoshi/go-inovation
 
 ### Android
 
