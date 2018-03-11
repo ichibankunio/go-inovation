@@ -141,7 +141,7 @@ func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) {
 	g.screen.DrawImage(g.img[key], op)
 }
 
-func (g *Game) DrawParts(key string, parts []imgPart) {
+func (g *Game) DrawParts(key string, parts []*imgPart) {
 	op := &ebiten.DrawImageOptions{}
 	var r image.Rectangle
 	for _, p := range parts {

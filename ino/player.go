@@ -466,18 +466,18 @@ func (p *Player) drawPlayer(game *Game) {
 }
 
 func (p *Player) drawLife(game *Game) {
-	parts := []imgPart{}
+	parts := []*imgPart{}
 	for t := 0; t < game.gameData.lifeMax; t++ {
 		if p.life < LIFE_RATIO*2 && p.timer%10 < 5 && game.gameData.lifeMax > 1 {
 			continue
 		}
 		if p.life >= (t+1)*LIFE_RATIO {
-			parts = append(parts, imgPart{
+			parts = append(parts, &imgPart{
 				CHAR_SIZE * t, 0, CHAR_SIZE * 3, 128 + CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE,
 			})
 			continue
 		}
-		parts = append(parts, imgPart{
+		parts = append(parts, &imgPart{
 			CHAR_SIZE * t, 0, CHAR_SIZE * 4, 128 + CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE,
 		})
 	}
@@ -485,10 +485,10 @@ func (p *Player) drawLife(game *Game) {
 }
 
 func (p *Player) drawItems(game *Game) {
-	parts := []imgPart{}
+	parts := []*imgPart{}
 	for t := FIELD_ITEM_FUJI; t < FIELD_ITEM_MAX; t++ {
 		if !game.gameData.itemGetFlags[t] {
-			parts = append(parts, imgPart{
+			parts = append(parts, &imgPart{
 				ScreenWidth - CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 無
 				CHAR_SIZE * 5, 128 + CHAR_SIZE, CHAR_SIZE / 4, CHAR_SIZE / 2,
 			})
@@ -498,7 +498,7 @@ func (p *Player) drawItems(game *Game) {
 		if IsItemForClear(t) {
 			for i, c := range clearFlagItems {
 				if c == t {
-					parts = append(parts, imgPart{
+					parts = append(parts, &imgPart{
 						ScreenWidth - CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0,
 						CHAR_SIZE*5 + CHAR_SIZE/4*(i+2), 128 + CHAR_SIZE, CHAR_SIZE / 4, CHAR_SIZE / 2,
 					})
@@ -506,7 +506,7 @@ func (p *Player) drawItems(game *Game) {
 			}
 			continue
 		}
-		parts = append(parts, imgPart{
+		parts = append(parts, &imgPart{
 			ScreenWidth - CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 有
 			CHAR_SIZE*5 + CHAR_SIZE/4, 128 + CHAR_SIZE, CHAR_SIZE / 4, CHAR_SIZE / 2,
 		})
