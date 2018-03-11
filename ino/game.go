@@ -129,31 +129,12 @@ func (g *Game) DrawItemFrame(x, y int) {
 	g.screen.DrawImage(imageItemFrame, op)
 }
 
-type imgPart struct {
-	px, py, sx, sy, sw, sh int
-}
-
 func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) {
 	op := &ebiten.DrawImageOptions{}
 	r := image.Rect(sx, sy, sx+sw, sy+sh)
 	op.SourceRect = &r
 	op.GeoM.Translate(float64(px), float64(py))
 	g.screen.DrawImage(g.img[key], op)
-}
-
-func (g *Game) DrawParts(key string, parts []*imgPart) {
-	op := &ebiten.DrawImageOptions{}
-	var r image.Rectangle
-	for _, p := range parts {
-		r.Min.X = p.sx
-		r.Min.Y = p.sy
-		r.Max.X = p.sx + p.sw
-		r.Max.Y = p.sy + p.sh
-		op.SourceRect = &r
-		op.GeoM.Reset()
-		op.GeoM.Translate(float64(p.px), float64(p.py))
-		g.screen.DrawImage(g.img[key], op)
-	}
 }
 
 func (g *Game) DrawNumber(num int, x, y int) {

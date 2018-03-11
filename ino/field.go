@@ -147,7 +147,6 @@ func (f *Field) EraseField(x, y int) {
 }
 
 func (f *Field) Draw(game *Game, viewPosition Position) {
-	parts := []*imgPart{}
 	vx, vy := viewPosition.X, viewPosition.Y
 	ofs_x := CHAR_SIZE - vx%CHAR_SIZE
 	ofs_y := CHAR_SIZE - vy%CHAR_SIZE
@@ -175,12 +174,10 @@ func (f *Field) Draw(game *Game, viewPosition Position) {
 				continue
 			}
 
-			parts = append(parts, &imgPart{
-				(xx+12)*CHAR_SIZE + ofs_x + GRAPHIC_OFFSET_X + (ScreenWidth-320)/2,
-				(yy+8)*CHAR_SIZE + ofs_y + GRAPHIC_OFFSET_Y + (ScreenHeight-240)/2,
-				gx * 16, gy * 16, 16, 16,
-			})
+			game.Draw("ino",
+				(xx+12)*CHAR_SIZE+ofs_x+GRAPHIC_OFFSET_X+(ScreenWidth-320)/2,
+				(yy+8)*CHAR_SIZE+ofs_y+GRAPHIC_OFFSET_Y+(ScreenHeight-240)/2,
+				gx*16, gy*16, 16, 16)
 		}
 	}
-	game.DrawParts("ino", parts)
 }
