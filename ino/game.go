@@ -14,18 +14,18 @@ import (
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
-	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 	"github.com/hajimehoshi/go-inovation/ino/internal/font"
+	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
 type Game struct {
 	resourceLoadedCh chan error
-	gameState     GameState
-	gameData      *GameData
-	img           map[string]*ebiten.Image
-	font          *font.Font
-	screen        *ebiten.Image
-	cpup          *os.File
+	gameState        GameState
+	gameData         *GameData
+	img              map[string]*ebiten.Image
+	font             *font.Font
+	screen           *ebiten.Image
+	cpup             *os.File
 }
 
 var cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
@@ -143,8 +143,12 @@ func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) {
 
 func (g *Game) DrawParts(key string, parts []imgPart) {
 	op := &ebiten.DrawImageOptions{}
+	var r image.Rectangle
 	for _, p := range parts {
-		r := image.Rect(p.sx, p.sy, p.sx+p.sw, p.sy+p.sh)
+		r.Min.X = p.sx
+		r.Min.Y = p.sy
+		r.Max.X = p.sx + p.sw
+		r.Max.Y = p.sy + p.sh
 		op.SourceRect = &r
 		op.GeoM.Reset()
 		op.GeoM.Translate(float64(p.px), float64(p.py))
@@ -225,7 +229,7 @@ func (g *Game) loadImages() error {
 
 func NewGame() (*Game, error) {
 	game := &Game{
-		img:           map[string]*ebiten.Image{},
+		img:              map[string]*ebiten.Image{},
 		resourceLoadedCh: make(chan error),
 	}
 	go func() {
