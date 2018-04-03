@@ -62,7 +62,7 @@ func loadAudio() error {
 			if err != nil {
 				s = &emptyAudio{}
 			} else {
-				s = audio.NewInfiniteLoop(stream, stream.Size())
+				s = audio.NewInfiniteLoop(stream, stream.Length())
 			}
 		case strings.HasSuffix(n, ".wav"):
 			stream, err := wav.Decode(audioContext, f)

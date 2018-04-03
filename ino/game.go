@@ -10,8 +10,10 @@ import (
 	"os"
 	"runtime/pprof"
 
+	"github.com/gopherjs/gopherjs/js"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hajimehoshi/ebiten/inpututil"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
 	"github.com/hajimehoshi/go-inovation/ino/internal/font"
@@ -32,6 +34,16 @@ type Game struct {
 var cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func (g *Game) Loop(screen *ebiten.Image) error {
+	// exp
+	if inpututil.IsKeyJustPressed(ebiten.KeyQ) && js.Global != nil {
+		doc := js.Global.Get("document")
+		canvas := doc.Call("getElementsByTagName", "canvas").Index(0)
+		context := canvas.Call("getContext", "webgl")
+		context.Call("getExtension", "WEBGL_lose_context").Call("loseContext")
+		fmt.Println("Context Lost!")
+		return nil
+	}
+	
 	if g.resourceLoadedCh != nil {
 		select {
 		case err := <-g.resourceLoadedCh:
@@ -43,7 +55,8 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		}
 	}
 	if g.resourceLoadedCh != nil {
-		return ebitenutil.DebugPrint(screen, "Now Loading...")
+		ebitenutil.DebugPrint(screen, "Now Loading...")
+		return nil
 	}
 
 	input.Current().Update()
@@ -51,7 +64,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	if input.Current().IsKeyJustPressed(ebiten.KeyF) {
 		f := ebiten.IsFullscreen()
 		ebiten.SetFullscreen(!f)
-		ebiten.SetCursorVisibility(f)
+		ebiten.SetCursorVisible(f)
 	}
 
 	if input.Current().IsKeyJustPressed(ebiten.KeyP) && *cpuProfile != "" && g.cpup == nil {
