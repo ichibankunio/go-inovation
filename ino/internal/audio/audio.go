@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/audio"
 	"github.com/hajimehoshi/ebiten/audio/mp3"
 	"github.com/hajimehoshi/ebiten/audio/wav"
+
 	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
 )
 

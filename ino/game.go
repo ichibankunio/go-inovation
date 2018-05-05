@@ -44,7 +44,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		fmt.Println("Context Lost!")
 		return nil
 	}
-	
+
 	if g.resourceLoadedCh != nil {
 		select {
 		case err := <-g.resourceLoadedCh:
