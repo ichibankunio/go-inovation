@@ -182,23 +182,6 @@ func (g *Game) loadImages() error {
 		}
 		g.img[f] = img
 	}
-
-	fontImgs := map[rune]*ebiten.Image{}
-	for n := 48; n <= 57; n++ {
-		b, err := assets.Asset(fmt.Sprintf("resources/font/%d.png", n))
-		if err != nil {
-			return err
-		}
-		origImg, _, err := image.Decode(bytes.NewReader(b))
-		if err != nil {
-			return err
-		}
-		img, err := ebiten.NewImageFromImage(origImg, ebiten.FilterNearest)
-		if err != nil {
-			return err
-		}
-		fontImgs[rune(n)] = img
-	}
 	return nil
 }
 
