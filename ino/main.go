@@ -165,7 +165,6 @@ type EndingScene struct {
 }
 
 const (
-	ENDING_SCROLL_LEN   = 1088
 	ENDING_SCROLL_SPEED = 3
 )
 
@@ -176,7 +175,8 @@ func (e *EndingScene) Update(game *Game) {
 		if input.Current().IsActionKeyPressed() || input.Current().IsSpaceTouched() {
 			e.timer += 20
 		}
-		if e.timer/ENDING_SCROLL_SPEED > ENDING_SCROLL_LEN+draw.ScreenHeight {
+		scrollLen := font.Height(text.Get(language.Japanese, text.TextIDEnding)) + draw.ScreenHeight
+		if e.timer/ENDING_SCROLL_SPEED > scrollLen {
 			e.timer = 0
 			e.state = ENDINGMAIN_STATE_RESULT
 		}
@@ -211,7 +211,11 @@ func (e *EndingScene) Draw(screen *ebiten.Image, game *Game) {
 
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, draw.ScreenHeight-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN)
+		for i, line := range strings.Split(text.Get(language.Japanese, text.TextIDEnding), "\n") {
+			x := (draw.ScreenWidth - font.Width(line)) / 2
+			y := draw.ScreenHeight - (e.timer / ENDING_SCROLL_SPEED) + i*font.LineHeight
+			font.DrawText(screen, line, x, y, color.Black)
+		}
 	case ENDINGMAIN_STATE_RESULT:
 		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-160)/2, 0, 1664, 256, 160)
 		font.DrawText(screen, strconv.Itoa(game.gameData.GetItemCount()), (draw.ScreenWidth-10*0)/2, (draw.ScreenHeight-160)/2+13*5+2, color.Black)
