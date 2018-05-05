@@ -32,22 +32,6 @@ func init() {
 	}
 }
 
-type emptyAudio struct {
-}
-
-func (e *emptyAudio) Read(b []byte) (int, error) {
-	// TODO: Clear b?
-	return len(b), nil
-}
-
-func (e *emptyAudio) Seek(offset int64, whence int) (int64, error) {
-	return 0, nil
-}
-
-func (e *emptyAudio) Close() error {
-	return nil
-}
-
 func Load() error {
 	for _, n := range soundFilenames {
 		b, err := assets.Asset("resources/sound/" + n)
@@ -60,10 +44,9 @@ func Load() error {
 		case strings.HasSuffix(n, ".mp3"):
 			stream, err := mp3.Decode(audioContext, f)
 			if err != nil {
-				s = &emptyAudio{}
-			} else {
-				s = audio.NewInfiniteLoop(stream, stream.Length())
+				return err
 			}
+			s = audio.NewInfiniteLoop(stream, stream.Length())
 		case strings.HasSuffix(n, ".wav"):
 			stream, err := wav.Decode(audioContext, f)
 			if err != nil {
