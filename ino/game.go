@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"image"
-	"image/color"
 	_ "image/png"
 	"os"
 	"runtime/pprof"
@@ -123,22 +122,6 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
 	return nil
-}
-
-var (
-	imageItemFrame *ebiten.Image
-)
-
-func init() {
-	imageItemFrame, _ = ebiten.NewImage(32, 32, ebiten.FilterNearest)
-	imageItemFrame.Fill(color.Black)
-	ebitenutil.DrawRect(imageItemFrame, 2, 2, 28, 28, color.White)
-}
-
-func (g *Game) DrawItemFrame(x, y int) {
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(x), float64(y))
-	g.screen.DrawImage(imageItemFrame, op)
 }
 
 func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) {

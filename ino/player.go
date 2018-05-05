@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
+	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
@@ -513,7 +514,7 @@ func (p *Player) drawMessage(game *Game) {
 		t := WAIT_TIMER_INTERVAL - p.waitTimer
 		game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2-t*t+24,
 			256, 96*(int(p.itemGet)-int(FIELD_ITEM_BORDER)-1), 256, 96)
-		game.DrawItemFrame((ScreenWidth-32)/2, (ScreenHeight-96)/2-t*t-24)
+		draw.DrawItemFrame(game.screen, (ScreenWidth-32)/2, (ScreenHeight-96)/2-t*t-24)
 		it := int(p.itemGet) - (int(FIELD_ITEM_BORDER) + 1)
 		game.Draw("ino", (ScreenWidth-16)/2, (ScreenHeight-96)/2-int(t)*int(t)-16,
 			(it%16)*CHAR_SIZE, (it/16+4)*CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
