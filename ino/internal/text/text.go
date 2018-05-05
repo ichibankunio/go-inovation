@@ -7,11 +7,17 @@ import (
 type TextID int
 
 const (
-	TextIDOpening TextID = iota
+	TextIDStart TextID = iota
+	TextIDStartLunker
+	TextIDStartTouch
+	TextIDOpening
 )
 
 var texts = map[language.Tag]map[TextID]string{
 	language.Japanese: {
+		TextIDStart:       "すぺーす　たたく　はじまる！",
+		TextIDStartLunker: "らんかー　もーど　はじまる！",
+		TextIDStartTouch:  "がめん　たっち　はじまる！",
 		TextIDOpening: `めが　さめたら
 <red>いのしし</red>に　なっていた。
 

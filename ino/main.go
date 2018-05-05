@@ -94,17 +94,25 @@ func (t *TitleScene) Update(game *Game) {
 }
 
 func (t *TitleScene) Draw(screen *ebiten.Image, game *Game) {
+	textID := text.TextIDStart
+	clr := color.Black
 	if t.lunkerMode {
 		draw.Draw(screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
-		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(draw.ScreenHeight-240)/2, 0, 64, 256, 16)
+		textID = text.TextIDStartLunker
+		clr = color.White
 	} else {
 		draw.Draw(screen, "bg", 0, 0, 0, 0, draw.ScreenWidth, draw.ScreenHeight)
-		sy := 64 + 16
 		if input.Current().IsTouchEnabled() {
-			sy = 64 - 16
+			textID = text.TextIDStartTouch
 		}
-		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(draw.ScreenHeight-240)/2, 0, sy, 256, 16)
 	}
+
+	str := text.Get(language.Japanese, textID)
+	x := (draw.ScreenWidth-font.Width(str))/2 + t.offsetX
+	y := (draw.ScreenHeight-240)/2 + 160 + t.offsetY
+	font.DrawText(screen, str, x, y, clr)
+
+	// Draw the title.
 	draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, 32+(draw.ScreenHeight-240)/2, 0, 0, 256, 48)
 }
 
