@@ -21,7 +21,6 @@ type Game struct {
 	resourceLoadedCh chan error
 	scene            Scene
 	gameData         *GameData
-	screen           *ebiten.Image
 	cpup             *os.File
 }
 
@@ -78,7 +77,6 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		fmt.Println("Stop CPU Profiling")
 	}
 
-	g.screen = screen
 	if g.scene == nil {
 		g.scene = &TitleScene{}
 	} else {
@@ -114,7 +112,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	if ebiten.IsRunningSlowly() {
 		return nil
 	}
-	g.scene.Draw(g)
+	g.scene.Draw(screen, g)
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
 	return nil
 }

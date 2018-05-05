@@ -89,19 +89,19 @@ func (t *TitleScene) Update(game *Game) {
 	}
 }
 
-func (t *TitleScene) Draw(game *Game) {
+func (t *TitleScene) Draw(screen *ebiten.Image, game *Game) {
 	if t.lunkerMode {
-		draw.Draw(game.screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
-		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(draw.ScreenHeight-240)/2, 0, 64, 256, 16)
+		draw.Draw(screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
+		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(draw.ScreenHeight-240)/2, 0, 64, 256, 16)
 	} else {
-		draw.Draw(game.screen, "bg", 0, 0, 0, 0, draw.ScreenWidth, draw.ScreenHeight)
+		draw.Draw(screen, "bg", 0, 0, 0, 0, draw.ScreenWidth, draw.ScreenHeight)
 		sy := 64 + 16
 		if input.Current().IsTouchEnabled() {
 			sy = 64 - 16
 		}
-		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(draw.ScreenHeight-240)/2, 0, sy, 256, 16)
+		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(draw.ScreenHeight-240)/2, 0, sy, 256, 16)
 	}
-	draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, 32+(draw.ScreenHeight-240)/2, 0, 0, 256, 48)
+	draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, 32+(draw.ScreenHeight-240)/2, 0, 0, 256, 48)
 }
 
 func (t *TitleScene) Msg() GameStateMsg {
@@ -130,9 +130,9 @@ func (o *OpeningScene) Update(game *Game) {
 	}
 }
 
-func (o *OpeningScene) Draw(game *Game) {
-	draw.Draw(game.screen, "bg", 0, 0, 0, 480, 320, 240)
-	draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, draw.ScreenHeight-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
+func (o *OpeningScene) Draw(screen *ebiten.Image, game *Game) {
+	draw.Draw(screen, "bg", 0, 0, 0, 480, 320, 240)
+	draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, draw.ScreenHeight-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
 }
 
 func (o *OpeningScene) Msg() GameStateMsg {
@@ -188,16 +188,16 @@ func (e *EndingScene) Update(game *Game) {
 	}
 }
 
-func (e *EndingScene) Draw(game *Game) {
-	draw.Draw(game.screen, "bg", 0, 0, 0, 480, 320, 240)
+func (e *EndingScene) Draw(screen *ebiten.Image, game *Game) {
+	draw.Draw(screen, "bg", 0, 0, 0, 480, 320, 240)
 
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, draw.ScreenHeight-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN)
+		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, draw.ScreenHeight-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN)
 	case ENDINGMAIN_STATE_RESULT:
-		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-160)/2, 0, 1664, 256, 160)
-		font.DrawText(game.screen, strconv.Itoa(game.gameData.GetItemCount()), (draw.ScreenWidth-10*0)/2, (draw.ScreenHeight-160)/2+13*5+2)
-		font.DrawText(game.screen, strconv.Itoa(game.gameData.TimeInSecond()), (draw.ScreenWidth-13)/2, (draw.ScreenHeight-160)/2+13*8+2)
+		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-160)/2, 0, 1664, 256, 160)
+		font.DrawText(screen, strconv.Itoa(game.gameData.GetItemCount()), (draw.ScreenWidth-10*0)/2, (draw.ScreenHeight-160)/2+13*5+2)
+		font.DrawText(screen, strconv.Itoa(game.gameData.TimeInSecond()), (draw.ScreenWidth-13)/2, (draw.ScreenHeight-160)/2+13*8+2)
 	}
 }
 
@@ -224,13 +224,13 @@ func (s *SecretScene) Update(game *Game) {
 	}
 }
 
-func (s *SecretScene) Draw(game *Game) {
-	draw.Draw(game.screen, "bg", 0, 0, 0, 240, 320, 240)
+func (s *SecretScene) Draw(screen *ebiten.Image, game *Game) {
+	draw.Draw(screen, "bg", 0, 0, 0, 240, 320, 240)
 	if s.number == 1 {
-		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96*2, 256, 96)
+		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96*2, 256, 96)
 		return
 	}
-	draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96, 256, 96)
+	draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96, 256, 96)
 }
 
 func (s *SecretScene) Msg() GameStateMsg {
@@ -253,15 +253,15 @@ func (g *GameScene) Update(game *Game) {
 	g.gameStateMsg = g.player.Update()
 }
 
-func (g *GameScene) Draw(game *Game) {
+func (g *GameScene) Draw(screen *ebiten.Image, game *Game) {
 	if game.gameData.lunkerMode {
-		draw.Draw(game.screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
+		draw.Draw(screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
 	} else {
-		draw.Draw(game.screen, "bg", 0, 0, 0, 0, draw.ScreenWidth, draw.ScreenHeight)
+		draw.Draw(screen, "bg", 0, 0, 0, 0, draw.ScreenWidth, draw.ScreenHeight)
 	}
-	g.player.Draw(game)
+	g.player.Draw(screen, game)
 	if input.Current().IsTouchEnabled() {
-		draw.DrawTouchButtons(game.screen)
+		draw.DrawTouchButtons(screen)
 	}
 }
 
@@ -271,6 +271,6 @@ func (g *GameScene) Msg() GameStateMsg {
 
 type Scene interface {
 	Update(g *Game) // TODO: Should return errors
-	Draw(g *Game)
+	Draw(screen *ebiten.Image, g *Game)
 	Msg() GameStateMsg
 }

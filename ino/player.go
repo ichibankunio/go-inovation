@@ -3,6 +3,8 @@ package ino
 import (
 	"math"
 
+	"github.com/hajimehoshi/ebiten"
+
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
@@ -433,16 +435,16 @@ func (p *Player) getOnField() FieldType {
 	return p.field.GetField(x, y+1)
 }
 
-func (p *Player) drawPlayer(game *Game) {
+func (p *Player) drawPlayer(screen *ebiten.Image, game *Game) {
 	v := p.view.ToScreenPosition(p.position)
 	vx, vy := int(v.X), int(v.Y)
 	if p.state == PLAYERSTATE_DEAD { // 死亡
 		anime := (p.timer / 6) % 4
 		if game.gameData.lunkerMode {
-			draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+			draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 			return
 		}
-		draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
+		draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
 		return
 	}
 	if p.state != PLAYERSTATE_MUTEKI || p.timer%10 < 5 {
@@ -452,40 +454,40 @@ func (p *Player) drawPlayer(game *Game) {
 		}
 		if p.direction < 0 {
 			if game.gameData.lunkerMode {
-				draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+				draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 				return
 			}
-			draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
+			draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
 			return
 		}
 		if game.gameData.lunkerMode {
-			draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
+			draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
 			return
 		}
-		draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
+		draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 		return
 	}
 }
 
-func (p *Player) drawLife(game *Game) {
+func (p *Player) drawLife(screen *ebiten.Image, game *Game) {
 	for t := 0; t < game.gameData.lifeMax; t++ {
 		if p.life < LIFE_RATIO*2 && p.timer%10 < 5 && game.gameData.lifeMax > 1 {
 			continue
 		}
 		if p.life >= (t+1)*LIFE_RATIO {
-			draw.Draw(game.screen, "ino",
+			draw.Draw(screen, "ino",
 				CHAR_SIZE*t, 0, CHAR_SIZE*3, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
 			continue
 		}
-		draw.Draw(game.screen, "ino",
+		draw.Draw(screen, "ino",
 			CHAR_SIZE*t, 0, CHAR_SIZE*4, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
 	}
 }
 
-func (p *Player) drawItems(game *Game) {
+func (p *Player) drawItems(screen *ebiten.Image, game *Game) {
 	for t := FIELD_ITEM_FUJI; t < FIELD_ITEM_MAX; t++ {
 		if !game.gameData.itemGetFlags[t] {
-			draw.Draw(game.screen, "ino",
+			draw.Draw(screen, "ino",
 				draw.ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 無
 				CHAR_SIZE*5, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 			continue
@@ -496,40 +498,40 @@ func (p *Player) drawItems(game *Game) {
 				if c != t {
 					continue
 				}
-				draw.Draw(game.screen, "ino",
+				draw.Draw(screen, "ino",
 					draw.ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0,
 					CHAR_SIZE*5+CHAR_SIZE/4*(i+2), 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 			}
 			continue
 		}
-		draw.Draw(game.screen, "ino",
+		draw.Draw(screen, "ino",
 			draw.ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 有
 			CHAR_SIZE*5+CHAR_SIZE/4, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 	}
 }
 
-func (p *Player) drawMessage(game *Game) {
+func (p *Player) drawMessage(screen *ebiten.Image, game *Game) {
 	switch p.state {
 	case PLAYERSTATE_ITEMGET:
 		t := WAIT_TIMER_INTERVAL - p.waitTimer
-		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2-t*t+24,
+		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2-t*t+24,
 			256, 96*(int(p.itemGet)-int(FIELD_ITEM_BORDER)-1), 256, 96)
-		draw.DrawItemFrame(game.screen, (draw.ScreenWidth-32)/2, (draw.ScreenHeight-96)/2-t*t-24)
+		draw.DrawItemFrame(screen, (draw.ScreenWidth-32)/2, (draw.ScreenHeight-96)/2-t*t-24)
 		it := int(p.itemGet) - (int(FIELD_ITEM_BORDER) + 1)
-		draw.Draw(game.screen, "ino", (draw.ScreenWidth-16)/2, (draw.ScreenHeight-96)/2-int(t)*int(t)-16,
+		draw.Draw(screen, "ino", (draw.ScreenWidth-16)/2, (draw.ScreenHeight-96)/2-int(t)*int(t)-16,
 			(it%16)*CHAR_SIZE, (it/16+4)*CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 	case PLAYERSTATE_START:
-		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, 64+(draw.ScreenHeight-240)/2, 0, 96, 256, 32)
+		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, 64+(draw.ScreenHeight-240)/2, 0, 96, 256, 32)
 	case PLAYERSTATE_DEAD:
-		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, 64+(draw.ScreenHeight-240)/2, 0, 128, 256, 32)
+		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, 64+(draw.ScreenHeight-240)/2, 0, 128, 256, 32)
 	}
 }
 
-func (p *Player) Draw(game *Game) {
+func (p *Player) Draw(screen *ebiten.Image, game *Game) {
 	po := p.view.GetPosition()
-	p.field.Draw(game, Position{X: int(po.X), Y: int(po.Y)})
-	p.drawPlayer(game)
-	p.drawLife(game)
-	p.drawItems(game)
-	p.drawMessage(game)
+	p.field.Draw(screen, game, Position{X: int(po.X), Y: int(po.Y)})
+	p.drawPlayer(screen, game)
+	p.drawLife(screen, game)
+	p.drawItems(screen, game)
+	p.drawMessage(screen, game)
 }

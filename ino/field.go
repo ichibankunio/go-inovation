@@ -3,6 +3,8 @@ package ino
 import (
 	"strings"
 
+	"github.com/hajimehoshi/ebiten"
+
 	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
 )
 
@@ -148,7 +150,7 @@ func (f *Field) EraseField(x, y int) {
 	f.field[y*FIELD_X_MAX+x] = FIELD_NONE
 }
 
-func (f *Field) Draw(game *Game, viewPosition Position) {
+func (f *Field) Draw(screen *ebiten.Image, game *Game, viewPosition Position) {
 	vx, vy := viewPosition.X, viewPosition.Y
 	ofs_x := CHAR_SIZE - vx%CHAR_SIZE
 	ofs_y := CHAR_SIZE - vy%CHAR_SIZE
@@ -176,7 +178,7 @@ func (f *Field) Draw(game *Game, viewPosition Position) {
 				continue
 			}
 
-			draw.Draw(game.screen, "ino",
+			draw.Draw(screen, "ino",
 				(xx+12)*CHAR_SIZE+ofs_x+GRAPHIC_OFFSET_X+(draw.ScreenWidth-320)/2,
 				(yy+8)*CHAR_SIZE+ofs_y+GRAPHIC_OFFSET_Y+(draw.ScreenHeight-240)/2,
 				gx*16, gy*16, 16, 16)
