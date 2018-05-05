@@ -1,23 +1,19 @@
 package ino
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
-	"image"
 	_ "image/png"
 	"os"
 	"runtime/pprof"
-	"strconv"
 
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
 
-	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
-	"github.com/hajimehoshi/go-inovation/ino/internal/font"
+	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
@@ -25,7 +21,6 @@ type Game struct {
 	resourceLoadedCh chan error
 	gameState        GameState
 	gameData         *GameData
-	img              map[string]*ebiten.Image
 	screen           *ebiten.Image
 	cpup             *os.File
 }
@@ -124,74 +119,12 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	return nil
 }
 
-func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) {
-	op := &ebiten.DrawImageOptions{}
-	r := image.Rect(sx, sy, sx+sw, sy+sh)
-	op.SourceRect = &r
-	op.GeoM.Translate(float64(px), float64(py))
-	g.screen.DrawImage(g.img[key], op)
-}
-
-func (g *Game) DrawNumber(num int, x, y int) {
-	font.DrawText(g.screen, strconv.Itoa(num), x, y)
-}
-
-func (g *Game) DrawTouchButtons() {
-	img := g.img["touch"]
-	w, h := img.Size()
-	w /= 4
-	dx := 0
-	dy := ScreenHeight - h
-	op := &ebiten.DrawImageOptions{}
-	op.ColorM.Scale(1, 1, 1, 0.4)
-	for _, i := range []int{0, 1, 3} {
-		r := image.Rect(i*w, 0, (i+1)*w, h)
-		op.SourceRect = &r
-		op.GeoM.Reset()
-		op.GeoM.Translate(float64(dx+i*w), float64(dy))
-		g.screen.DrawImage(img, op)
-	}
-	// Render 'down' button
-	op = &ebiten.DrawImageOptions{}
-	r := image.Rect(2*w, 0, 3*w, h)
-	op.SourceRect = &r
-	op.GeoM.Translate(float64(dx+2*w), float64(dy))
-	alpha := 0.0
-	if input.Current().IsActionKeyPressed() {
-		alpha = 0.4
-	} else {
-		alpha = 0.1
-	}
-	op.ColorM.Scale(1, 1, 1, alpha)
-	g.screen.DrawImage(img, op)
-}
-
-func (g *Game) loadImages() error {
-	for _, f := range []string{"ino", "msg", "bg", "touch"} {
-		b, err := assets.Asset("resources/images/color/" + f + ".png")
-		if err != nil {
-			return err
-		}
-		origImg, _, err := image.Decode(bytes.NewReader(b))
-		if err != nil {
-			return err
-		}
-		img, err := ebiten.NewImageFromImage(origImg, ebiten.FilterNearest)
-		if err != nil {
-			return err
-		}
-		g.img[f] = img
-	}
-	return nil
-}
-
 func NewGame() (*Game, error) {
 	game := &Game{
-		img:              map[string]*ebiten.Image{},
 		resourceLoadedCh: make(chan error),
 	}
 	go func() {
-		if err := game.loadImages(); err != nil {
+		if err := draw.LoadImages(); err != nil {
 			game.resourceLoadedCh <- err
 			return
 		}

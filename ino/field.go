@@ -2,6 +2,8 @@ package ino
 
 import (
 	"strings"
+
+	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
 )
 
 type FieldType int
@@ -150,12 +152,12 @@ func (f *Field) Draw(game *Game, viewPosition Position) {
 	vx, vy := viewPosition.X, viewPosition.Y
 	ofs_x := CHAR_SIZE - vx%CHAR_SIZE
 	ofs_y := CHAR_SIZE - vy%CHAR_SIZE
-	for xx := -(ScreenWidth/CHAR_SIZE/2 + 2); xx < (ScreenWidth/CHAR_SIZE/2 + 2); xx++ {
+	for xx := -(draw.ScreenWidth/CHAR_SIZE/2 + 2); xx < (draw.ScreenWidth/CHAR_SIZE/2 + 2); xx++ {
 		fx := xx + vx/CHAR_SIZE
 		if fx < 0 || fx >= FIELD_X_MAX {
 			continue
 		}
-		for yy := -(ScreenHeight/CHAR_SIZE/2 + 2); yy < (ScreenHeight/CHAR_SIZE/2 + 2); yy++ {
+		for yy := -(draw.ScreenHeight/CHAR_SIZE/2 + 2); yy < (draw.ScreenHeight/CHAR_SIZE/2 + 2); yy++ {
 			fy := yy + vy/CHAR_SIZE
 			if fy < 0 || fy >= FIELD_Y_MAX {
 				continue
@@ -174,9 +176,9 @@ func (f *Field) Draw(game *Game, viewPosition Position) {
 				continue
 			}
 
-			game.Draw("ino",
-				(xx+12)*CHAR_SIZE+ofs_x+GRAPHIC_OFFSET_X+(ScreenWidth-320)/2,
-				(yy+8)*CHAR_SIZE+ofs_y+GRAPHIC_OFFSET_Y+(ScreenHeight-240)/2,
+			draw.Draw(game.screen, "ino",
+				(xx+12)*CHAR_SIZE+ofs_x+GRAPHIC_OFFSET_X+(draw.ScreenWidth-320)/2,
+				(yy+8)*CHAR_SIZE+ofs_y+GRAPHIC_OFFSET_Y+(draw.ScreenHeight-240)/2,
 				gx*16, gy*16, 16, 16)
 		}
 	}

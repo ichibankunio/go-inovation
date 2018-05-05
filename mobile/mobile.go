@@ -2,6 +2,7 @@ package mobile
 
 import (
 	"github.com/hajimehoshi/ebiten/mobile"
+
 	"github.com/hajimehoshi/go-inovation/ino"
 )
 

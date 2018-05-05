@@ -1,6 +1,7 @@
 package ino
 
 import (
+	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
@@ -15,8 +16,8 @@ func NewView(position PositionF) *View {
 }
 
 func (v *View) ToScreenPosition(p PositionF) PositionF {
-	x := p.X - v.GetPosition().X + ScreenWidth/2
-	y := p.Y - v.GetPosition().Y + ScreenHeight/2
+	x := p.X - v.GetPosition().X + draw.ScreenWidth/2
+	y := p.Y - v.GetPosition().Y + draw.ScreenHeight/2
 	return PositionF{x, y}
 }
 

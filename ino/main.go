@@ -2,17 +2,20 @@ package ino
 
 import (
 	"math/rand"
+	"strconv"
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
+	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
+	"github.com/hajimehoshi/go-inovation/ino/internal/font"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
 const (
-	ScreenWidth  = 320
-	ScreenHeight = 240
+	ScreenWidth  = draw.ScreenWidth
+	ScreenHeight = draw.ScreenHeight
 	Title        = "Inovation 2007 (Go version)"
 )
 
@@ -88,17 +91,17 @@ func (t *TitleMain) Update(game *Game) {
 
 func (t *TitleMain) Draw(game *Game) {
 	if t.lunkerMode {
-		game.Draw("bg", 0, 0, 0, 240, ScreenWidth, ScreenHeight)
-		game.Draw("msg", (ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(ScreenHeight-240)/2, 0, 64, 256, 16)
+		draw.Draw(game.screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
+		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(draw.ScreenHeight-240)/2, 0, 64, 256, 16)
 	} else {
-		game.Draw("bg", 0, 0, 0, 0, ScreenWidth, ScreenHeight)
+		draw.Draw(game.screen, "bg", 0, 0, 0, 0, draw.ScreenWidth, draw.ScreenHeight)
 		sy := 64 + 16
 		if input.Current().IsTouchEnabled() {
 			sy = 64 - 16
 		}
-		game.Draw("msg", (ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(ScreenHeight-240)/2, 0, sy, 256, 16)
+		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(draw.ScreenHeight-240)/2, 0, sy, 256, 16)
 	}
-	game.Draw("msg", (ScreenWidth-256)/2, 32+(ScreenHeight-240)/2, 0, 0, 256, 48)
+	draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, 32+(draw.ScreenHeight-240)/2, 0, 0, 256, 48)
 }
 
 func (t *TitleMain) Msg() GameStateMsg {
@@ -121,15 +124,15 @@ func (o *OpeningMain) Update(game *Game) {
 	if input.Current().IsActionKeyPressed() || input.Current().IsSpaceTouched() {
 		o.timer += 20
 	}
-	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+ScreenHeight {
+	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+draw.ScreenHeight {
 		o.gameStateMsg = GAMESTATE_MSG_REQ_GAME
 		audio.PauseBGM()
 	}
 }
 
 func (o *OpeningMain) Draw(game *Game) {
-	game.Draw("bg", 0, 0, 0, 480, 320, 240)
-	game.Draw("msg", (ScreenWidth-256)/2, ScreenHeight-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
+	draw.Draw(game.screen, "bg", 0, 0, 0, 480, 320, 240)
+	draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, draw.ScreenHeight-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
 }
 
 func (o *OpeningMain) Msg() GameStateMsg {
@@ -155,7 +158,7 @@ func (e *EndingMain) Update(game *Game) {
 		if input.Current().IsActionKeyPressed() || input.Current().IsSpaceTouched() {
 			e.timer += 20
 		}
-		if e.timer/ENDING_SCROLL_SPEED > ENDING_SCROLL_LEN+ScreenHeight {
+		if e.timer/ENDING_SCROLL_SPEED > ENDING_SCROLL_LEN+draw.ScreenHeight {
 			e.timer = 0
 			e.state = ENDINGMAIN_STATE_RESULT
 		}
@@ -186,15 +189,15 @@ func (e *EndingMain) Update(game *Game) {
 }
 
 func (e *EndingMain) Draw(game *Game) {
-	game.Draw("bg", 0, 0, 0, 480, 320, 240)
+	draw.Draw(game.screen, "bg", 0, 0, 0, 480, 320, 240)
 
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		game.Draw("msg", (ScreenWidth-256)/2, ScreenHeight-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN)
+		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, draw.ScreenHeight-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN)
 	case ENDINGMAIN_STATE_RESULT:
-		game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-160)/2, 0, 1664, 256, 160)
-		game.DrawNumber(game.gameData.GetItemCount(), (ScreenWidth-10*0)/2, (ScreenHeight-160)/2+13*5+2)
-		game.DrawNumber(game.gameData.TimeInSecond(), (ScreenWidth-13)/2, (ScreenHeight-160)/2+13*8+2)
+		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-160)/2, 0, 1664, 256, 160)
+		font.DrawText(game.screen, strconv.Itoa(game.gameData.GetItemCount()), (draw.ScreenWidth-10*0)/2, (draw.ScreenHeight-160)/2+13*5+2)
+		font.DrawText(game.screen, strconv.Itoa(game.gameData.TimeInSecond()), (draw.ScreenWidth-13)/2, (draw.ScreenHeight-160)/2+13*8+2)
 	}
 }
 
@@ -222,12 +225,12 @@ func (s *SecretMain) Update(game *Game) {
 }
 
 func (s *SecretMain) Draw(game *Game) {
-	game.Draw("bg", 0, 0, 0, 240, 320, 240)
+	draw.Draw(game.screen, "bg", 0, 0, 0, 240, 320, 240)
 	if s.number == 1 {
-		game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2, 0, 2048-96*2, 256, 96)
+		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96*2, 256, 96)
 		return
 	}
-	game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2, 0, 2048-96, 256, 96)
+	draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96, 256, 96)
 }
 
 func (s *SecretMain) Msg() GameStateMsg {
@@ -252,13 +255,13 @@ func (g *GameMain) Update(game *Game) {
 
 func (g *GameMain) Draw(game *Game) {
 	if game.gameData.lunkerMode {
-		game.Draw("bg", 0, 0, 0, 240, ScreenWidth, ScreenHeight)
+		draw.Draw(game.screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
 	} else {
-		game.Draw("bg", 0, 0, 0, 0, ScreenWidth, ScreenHeight)
+		draw.Draw(game.screen, "bg", 0, 0, 0, 0, draw.ScreenWidth, draw.ScreenHeight)
 	}
 	g.player.Draw(game)
 	if input.Current().IsTouchEnabled() {
-		game.DrawTouchButtons()
+		draw.DrawTouchButtons(game.screen)
 	}
 }
 

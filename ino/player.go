@@ -439,10 +439,10 @@ func (p *Player) drawPlayer(game *Game) {
 	if p.state == PLAYERSTATE_DEAD { // 死亡
 		anime := (p.timer / 6) % 4
 		if game.gameData.lunkerMode {
-			game.Draw("ino", vx, vy, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+			draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 			return
 		}
-		game.Draw("ino", vx, vy, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
+		draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
 		return
 	}
 	if p.state != PLAYERSTATE_MUTEKI || p.timer%10 < 5 {
@@ -452,17 +452,17 @@ func (p *Player) drawPlayer(game *Game) {
 		}
 		if p.direction < 0 {
 			if game.gameData.lunkerMode {
-				game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+				draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
 				return
 			}
-			game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
+			draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
 			return
 		}
 		if game.gameData.lunkerMode {
-			game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
+			draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
 			return
 		}
-		game.Draw("ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
+		draw.Draw(game.screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 		return
 	}
 }
@@ -473,11 +473,11 @@ func (p *Player) drawLife(game *Game) {
 			continue
 		}
 		if p.life >= (t+1)*LIFE_RATIO {
-			game.Draw("ino",
+			draw.Draw(game.screen, "ino",
 				CHAR_SIZE*t, 0, CHAR_SIZE*3, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
 			continue
 		}
-		game.Draw("ino",
+		draw.Draw(game.screen, "ino",
 			CHAR_SIZE*t, 0, CHAR_SIZE*4, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
 	}
 }
@@ -485,8 +485,8 @@ func (p *Player) drawLife(game *Game) {
 func (p *Player) drawItems(game *Game) {
 	for t := FIELD_ITEM_FUJI; t < FIELD_ITEM_MAX; t++ {
 		if !game.gameData.itemGetFlags[t] {
-			game.Draw("ino",
-				ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 無
+			draw.Draw(game.screen, "ino",
+				draw.ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 無
 				CHAR_SIZE*5, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 			continue
 		}
@@ -496,14 +496,14 @@ func (p *Player) drawItems(game *Game) {
 				if c != t {
 					continue
 				}
-				game.Draw("ino",
-					ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0,
+				draw.Draw(game.screen, "ino",
+					draw.ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0,
 					CHAR_SIZE*5+CHAR_SIZE/4*(i+2), 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 			}
 			continue
 		}
-		game.Draw("ino",
-			ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 有
+		draw.Draw(game.screen, "ino",
+			draw.ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 有
 			CHAR_SIZE*5+CHAR_SIZE/4, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
 	}
 }
@@ -512,16 +512,16 @@ func (p *Player) drawMessage(game *Game) {
 	switch p.state {
 	case PLAYERSTATE_ITEMGET:
 		t := WAIT_TIMER_INTERVAL - p.waitTimer
-		game.Draw("msg", (ScreenWidth-256)/2, (ScreenHeight-96)/2-t*t+24,
+		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2-t*t+24,
 			256, 96*(int(p.itemGet)-int(FIELD_ITEM_BORDER)-1), 256, 96)
-		draw.DrawItemFrame(game.screen, (ScreenWidth-32)/2, (ScreenHeight-96)/2-t*t-24)
+		draw.DrawItemFrame(game.screen, (draw.ScreenWidth-32)/2, (draw.ScreenHeight-96)/2-t*t-24)
 		it := int(p.itemGet) - (int(FIELD_ITEM_BORDER) + 1)
-		game.Draw("ino", (ScreenWidth-16)/2, (ScreenHeight-96)/2-int(t)*int(t)-16,
+		draw.Draw(game.screen, "ino", (draw.ScreenWidth-16)/2, (draw.ScreenHeight-96)/2-int(t)*int(t)-16,
 			(it%16)*CHAR_SIZE, (it/16+4)*CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
 	case PLAYERSTATE_START:
-		game.Draw("msg", (ScreenWidth-256)/2, 64+(ScreenHeight-240)/2, 0, 96, 256, 32)
+		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, 64+(draw.ScreenHeight-240)/2, 0, 96, 256, 32)
 	case PLAYERSTATE_DEAD:
-		game.Draw("msg", (ScreenWidth-256)/2, 64+(ScreenHeight-240)/2, 0, 128, 256, 32)
+		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, 64+(draw.ScreenHeight-240)/2, 0, 128, 256, 32)
 	}
 }
 
