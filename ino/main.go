@@ -36,7 +36,7 @@ const (
 	GAMESTATE_MSG_REQ_SECRET2
 )
 
-type TitleMain struct {
+type TitleScene struct {
 	gameStateMsg  GameStateMsg
 	timer         int
 	offsetX       int
@@ -49,7 +49,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-func (t *TitleMain) Update(game *Game) {
+func (t *TitleScene) Update(game *Game) {
 	t.timer++
 	if t.timer%5 == 0 {
 		t.offsetX = rand.Intn(5) - 3
@@ -89,7 +89,7 @@ func (t *TitleMain) Update(game *Game) {
 	}
 }
 
-func (t *TitleMain) Draw(game *Game) {
+func (t *TitleScene) Draw(game *Game) {
 	if t.lunkerMode {
 		draw.Draw(game.screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
 		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2+t.offsetX, 160+t.offsetY+(draw.ScreenHeight-240)/2, 0, 64, 256, 16)
@@ -104,11 +104,11 @@ func (t *TitleMain) Draw(game *Game) {
 	draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, 32+(draw.ScreenHeight-240)/2, 0, 0, 256, 48)
 }
 
-func (t *TitleMain) Msg() GameStateMsg {
+func (t *TitleScene) Msg() GameStateMsg {
 	return t.gameStateMsg
 }
 
-type OpeningMain struct {
+type OpeningScene struct {
 	gameStateMsg GameStateMsg
 	timer        int
 }
@@ -118,7 +118,7 @@ const (
 	OPENING_SCROLL_SPEED = 3
 )
 
-func (o *OpeningMain) Update(game *Game) {
+func (o *OpeningScene) Update(game *Game) {
 	o.timer++
 
 	if input.Current().IsActionKeyPressed() || input.Current().IsSpaceTouched() {
@@ -130,16 +130,16 @@ func (o *OpeningMain) Update(game *Game) {
 	}
 }
 
-func (o *OpeningMain) Draw(game *Game) {
+func (o *OpeningScene) Draw(game *Game) {
 	draw.Draw(game.screen, "bg", 0, 0, 0, 480, 320, 240)
 	draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, draw.ScreenHeight-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
 }
 
-func (o *OpeningMain) Msg() GameStateMsg {
+func (o *OpeningScene) Msg() GameStateMsg {
 	return o.gameStateMsg
 }
 
-type EndingMain struct {
+type EndingScene struct {
 	gameStateMsg   GameStateMsg
 	timer          int
 	bgmFadingTimer int
@@ -151,7 +151,7 @@ const (
 	ENDING_SCROLL_SPEED = 3
 )
 
-func (e *EndingMain) Update(game *Game) {
+func (e *EndingScene) Update(game *Game) {
 	e.timer++
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
@@ -188,7 +188,7 @@ func (e *EndingMain) Update(game *Game) {
 	}
 }
 
-func (e *EndingMain) Draw(game *Game) {
+func (e *EndingScene) Draw(game *Game) {
 	draw.Draw(game.screen, "bg", 0, 0, 0, 480, 320, 240)
 
 	switch e.state {
@@ -201,30 +201,30 @@ func (e *EndingMain) Draw(game *Game) {
 	}
 }
 
-func (e *EndingMain) Msg() GameStateMsg {
+func (e *EndingScene) Msg() GameStateMsg {
 	return e.gameStateMsg
 }
 
-type SecretMain struct {
+type SecretScene struct {
 	gameStateMsg GameStateMsg
 	timer        int
 	number       int
 }
 
-func NewSecretMain(number int) *SecretMain {
-	return &SecretMain{
+func NewSecretScene(number int) *SecretScene {
+	return &SecretScene{
 		number: number,
 	}
 }
 
-func (s *SecretMain) Update(game *Game) {
+func (s *SecretScene) Update(game *Game) {
 	s.timer++
 	if (input.Current().IsActionKeyJustPressed() || input.Current().IsSpaceJustTouched()) && s.timer > 5 {
 		s.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
 	}
 }
 
-func (s *SecretMain) Draw(game *Game) {
+func (s *SecretScene) Draw(game *Game) {
 	draw.Draw(game.screen, "bg", 0, 0, 0, 240, 320, 240)
 	if s.number == 1 {
 		draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96*2, 256, 96)
@@ -233,27 +233,27 @@ func (s *SecretMain) Draw(game *Game) {
 	draw.Draw(game.screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96, 256, 96)
 }
 
-func (s *SecretMain) Msg() GameStateMsg {
+func (s *SecretScene) Msg() GameStateMsg {
 	return s.gameStateMsg
 }
 
-type GameMain struct {
+type GameScene struct {
 	gameStateMsg GameStateMsg
 	player       *Player
 }
 
-func NewGameMain(game *Game) *GameMain {
-	g := &GameMain{
+func NewGameScene(game *Game) *GameScene {
+	g := &GameScene{
 		player: NewPlayer(game.gameData),
 	}
 	return g
 }
 
-func (g *GameMain) Update(game *Game) {
+func (g *GameScene) Update(game *Game) {
 	g.gameStateMsg = g.player.Update()
 }
 
-func (g *GameMain) Draw(game *Game) {
+func (g *GameScene) Draw(game *Game) {
 	if game.gameData.lunkerMode {
 		draw.Draw(game.screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
 	} else {
@@ -265,11 +265,11 @@ func (g *GameMain) Draw(game *Game) {
 	}
 }
 
-func (g *GameMain) Msg() GameStateMsg {
+func (g *GameScene) Msg() GameStateMsg {
 	return g.gameStateMsg
 }
 
-type GameState interface {
+type Scene interface {
 	Update(g *Game) // TODO: Should return errors
 	Draw(g *Game)
 	Msg() GameStateMsg

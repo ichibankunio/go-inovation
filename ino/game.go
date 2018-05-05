@@ -19,7 +19,7 @@ import (
 
 type Game struct {
 	resourceLoadedCh chan error
-	gameState        GameState
+	scene            Scene
 	gameData         *GameData
 	screen           *ebiten.Image
 	cpup             *os.File
@@ -79,42 +79,42 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	}
 
 	g.screen = screen
-	if g.gameState == nil {
-		g.gameState = &TitleMain{}
+	if g.scene == nil {
+		g.scene = &TitleScene{}
 	} else {
-		switch g.gameState.Msg() {
+		switch g.scene.Msg() {
 		case GAMESTATE_MSG_REQ_TITLE:
 			audio.PauseBGM()
-			g.gameState = &TitleMain{}
+			g.scene = &TitleScene{}
 		case GAMESTATE_MSG_REQ_OPENING:
 			if err := audio.PlayBGM(audio.BGM1); err != nil {
 				return err
 			}
-			g.gameState = &OpeningMain{}
+			g.scene = &OpeningScene{}
 		case GAMESTATE_MSG_REQ_GAME:
-			g.gameState = NewGameMain(g)
+			g.scene = NewGameScene(g)
 		case GAMESTATE_MSG_REQ_ENDING:
 			if err := audio.PlayBGM(audio.BGM1); err != nil {
 				return err
 			}
-			g.gameState = &EndingMain{}
+			g.scene = &EndingScene{}
 		case GAMESTATE_MSG_REQ_SECRET1:
 			if err := audio.PlayBGM(audio.BGM1); err != nil {
 				return err
 			}
-			g.gameState = NewSecretMain(1)
+			g.scene = NewSecretScene(1)
 		case GAMESTATE_MSG_REQ_SECRET2:
 			if err := audio.PlayBGM(audio.BGM1); err != nil {
 				return err
 			}
-			g.gameState = NewSecretMain(2)
+			g.scene = NewSecretScene(2)
 		}
 	}
-	g.gameState.Update(g)
-	if !ebiten.IsRunningSlowly() {
-		g.gameState.Draw(g)
+	g.scene.Update(g)
+	if ebiten.IsRunningSlowly() {
+		return nil
 	}
-
+	g.scene.Draw(g)
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
 	return nil
 }
