@@ -1,4 +1,4 @@
-package ino
+package audio
 
 import (
 	"strings"
@@ -48,7 +48,7 @@ func (e *emptyAudio) Close() error {
 	return nil
 }
 
-func loadAudio() error {
+func Load() error {
 	for _, n := range soundFilenames {
 		b, err := assets.Asset("resources/sound/" + n)
 		if err != nil {
@@ -82,7 +82,7 @@ func loadAudio() error {
 	return nil
 }
 
-func finalizeAudio() error {
+func Finalize() error {
 	for _, p := range soundPlayers {
 		if err := p.Close(); err != nil {
 			return err

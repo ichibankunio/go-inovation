@@ -6,6 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 
+	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
@@ -122,7 +123,7 @@ func (o *OpeningMain) Update(game *Game) {
 	}
 	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+ScreenHeight {
 		o.gameStateMsg = GAMESTATE_MSG_REQ_GAME
-		PauseBGM()
+		audio.PauseBGM()
 	}
 }
 
@@ -163,10 +164,10 @@ func (e *EndingMain) Update(game *Game) {
 		e.bgmFadingTimer++
 		switch {
 		case e.bgmFadingTimer == max:
-			PauseBGM()
+			audio.PauseBGM()
 		case e.bgmFadingTimer < max:
 			vol := 1 - (float64(e.bgmFadingTimer) / max)
-			SetBGMVolume(vol)
+			audio.SetBGMVolume(vol)
 		}
 		if (input.Current().IsActionKeyJustPressed() || input.Current().IsSpaceJustTouched()) && e.timer > 5 {
 			// 条件を満たしていると隠し画面へ
@@ -179,7 +180,7 @@ func (e *EndingMain) Update(game *Game) {
 				return
 			}
 			e.gameStateMsg = GAMESTATE_MSG_REQ_TITLE
-			PauseBGM()
+			audio.PauseBGM()
 		}
 	}
 }

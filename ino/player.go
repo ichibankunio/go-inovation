@@ -3,6 +3,7 @@ package ino
 import (
 	"math"
 
+	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
@@ -52,7 +53,7 @@ func NewPlayer(gameData *GameData) *Player {
 	f := NewField(field_data)
 	startPoint := f.GetStartPoint()
 	startPointF := PositionF{float64(startPoint.X), float64(startPoint.Y)}
-	PlayBGM(BGM0)
+	audio.PlayBGM(audio.BGM0)
 	return &Player{
 		gameData:    gameData,
 		field:       f,
@@ -182,7 +183,7 @@ func (p *Player) Update() GameStateMsg {
 			o_life := p.life
 			p.life++
 			if (p.life / LIFE_RATIO) != (o_life / LIFE_RATIO) {
-				PlaySE(SE_HEAL)
+				audio.PlaySE(audio.SE_HEAL)
 			}
 		}
 
@@ -204,7 +205,7 @@ func (p *Player) Update() GameStateMsg {
 
 	case PLAYERSTATE_DEAD:
 		p.moveNormal()
-		PauseBGM()
+		audio.PauseBGM()
 		if input.Current().IsActionKeyPressed() && p.waitTimer > 15 {
 			msg = GAMESTATE_MSG_REQ_TITLE
 		}
@@ -247,13 +248,13 @@ func (p *Player) moveNormal() {
 				p.state = PLAYERSTATE_MUTEKI
 				p.waitTimer = 0
 				p.life -= LIFE_RATIO
-				PlaySE(SE_DAMAGE)
+				audio.PlaySE(audio.SE_DAMAGE)
 			}
 			if p.position.Y-p.jumpedPoint.Y > LUNKER_JUMP_DAMAGE2 {
 				p.state = PLAYERSTATE_MUTEKI
 				p.waitTimer = 0
 				p.life -= LIFE_RATIO * 99
-				PlaySE(SE_DAMAGE)
+				audio.PlaySE(audio.SE_DAMAGE)
 			}
 		}
 
@@ -333,7 +334,7 @@ func (p *Player) moveItemGet() {
 	}
 	if input.Current().IsActionKeyJustPressed() {
 		p.state = PLAYERSTATE_NORMAL
-		ResumeBGM(BGM0)
+		audio.ResumeBGM(audio.BGM0)
 	}
 }
 
@@ -360,7 +361,7 @@ func (p *Player) moveByInput() {
 					p.speed.X += 0.02
 				}
 			}
-			PlaySE(SE_JUMP)
+			audio.PlaySE(audio.SE_JUMP)
 			p.jumpedPoint = p.position
 		}
 	}
@@ -392,11 +393,11 @@ func (p *Player) checkCollision() {
 				p.field.EraseField(p.toFieldX()+xx, p.toFieldY()+yy)
 				p.waitTimer = 0
 
-				PauseBGM()
+				audio.PauseBGM()
 				if IsItemForClear(p.itemGet) || p.itemGet == FIELD_ITEM_POWERUP {
-					PlaySE(SE_ITEMGET)
+					audio.PlaySE(audio.SE_ITEMGET)
 				} else {
-					PlaySE(SE_ITEMGET2)
+					audio.PlaySE(audio.SE_ITEMGET2)
 				}
 				return
 			}
@@ -407,7 +408,7 @@ func (p *Player) checkCollision() {
 				p.life -= LIFE_RATIO
 				p.speed.Y = PLAYER_JUMP
 				p.jumpCnt = -1 // ダメージ・エキストラジャンプ
-				PlaySE(SE_DAMAGE)
+				audio.PlaySE(audio.SE_DAMAGE)
 				return
 			}
 		}

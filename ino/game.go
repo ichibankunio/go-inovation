@@ -17,6 +17,7 @@ import (
 	"github.com/hajimehoshi/ebiten/inpututil"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
+	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/font"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
@@ -90,27 +91,27 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 	} else {
 		switch g.gameState.Msg() {
 		case GAMESTATE_MSG_REQ_TITLE:
-			PauseBGM()
+			audio.PauseBGM()
 			g.gameState = &TitleMain{}
 		case GAMESTATE_MSG_REQ_OPENING:
-			if err := PlayBGM(BGM1); err != nil {
+			if err := audio.PlayBGM(audio.BGM1); err != nil {
 				return err
 			}
 			g.gameState = &OpeningMain{}
 		case GAMESTATE_MSG_REQ_GAME:
 			g.gameState = NewGameMain(g)
 		case GAMESTATE_MSG_REQ_ENDING:
-			if err := PlayBGM(BGM1); err != nil {
+			if err := audio.PlayBGM(audio.BGM1); err != nil {
 				return err
 			}
 			g.gameState = &EndingMain{}
 		case GAMESTATE_MSG_REQ_SECRET1:
-			if err := PlayBGM(BGM1); err != nil {
+			if err := audio.PlayBGM(audio.BGM1); err != nil {
 				return err
 			}
 			g.gameState = NewSecretMain(1)
 		case GAMESTATE_MSG_REQ_SECRET2:
-			if err := PlayBGM(BGM1); err != nil {
+			if err := audio.PlayBGM(audio.BGM1); err != nil {
 				return err
 			}
 			g.gameState = NewSecretMain(2)
@@ -232,13 +233,13 @@ func NewGame() (*Game, error) {
 			game.resourceLoadedCh <- err
 			return
 		}
-		if err := loadAudio(); err != nil {
+		if err := audio.Load(); err != nil {
 			game.resourceLoadedCh <- err
 			return
 		}
 		close(game.resourceLoadedCh)
 	}()
-	if err := finalizeAudio(); err != nil {
+	if err := audio.Finalize(); err != nil {
 		return nil, err
 	}
 	return game, nil
