@@ -144,13 +144,8 @@ const (
 	SE_JUMP     SE = "jump.wav"
 )
 
-func PlaySE(se SE) error {
+func PlaySE(se SE) {
 	p := soundPlayers[string(se)]
-	if err := p.Rewind(); err != nil {
-		return err
-	}
-	if err := p.Play(); err != nil {
-		return err
-	}
-	return nil
+	p.Rewind()
+	p.Play()
 }
