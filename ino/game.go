@@ -9,6 +9,7 @@ import (
 	_ "image/png"
 	"os"
 	"runtime/pprof"
+	"strconv"
 
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/hajimehoshi/ebiten"
@@ -25,7 +26,6 @@ type Game struct {
 	gameState        GameState
 	gameData         *GameData
 	img              map[string]*ebiten.Image
-	font             *font.Font
 	screen           *ebiten.Image
 	cpup             *os.File
 	sourceRect       image.Rectangle
@@ -155,7 +155,7 @@ func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) {
 }
 
 func (g *Game) DrawNumber(num int, x, y int) {
-	g.font.DrawNumber(g.screen, num, x, y)
+	font.DrawText(g.screen, strconv.Itoa(num), x, y)
 }
 
 func (g *Game) DrawTouchButtons() {
@@ -221,7 +221,6 @@ func (g *Game) loadImages() error {
 		}
 		fontImgs[rune(n)] = img
 	}
-	g.font = font.NewFont(fontImgs)
 	return nil
 }
 
