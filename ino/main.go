@@ -1,16 +1,20 @@
 package ino
 
 import (
+	"image/color"
 	"math/rand"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
+	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
 	"github.com/hajimehoshi/go-inovation/ino/internal/font"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
+	"github.com/hajimehoshi/go-inovation/ino/internal/text"
 )
 
 const (
@@ -124,7 +128,8 @@ func (o *OpeningScene) Update(game *Game) {
 	if input.Current().IsActionKeyPressed() || input.Current().IsSpaceTouched() {
 		o.timer += 20
 	}
-	if o.timer/OPENING_SCROLL_SPEED > OPENING_SCROLL_LEN+draw.ScreenHeight {
+	scrollLen := font.Height(text.Get(language.Japanese, text.TextIDOpening)) + draw.ScreenHeight
+	if o.timer/OPENING_SCROLL_SPEED > scrollLen {
 		o.gameStateMsg = GAMESTATE_MSG_REQ_GAME
 		audio.PauseBGM()
 	}
@@ -132,7 +137,12 @@ func (o *OpeningScene) Update(game *Game) {
 
 func (o *OpeningScene) Draw(screen *ebiten.Image, game *Game) {
 	draw.Draw(screen, "bg", 0, 0, 0, 480, 320, 240)
-	draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, draw.ScreenHeight-(o.timer/OPENING_SCROLL_SPEED), 0, 160, 256, OPENING_SCROLL_LEN)
+
+	for i, line := range strings.Split(text.Get(language.Japanese, text.TextIDOpening), "\n") {
+		x := (draw.ScreenWidth - font.Width(line)) / 2
+		y := draw.ScreenHeight - (o.timer / OPENING_SCROLL_SPEED) + i*font.LineHeight
+		font.DrawText(screen, line, x, y, color.Black)
+	}
 }
 
 func (o *OpeningScene) Msg() GameStateMsg {
@@ -196,8 +206,8 @@ func (e *EndingScene) Draw(screen *ebiten.Image, game *Game) {
 		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, draw.ScreenHeight-(e.timer/ENDING_SCROLL_SPEED), 0, 576, 256, ENDING_SCROLL_LEN)
 	case ENDINGMAIN_STATE_RESULT:
 		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-160)/2, 0, 1664, 256, 160)
-		font.DrawText(screen, strconv.Itoa(game.gameData.GetItemCount()), (draw.ScreenWidth-10*0)/2, (draw.ScreenHeight-160)/2+13*5+2)
-		font.DrawText(screen, strconv.Itoa(game.gameData.TimeInSecond()), (draw.ScreenWidth-13)/2, (draw.ScreenHeight-160)/2+13*8+2)
+		font.DrawText(screen, strconv.Itoa(game.gameData.GetItemCount()), (draw.ScreenWidth-10*0)/2, (draw.ScreenHeight-160)/2+13*5+2, color.Black)
+		font.DrawText(screen, strconv.Itoa(game.gameData.TimeInSecond()), (draw.ScreenWidth-13)/2, (draw.ScreenHeight-160)/2+13*8+2, color.Black)
 	}
 }
 
