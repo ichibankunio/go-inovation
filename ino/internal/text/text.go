@@ -69,7 +69,7 @@ var texts = map[language.Tag]map[TextID]string{
 かいきさせ
 きおくの しんえんに　きざまれた
 きげんの　いしきを
-おもい　おこさせる だろう…
+おもい　おこさせる　だろう…
 
 
 
@@ -85,7 +85,7 @@ var texts = map[language.Tag]map[TextID]string{
 <red>――</red>　ここから　くれじっと　<red>――</red>
 
 
-いのペーじょん2007
+いのべーじょん2007
 ＊＊ くれじっとの なかに いる ＊＊
 
 
