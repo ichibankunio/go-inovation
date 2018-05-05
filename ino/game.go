@@ -29,7 +29,6 @@ type Game struct {
 	img              map[string]*ebiten.Image
 	screen           *ebiten.Image
 	cpup             *os.File
-	sourceRect       image.Rectangle
 }
 
 var cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
@@ -144,11 +143,8 @@ func (g *Game) DrawItemFrame(x, y int) {
 
 func (g *Game) Draw(key string, px, py, sx, sy, sw, sh int) {
 	op := &ebiten.DrawImageOptions{}
-	g.sourceRect.Min.X = sx
-	g.sourceRect.Min.Y = sy
-	g.sourceRect.Max.X = sx + sw
-	g.sourceRect.Max.Y = sy + sh
-	op.SourceRect = &g.sourceRect
+	r := image.Rect(sx, sy, sx+sw, sy+sh)
+	op.SourceRect = &r
 	op.GeoM.Translate(float64(px), float64(py))
 	g.screen.DrawImage(g.img[key], op)
 }
