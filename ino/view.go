@@ -5,6 +5,11 @@ import (
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
+type PositionF struct {
+	X float64
+	Y float64
+}
+
 type View struct {
 	position PositionF
 }

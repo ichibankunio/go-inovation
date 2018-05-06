@@ -7,6 +7,7 @@ import (
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
+	"github.com/hajimehoshi/go-inovation/ino/internal/field"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
@@ -31,6 +32,7 @@ const (
 	LIFE_RATIO           = 400
 	MUTEKI_INTERVAL      = 50
 	START_WAIT_INTERVAL  = 50
+	SCROLLPANEL_SPEED    = 2.0
 
 	LUNKER_JUMP_DAMAGE1 = 40.0
 	LUNKER_JUMP_DAMAGE2 = 96.0
@@ -45,15 +47,15 @@ type Player struct {
 	direction   int
 	jumpedPoint PositionF
 	state       PlayerState
-	itemGet     FieldType
+	itemGet     field.FieldType
 	waitTimer   int
 	gameData    *GameData // TODO(hajimehoshi): Remove this?
 	view        *View
-	field       *Field
+	field       *field.Field
 }
 
 func NewPlayer(gameData *GameData) *Player {
-	f := NewField(field_data)
+	f := field.New(field_data)
 	startPoint := f.GetStartPoint()
 	startPointF := PositionF{float64(startPoint.X), float64(startPoint.Y)}
 	audio.PlayBGM(audio.BGM0)
@@ -68,13 +70,13 @@ func NewPlayer(gameData *GameData) *Player {
 }
 
 func (p *Player) onWall() bool {
-	if p.toFieldOfsY() > CHAR_SIZE/4 {
+	if p.toFieldOfsY() > field.CHAR_SIZE/4 {
 		return false
 	}
-	if p.field.IsRidable(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
+	if p.field.IsRidable(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < field.CHAR_SIZE*7/8 {
 		return true
 	}
-	if p.field.IsRidable(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > CHAR_SIZE/8 {
+	if p.field.IsRidable(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > field.CHAR_SIZE/8 {
 		return true
 	}
 	return false
@@ -84,17 +86,17 @@ func (p *Player) isFallable() bool {
 	if !p.onWall() {
 		return false
 	}
-	if p.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
+	if p.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsX() < field.CHAR_SIZE*7/8 {
 		return false
 	}
-	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > CHAR_SIZE/8 {
+	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsX() > field.CHAR_SIZE/8 {
 		return false
 	}
 	return true
 }
 
 func (p *Player) isUpperWallBoth() bool {
-	if p.toFieldOfsY() < CHAR_SIZE/2 {
+	if p.toFieldOfsY() < field.CHAR_SIZE/2 {
 		return false
 	}
 	if p.field.IsWall(p.toFieldX(), p.toFieldY()) && p.field.IsWall(p.toFieldX()+1, p.toFieldY()) {
@@ -104,13 +106,13 @@ func (p *Player) isUpperWallBoth() bool {
 }
 
 func (p *Player) isUpperWall() bool {
-	if p.toFieldOfsY() < CHAR_SIZE/2 {
+	if p.toFieldOfsY() < field.CHAR_SIZE/2 {
 		return false
 	}
-	if p.field.IsWall(p.toFieldX(), p.toFieldY()) && p.toFieldOfsX() < CHAR_SIZE*7/8 {
+	if p.field.IsWall(p.toFieldX(), p.toFieldY()) && p.toFieldOfsX() < field.CHAR_SIZE*7/8 {
 		return true
 	}
-	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()) && p.toFieldOfsX() > CHAR_SIZE/8 {
+	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()) && p.toFieldOfsX() > field.CHAR_SIZE/8 {
 		return true
 	}
 	return false
@@ -120,7 +122,7 @@ func (p *Player) isLeftWall() bool {
 	if p.field.IsWall(p.toFieldX(), p.toFieldY()) {
 		return true
 	}
-	if p.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsY() > CHAR_SIZE/8 {
+	if p.field.IsWall(p.toFieldX(), p.toFieldY()+1) && p.toFieldOfsY() > field.CHAR_SIZE/8 {
 		return true
 	}
 	return false
@@ -130,19 +132,19 @@ func (p *Player) isRightWall() bool {
 	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()) {
 		return true
 	}
-	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsY() > CHAR_SIZE/8 {
+	if p.field.IsWall(p.toFieldX()+1, p.toFieldY()+1) && p.toFieldOfsY() > field.CHAR_SIZE/8 {
 		return true
 	}
 	return false
 }
 
 func (p *Player) normalizeToRight() {
-	p.position.X = float64(p.toFieldX() * CHAR_SIZE)
+	p.position.X = float64(p.toFieldX() * field.CHAR_SIZE)
 	p.speed.X = 0
 }
 
 func (p *Player) normalizeToLeft() {
-	p.position.X = float64((p.toFieldX() + 1) * CHAR_SIZE)
+	p.position.X = float64((p.toFieldX() + 1) * field.CHAR_SIZE)
 	p.speed.X = 0
 }
 
@@ -150,23 +152,23 @@ func (p *Player) normalizeToUpper() {
 	if p.speed.Y < 0 {
 		p.speed.Y = 0
 	}
-	p.position.Y = float64(CHAR_SIZE * (p.toFieldY() + 1))
+	p.position.Y = float64(field.CHAR_SIZE * (p.toFieldY() + 1))
 }
 
 func (p *Player) toFieldX() int {
-	return int(p.position.X) / CHAR_SIZE
+	return int(p.position.X) / field.CHAR_SIZE
 }
 
 func (p *Player) toFieldY() int {
-	return int(p.position.Y) / CHAR_SIZE
+	return int(p.position.Y) / field.CHAR_SIZE
 }
 
 func (p *Player) toFieldOfsX() int {
-	return int(p.position.X) % CHAR_SIZE
+	return int(p.position.X) % field.CHAR_SIZE
 }
 
 func (p *Player) toFieldOfsY() int {
-	return int(p.position.Y) % CHAR_SIZE
+	return int(p.position.Y) % field.CHAR_SIZE
 }
 
 func (p *Player) Update() GameStateMsg {
@@ -265,7 +267,7 @@ func (p *Player) moveNormal() {
 			if p.speed.Y > 0 {
 				p.speed.Y = 0
 			}
-			p.position.Y = float64(CHAR_SIZE * p.toFieldY())
+			p.position.Y = float64(field.CHAR_SIZE * p.toFieldY())
 			p.jumpCnt = 0
 		}
 
@@ -305,7 +307,7 @@ func (p *Player) moveNormal() {
 		if p.isUpperWallBoth() {
 			p.normalizeToUpper()
 		} else {
-			if CHAR_SIZE-p.toFieldOfsX() > p.toFieldOfsY() {
+			if field.CHAR_SIZE-p.toFieldOfsX() > p.toFieldOfsY() {
 				p.normalizeToLeft()
 			} else {
 				p.normalizeToUpper()
@@ -315,13 +317,13 @@ func (p *Player) moveNormal() {
 
 	// 床特殊効果
 	switch p.getOnField() {
-	case FIELD_SCROLL_L:
+	case field.FIELD_SCROLL_L:
 		p.speed.X = p.speed.X*(1.0-PLAYER_GRD_ACCRATIO) + float64(p.direction*PLAYER_SPEED-SCROLLPANEL_SPEED)*PLAYER_GRD_ACCRATIO
-	case FIELD_SCROLL_R:
+	case field.FIELD_SCROLL_R:
 		p.speed.X = p.speed.X*(1.0-PLAYER_GRD_ACCRATIO) + float64(p.direction*PLAYER_SPEED+SCROLLPANEL_SPEED)*PLAYER_GRD_ACCRATIO
-	case FIELD_SLIP:
+	case field.FIELD_SLIP:
 		// Do nothing
-	case FIELD_NONE:
+	case field.FIELD_NONE:
 		p.speed.X = p.speed.X*(1.0-PLAYER_AIR_ACCRATIO) + float64(p.direction*PLAYER_SPEED)*PLAYER_AIR_ACCRATIO
 	default:
 		p.speed.X = p.speed.X*(1.0-PLAYER_GRD_ACCRATIO) + float64(p.direction*PLAYER_SPEED)*PLAYER_GRD_ACCRATIO
@@ -385,9 +387,9 @@ func (p *Player) checkCollision() {
 				// アイテム効果
 				p.itemGet = p.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy)
 				switch p.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy) {
-				case FIELD_ITEM_POWERUP:
+				case field.FIELD_ITEM_POWERUP:
 					p.gameData.jumpMax++
-				case FIELD_ITEM_LIFE:
+				case field.FIELD_ITEM_LIFE:
 					p.gameData.lifeMax++
 					p.life = p.gameData.lifeMax * LIFE_RATIO
 				default:
@@ -397,7 +399,7 @@ func (p *Player) checkCollision() {
 				p.waitTimer = 0
 
 				audio.PauseBGM()
-				if IsItemForClear(p.itemGet) || p.itemGet == FIELD_ITEM_POWERUP {
+				if IsItemForClear(p.itemGet) || p.itemGet == field.FIELD_ITEM_POWERUP {
 					audio.PlaySE(audio.SE_ITEMGET)
 				} else {
 					audio.PlaySE(audio.SE_ITEMGET2)
@@ -418,12 +420,12 @@ func (p *Player) checkCollision() {
 	}
 }
 
-func (p *Player) getOnField() FieldType {
+func (p *Player) getOnField() field.FieldType {
 	if !p.onWall() {
-		return FIELD_NONE
+		return field.FIELD_NONE
 	}
 	x, y := p.toFieldX(), p.toFieldY()
-	if p.toFieldOfsX() < CHAR_SIZE/2 {
+	if p.toFieldOfsX() < field.CHAR_SIZE/2 {
 		if p.field.IsRidable(x, y+1) {
 			return p.field.GetField(x, y+1)
 		}
@@ -441,10 +443,10 @@ func (p *Player) drawPlayer(screen *ebiten.Image, game *Game) {
 	if p.state == PLAYERSTATE_DEAD { // 死亡
 		anime := (p.timer / 6) % 4
 		if game.gameData.lunkerMode {
-			draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*(2+anime), 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+			draw.Draw(screen, "ino", vx, vy, field.CHAR_SIZE*(2+anime), 128+field.CHAR_SIZE*2, field.CHAR_SIZE, field.CHAR_SIZE)
 			return
 		}
-		draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*(2+anime), 128, CHAR_SIZE, CHAR_SIZE)
+		draw.Draw(screen, "ino", vx, vy, field.CHAR_SIZE*(2+anime), 128, field.CHAR_SIZE, field.CHAR_SIZE)
 		return
 	}
 	if p.state != PLAYERSTATE_MUTEKI || p.timer%10 < 5 {
@@ -454,17 +456,17 @@ func (p *Player) drawPlayer(screen *ebiten.Image, game *Game) {
 		}
 		if p.direction < 0 {
 			if game.gameData.lunkerMode {
-				draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*2, CHAR_SIZE, CHAR_SIZE)
+				draw.Draw(screen, "ino", vx, vy, field.CHAR_SIZE*anime, 128+field.CHAR_SIZE*2, field.CHAR_SIZE, field.CHAR_SIZE)
 				return
 			}
-			draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*anime, 128, CHAR_SIZE, CHAR_SIZE)
+			draw.Draw(screen, "ino", vx, vy, field.CHAR_SIZE*anime, 128, field.CHAR_SIZE, field.CHAR_SIZE)
 			return
 		}
 		if game.gameData.lunkerMode {
-			draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE*3, CHAR_SIZE, CHAR_SIZE)
+			draw.Draw(screen, "ino", vx, vy, field.CHAR_SIZE*anime, 128+field.CHAR_SIZE*3, field.CHAR_SIZE, field.CHAR_SIZE)
 			return
 		}
-		draw.Draw(screen, "ino", vx, vy, CHAR_SIZE*anime, 128+CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
+		draw.Draw(screen, "ino", vx, vy, field.CHAR_SIZE*anime, 128+field.CHAR_SIZE, field.CHAR_SIZE, field.CHAR_SIZE)
 		return
 	}
 }
@@ -476,20 +478,20 @@ func (p *Player) drawLife(screen *ebiten.Image, game *Game) {
 		}
 		if p.life >= (t+1)*LIFE_RATIO {
 			draw.Draw(screen, "ino",
-				CHAR_SIZE*t, 0, CHAR_SIZE*3, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
+				field.CHAR_SIZE*t, 0, field.CHAR_SIZE*3, 128+field.CHAR_SIZE*1, field.CHAR_SIZE, field.CHAR_SIZE)
 			continue
 		}
 		draw.Draw(screen, "ino",
-			CHAR_SIZE*t, 0, CHAR_SIZE*4, 128+CHAR_SIZE*1, CHAR_SIZE, CHAR_SIZE)
+			field.CHAR_SIZE*t, 0, field.CHAR_SIZE*4, 128+field.CHAR_SIZE*1, field.CHAR_SIZE, field.CHAR_SIZE)
 	}
 }
 
 func (p *Player) drawItems(screen *ebiten.Image, game *Game) {
-	for t := FIELD_ITEM_FUJI; t < FIELD_ITEM_MAX; t++ {
+	for t := field.FIELD_ITEM_FUJI; t < field.FIELD_ITEM_MAX; t++ {
 		if !game.gameData.itemGetFlags[t] {
 			draw.Draw(screen, "ino",
-				draw.ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 無
-				CHAR_SIZE*5, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
+				draw.ScreenWidth-field.CHAR_SIZE/4*(int(field.FIELD_ITEM_MAX)-2-int(t)), 0, // 無
+				field.CHAR_SIZE*5, 128+field.CHAR_SIZE, field.CHAR_SIZE/4, field.CHAR_SIZE/2)
 			continue
 		}
 		// クリア条件アイテムは専用グラフィック
@@ -499,14 +501,14 @@ func (p *Player) drawItems(screen *ebiten.Image, game *Game) {
 					continue
 				}
 				draw.Draw(screen, "ino",
-					draw.ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0,
-					CHAR_SIZE*5+CHAR_SIZE/4*(i+2), 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
+					draw.ScreenWidth-field.CHAR_SIZE/4*(int(field.FIELD_ITEM_MAX)-2-int(t)), 0,
+					field.CHAR_SIZE*5+field.CHAR_SIZE/4*(i+2), 128+field.CHAR_SIZE, field.CHAR_SIZE/4, field.CHAR_SIZE/2)
 			}
 			continue
 		}
 		draw.Draw(screen, "ino",
-			draw.ScreenWidth-CHAR_SIZE/4*(int(FIELD_ITEM_MAX)-2-int(t)), 0, // 有
-			CHAR_SIZE*5+CHAR_SIZE/4, 128+CHAR_SIZE, CHAR_SIZE/4, CHAR_SIZE/2)
+			draw.ScreenWidth-field.CHAR_SIZE/4*(int(field.FIELD_ITEM_MAX)-2-int(t)), 0, // 有
+			field.CHAR_SIZE*5+field.CHAR_SIZE/4, 128+field.CHAR_SIZE, field.CHAR_SIZE/4, field.CHAR_SIZE/2)
 	}
 }
 
@@ -515,11 +517,11 @@ func (p *Player) drawMessage(screen *ebiten.Image, game *Game) {
 	case PLAYERSTATE_ITEMGET:
 		t := WAIT_TIMER_INTERVAL - p.waitTimer
 		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2-t*t+24,
-			256, 96*(int(p.itemGet)-int(FIELD_ITEM_BORDER)-1), 256, 96)
+			256, 96*(int(p.itemGet)-int(field.FIELD_ITEM_BORDER)-1), 256, 96)
 		draw.DrawItemFrame(screen, (draw.ScreenWidth-32)/2, (draw.ScreenHeight-96)/2-t*t-24)
-		it := int(p.itemGet) - (int(FIELD_ITEM_BORDER) + 1)
+		it := int(p.itemGet) - (int(field.FIELD_ITEM_BORDER) + 1)
 		draw.Draw(screen, "ino", (draw.ScreenWidth-16)/2, (draw.ScreenHeight-96)/2-int(t)*int(t)-16,
-			(it%16)*CHAR_SIZE, (it/16+4)*CHAR_SIZE, CHAR_SIZE, CHAR_SIZE)
+			(it%16)*field.CHAR_SIZE, (it/16+4)*field.CHAR_SIZE, field.CHAR_SIZE, field.CHAR_SIZE)
 	case PLAYERSTATE_START:
 		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, 64+(draw.ScreenHeight-240)/2, 0, 96, 256, 32)
 	case PLAYERSTATE_DEAD:
@@ -529,7 +531,7 @@ func (p *Player) drawMessage(screen *ebiten.Image, game *Game) {
 
 func (p *Player) Draw(screen *ebiten.Image, game *Game) {
 	po := p.view.GetPosition()
-	p.field.Draw(screen, game, Position{X: int(po.X), Y: int(po.Y)})
+	p.field.Draw(screen, game.gameData, field.Position{X: int(po.X), Y: int(po.Y)})
 	p.drawPlayer(screen, game)
 	p.drawLife(screen, game)
 	p.drawItems(screen, game)

@@ -1,4 +1,4 @@
-package ino
+package field
 
 import (
 	"strings"
@@ -51,12 +51,11 @@ const (
 )
 
 const (
-	CHAR_SIZE         = 16
-	FIELD_X_MAX       = 128
-	FIELD_Y_MAX       = 128
-	GRAPHIC_OFFSET_X  = -16 - 16*2
-	GRAPHIC_OFFSET_Y  = 8 - 16*2
-	SCROLLPANEL_SPEED = 2.0
+	CHAR_SIZE        = 16
+	FIELD_X_MAX      = 128
+	FIELD_Y_MAX      = 128
+	GRAPHIC_OFFSET_X = -16 - 16*2
+	GRAPHIC_OFFSET_Y = 8 - 16*2
 )
 
 type Position struct {
@@ -64,17 +63,12 @@ type Position struct {
 	Y int
 }
 
-type PositionF struct {
-	X float64
-	Y float64
-}
-
 type Field struct {
 	field [FIELD_X_MAX * FIELD_Y_MAX]FieldType
 	timer int
 }
 
-func NewField(data string) *Field {
+func New(data string) *Field {
 	f := &Field{}
 	xm := strings.Split(data, "\n")
 	const decoder = " HUB~<>*I PabcdefghijklmnopqrzL@"
@@ -132,25 +126,25 @@ func (f *Field) IsItem(x, y int) bool {
 		f.field[y*FIELD_X_MAX+x] != FIELD_ITEM_STARTPOINT
 }
 
-func (f *Field) IsItemGettable(x, y int, gameData *GameData) bool {
+func (f *Field) IsItemGettable(x, y int, gameData GameData) bool {
 	if !f.IsItem(x, y) {
 		return false
 	}
-	if f.field[y*FIELD_X_MAX+x] == FIELD_ITEM_OMEGA && f.isHiddenSecret(gameData) {
+	if f.field[y*FIELD_X_MAX+x] == FIELD_ITEM_OMEGA && gameData.IsHiddenSecret() {
 		return false
 	}
 	return true
-}
-
-func (f *Field) isHiddenSecret(gameData *GameData) bool {
-	return gameData.GetItemCount() < 15
 }
 
 func (f *Field) EraseField(x, y int) {
 	f.field[y*FIELD_X_MAX+x] = FIELD_NONE
 }
 
-func (f *Field) Draw(screen *ebiten.Image, game *Game, viewPosition Position) {
+type GameData interface {
+	IsHiddenSecret() bool
+}
+
+func (f *Field) Draw(screen *ebiten.Image, gameData GameData, viewPosition Position) {
 	vx, vy := viewPosition.X, viewPosition.Y
 	ofs_x := CHAR_SIZE - vx%CHAR_SIZE
 	ofs_y := CHAR_SIZE - vy%CHAR_SIZE
@@ -174,7 +168,7 @@ func (f *Field) Draw(screen *ebiten.Image, game *Game, viewPosition Position) {
 				gx = gx % 16
 			}
 
-			if f.isHiddenSecret(game.gameData) && f.field[fy*FIELD_X_MAX+fx] == FIELD_ITEM_OMEGA {
+			if gameData.IsHiddenSecret() && f.field[fy*FIELD_X_MAX+fx] == FIELD_ITEM_OMEGA {
 				continue
 			}
 
