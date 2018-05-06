@@ -8,6 +8,7 @@ import (
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
 	"github.com/hajimehoshi/go-inovation/ino/internal/field"
+	"github.com/hajimehoshi/go-inovation/ino/internal/fieldtype"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
 )
 
@@ -47,7 +48,7 @@ type Player struct {
 	direction   int
 	jumpedPoint PositionF
 	state       PlayerState
-	itemGet     field.FieldType
+	itemGet     fieldtype.FieldType
 	waitTimer   int
 	gameData    *GameData // TODO(hajimehoshi): Remove this?
 	view        *View
@@ -317,13 +318,13 @@ func (p *Player) moveNormal() {
 
 	// 床特殊効果
 	switch p.getOnField() {
-	case field.FIELD_SCROLL_L:
+	case fieldtype.FIELD_SCROLL_L:
 		p.speed.X = p.speed.X*(1.0-PLAYER_GRD_ACCRATIO) + float64(p.direction*PLAYER_SPEED-SCROLLPANEL_SPEED)*PLAYER_GRD_ACCRATIO
-	case field.FIELD_SCROLL_R:
+	case fieldtype.FIELD_SCROLL_R:
 		p.speed.X = p.speed.X*(1.0-PLAYER_GRD_ACCRATIO) + float64(p.direction*PLAYER_SPEED+SCROLLPANEL_SPEED)*PLAYER_GRD_ACCRATIO
-	case field.FIELD_SLIP:
+	case fieldtype.FIELD_SLIP:
 		// Do nothing
-	case field.FIELD_NONE:
+	case fieldtype.FIELD_NONE:
 		p.speed.X = p.speed.X*(1.0-PLAYER_AIR_ACCRATIO) + float64(p.direction*PLAYER_SPEED)*PLAYER_AIR_ACCRATIO
 	default:
 		p.speed.X = p.speed.X*(1.0-PLAYER_GRD_ACCRATIO) + float64(p.direction*PLAYER_SPEED)*PLAYER_GRD_ACCRATIO
@@ -387,9 +388,9 @@ func (p *Player) checkCollision() {
 				// アイテム効果
 				p.itemGet = p.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy)
 				switch p.field.GetField(p.toFieldX()+xx, p.toFieldY()+yy) {
-				case field.FIELD_ITEM_POWERUP:
+				case fieldtype.FIELD_ITEM_POWERUP:
 					p.gameData.jumpMax++
-				case field.FIELD_ITEM_LIFE:
+				case fieldtype.FIELD_ITEM_LIFE:
 					p.gameData.lifeMax++
 					p.life = p.gameData.lifeMax * LIFE_RATIO
 				default:
@@ -399,7 +400,7 @@ func (p *Player) checkCollision() {
 				p.waitTimer = 0
 
 				audio.PauseBGM()
-				if IsItemForClear(p.itemGet) || p.itemGet == field.FIELD_ITEM_POWERUP {
+				if IsItemForClear(p.itemGet) || p.itemGet == fieldtype.FIELD_ITEM_POWERUP {
 					audio.PlaySE(audio.SE_ITEMGET)
 				} else {
 					audio.PlaySE(audio.SE_ITEMGET2)
@@ -420,9 +421,9 @@ func (p *Player) checkCollision() {
 	}
 }
 
-func (p *Player) getOnField() field.FieldType {
+func (p *Player) getOnField() fieldtype.FieldType {
 	if !p.onWall() {
-		return field.FIELD_NONE
+		return fieldtype.FIELD_NONE
 	}
 	x, y := p.toFieldX(), p.toFieldY()
 	if p.toFieldOfsX() < field.CHAR_SIZE/2 {
@@ -487,10 +488,10 @@ func (p *Player) drawLife(screen *ebiten.Image, game *Game) {
 }
 
 func (p *Player) drawItems(screen *ebiten.Image, game *Game) {
-	for t := field.FIELD_ITEM_FUJI; t < field.FIELD_ITEM_MAX; t++ {
+	for t := fieldtype.FIELD_ITEM_FUJI; t < fieldtype.FIELD_ITEM_MAX; t++ {
 		if !game.gameData.itemGetFlags[t] {
 			draw.Draw(screen, "ino",
-				draw.ScreenWidth-field.CHAR_SIZE/4*(int(field.FIELD_ITEM_MAX)-2-int(t)), 0, // 無
+				draw.ScreenWidth-field.CHAR_SIZE/4*(int(fieldtype.FIELD_ITEM_MAX)-2-int(t)), 0, // 無
 				field.CHAR_SIZE*5, 128+field.CHAR_SIZE, field.CHAR_SIZE/4, field.CHAR_SIZE/2)
 			continue
 		}
@@ -501,13 +502,13 @@ func (p *Player) drawItems(screen *ebiten.Image, game *Game) {
 					continue
 				}
 				draw.Draw(screen, "ino",
-					draw.ScreenWidth-field.CHAR_SIZE/4*(int(field.FIELD_ITEM_MAX)-2-int(t)), 0,
+					draw.ScreenWidth-field.CHAR_SIZE/4*(int(fieldtype.FIELD_ITEM_MAX)-2-int(t)), 0,
 					field.CHAR_SIZE*5+field.CHAR_SIZE/4*(i+2), 128+field.CHAR_SIZE, field.CHAR_SIZE/4, field.CHAR_SIZE/2)
 			}
 			continue
 		}
 		draw.Draw(screen, "ino",
-			draw.ScreenWidth-field.CHAR_SIZE/4*(int(field.FIELD_ITEM_MAX)-2-int(t)), 0, // 有
+			draw.ScreenWidth-field.CHAR_SIZE/4*(int(fieldtype.FIELD_ITEM_MAX)-2-int(t)), 0, // 有
 			field.CHAR_SIZE*5+field.CHAR_SIZE/4, 128+field.CHAR_SIZE, field.CHAR_SIZE/4, field.CHAR_SIZE/2)
 	}
 }
@@ -516,10 +517,9 @@ func (p *Player) drawMessage(screen *ebiten.Image, game *Game) {
 	switch p.state {
 	case PLAYERSTATE_ITEMGET:
 		t := WAIT_TIMER_INTERVAL - p.waitTimer
-		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2-t*t+24,
-			256, 96*(int(p.itemGet)-int(field.FIELD_ITEM_BORDER)-1), 256, 96)
+		draw.DrawItemMessage(screen, p.itemGet, (draw.ScreenHeight-96)/2+24-t*t)
 		draw.DrawItemFrame(screen, (draw.ScreenWidth-32)/2, (draw.ScreenHeight-96)/2-t*t-24)
-		it := int(p.itemGet) - (int(field.FIELD_ITEM_BORDER) + 1)
+		it := int(p.itemGet) - (int(fieldtype.FIELD_ITEM_BORDER) + 1)
 		draw.Draw(screen, "ino", (draw.ScreenWidth-16)/2, (draw.ScreenHeight-96)/2-int(t)*int(t)-16,
 			(it%16)*field.CHAR_SIZE, (it/16+4)*field.CHAR_SIZE, field.CHAR_SIZE, field.CHAR_SIZE)
 	case PLAYERSTATE_START:

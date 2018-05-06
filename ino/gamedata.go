@@ -1,7 +1,7 @@
 package ino
 
 import (
-	"github.com/hajimehoshi/go-inovation/ino/internal/field"
+	"github.com/hajimehoshi/go-inovation/ino/internal/fieldtype"
 )
 
 type GameMode int
@@ -11,13 +11,13 @@ const (
 	GAMEMODE_LUNKER
 )
 
-var clearFlagItems = [...]field.FieldType{
-	field.FIELD_ITEM_FUJI,
-	field.FIELD_ITEM_TAKA,
-	field.FIELD_ITEM_NASU,
+var clearFlagItems = [...]fieldtype.FieldType{
+	fieldtype.FIELD_ITEM_FUJI,
+	fieldtype.FIELD_ITEM_TAKA,
+	fieldtype.FIELD_ITEM_NASU,
 }
 
-func IsItemForClear(it field.FieldType) bool {
+func IsItemForClear(it fieldtype.FieldType) bool {
 	for _, e := range clearFlagItems {
 		if e == it {
 			return true
@@ -27,7 +27,7 @@ func IsItemForClear(it field.FieldType) bool {
 }
 
 type GameData struct {
-	itemGetFlags [field.FIELD_ITEM_MAX]bool
+	itemGetFlags [fieldtype.FIELD_ITEM_MAX]bool
 	time         int
 	jumpMax      int
 	lifeMax      int
@@ -66,7 +66,7 @@ func (g *GameData) IsGameClear() bool {
 }
 
 func (g *GameData) IsGetOmega() bool {
-	return g.itemGetFlags[field.FIELD_ITEM_OMEGA]
+	return g.itemGetFlags[fieldtype.FIELD_ITEM_OMEGA]
 }
 
 func (g *GameData) GetItemCount() int {
