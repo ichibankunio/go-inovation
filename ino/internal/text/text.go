@@ -493,3 +493,12 @@ REAL MEN!!`,
 func Get(lang language.Tag, id TextID) string {
 	return texts[lang][id]
 }
+
+func Languages() []language.Tag {
+	// TODO: Sort
+	langs := []language.Tag{}
+	for lang := range texts {
+		langs = append(langs, lang)
+	}
+	return langs
+}

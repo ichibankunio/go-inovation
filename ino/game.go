@@ -16,6 +16,7 @@ import (
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
+	"github.com/hajimehoshi/go-inovation/ino/internal/text"
 )
 
 type Game struct {
@@ -120,9 +121,22 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 }
 
 func NewGame() (*Game, error) {
+	lang := language.Japanese
+	if js.Global != nil {
+		str := js.Global.Get("navigator").Get("language").String()
+		newLang, _ := language.Parse(str)
+		base, _ := newLang.Base()
+		newLang, _ = language.Compose(base)
+		for _, l := range text.Languages() {
+			if newLang == l {
+				lang = newLang
+				break
+			}
+		}
+	}
 	game := &Game{
 		resourceLoadedCh: make(chan error),
-		lang:             language.Japanese,
+		lang:             lang,
 	}
 	go func() {
 		if err := draw.LoadImages(); err != nil {
