@@ -417,8 +417,7 @@ USMC, Marines have BUSHI-DO
 SAMURAI SAMURAI BUSHI-DO`,
 		TextIDItemApple: `You Grab Big Apple(fuji-ringo)
 Red Sweety
-Let it be lalala
-Apple is Fxcker`,
+Let it be lalala`,
 		TextIDItemV: `You Grab "V of Victory"
 war cry!
 Me Humanbeing with a VIDEO GAME
