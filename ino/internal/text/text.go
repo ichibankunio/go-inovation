@@ -15,6 +15,8 @@ const (
 	TextIDEndingScore1
 	TextIDEndingScore2
 	TextIDEndingScore3
+	TextIDSecretCommand
+	TextIDSecretClear
 )
 
 var texts = map[language.Tag]map[TextID]string{
@@ -138,6 +140,16 @@ HTML5　いしょく
 		TextIDEndingScore1: "せいせき　はぴょう",
 		TextIDEndingScore2: "かくとく　あいてむ",
 		TextIDEndingScore3: "くりあ　たいむ",
+		TextIDSecretCommand: `たいとるで
+
+ひだり ひだり ひだり
+みぎ　みぎ　みぎ
+ひだり　みぎ`,
+		TextIDSecretClear: `おめでとう。
+
+あなたは
+ぎじゅつ　さる
+です。`,
 	},
 }
 

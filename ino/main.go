@@ -264,13 +264,20 @@ func (s *SecretScene) Update(game *Game) {
 
 func (s *SecretScene) Draw(screen *ebiten.Image, game *Game) {
 	draw.Draw(screen, "bg", 0, 0, 0, 240, 320, 240)
+	var textID text.TextID
 	switch s.secretType {
 	case SecretTypeCommand:
-		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96*2, 256, 96)
+		textID = text.TextIDSecretCommand
 	case SecretTypeClear:
-		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96, 256, 96)
+		textID = text.TextIDSecretClear
 	default:
 		panic("not reached")
+	}
+	str := text.Get(language.Japanese, textID)
+	y := (draw.ScreenHeight - font.Height(str)) / 2
+	for i, line := range strings.Split(str, "\n") {
+		x := (draw.ScreenWidth - font.Width(line)) / 2
+		font.DrawText(screen, line, x, y+i*font.LineHeight, color.White)
 	}
 }
 
