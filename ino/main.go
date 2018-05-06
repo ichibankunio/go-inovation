@@ -126,7 +126,6 @@ type OpeningScene struct {
 }
 
 const (
-	OPENING_SCROLL_LEN   = 416
 	OPENING_SCROLL_SPEED = 3
 )
 
