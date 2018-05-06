@@ -122,7 +122,8 @@ func (t *TitleScene) Draw(screen *ebiten.Image, game *Game) {
 	font.DrawText(screen, str, x, y, clr)
 
 	// Draw the title.
-	draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, 32+(draw.ScreenHeight-240)/2, 0, 0, 256, 48)
+	key := "msg_" + game.lang.String()
+	draw.Draw(screen, key, (draw.ScreenWidth-256)/2, 32+(draw.ScreenHeight-240)/2, 0, 0, 256, 48)
 }
 
 func (t *TitleScene) Msg() GameStateMsg {

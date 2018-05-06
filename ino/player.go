@@ -523,9 +523,11 @@ func (p *Player) drawMessage(screen *ebiten.Image, game *Game) {
 		draw.Draw(screen, "ino", (draw.ScreenWidth-16)/2, (draw.ScreenHeight-96)/2-int(t)*int(t)-16,
 			(it%16)*field.CHAR_SIZE, (it/16+4)*field.CHAR_SIZE, field.CHAR_SIZE, field.CHAR_SIZE)
 	case PLAYERSTATE_START:
-		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, 64+(draw.ScreenHeight-240)/2, 0, 96, 256, 32)
+		key := "msg_" + game.lang.String()
+		draw.Draw(screen, key, (draw.ScreenWidth-256)/2, 64+(draw.ScreenHeight-240)/2, 0, 96, 256, 32)
 	case PLAYERSTATE_DEAD:
-		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, 64+(draw.ScreenHeight-240)/2, 0, 128, 256, 32)
+		key := "msg_" + game.lang.String()
+		draw.Draw(screen, key, (draw.ScreenWidth-256)/2, 64+(draw.ScreenHeight-240)/2, 0, 128, 256, 32)
 	}
 }
 

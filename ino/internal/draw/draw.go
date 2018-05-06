@@ -106,7 +106,7 @@ var (
 )
 
 func LoadImages() error {
-	for _, f := range []string{"ino", "msg", "bg", "touch"} {
+	for _, f := range []string{"ino", "msg_ja", "msg_en", "bg", "touch"} {
 		b, err := assets.Asset("resources/images/color/" + f + ".png")
 		if err != nil {
 			return err
