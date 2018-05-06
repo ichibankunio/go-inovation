@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
+	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
@@ -89,6 +90,15 @@ func (t *TitleScene) Update(game *Game) {
 	if t.lunkerCommand > 7 {
 		t.lunkerCommand = 0
 		t.lunkerMode = !t.lunkerMode
+	}
+
+	if input.Current().ToChangeLanguage() {
+		switch game.lang {
+		case language.Japanese:
+			game.lang = language.English
+		case language.English:
+			game.lang = language.Japanese
+		}
 	}
 }
 

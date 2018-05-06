@@ -110,14 +110,6 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 			g.scene = NewSecretScene(SecretTypeClear)
 		}
 	}
-	if input.Current().ToChangeLanguage() {
-		switch g.lang {
-		case language.Japanese:
-			g.lang = language.English
-		case language.English:
-			g.lang = language.Japanese
-		}
-	}
 	g.scene.Update(g)
 	if ebiten.IsRunningSlowly() {
 		return nil
