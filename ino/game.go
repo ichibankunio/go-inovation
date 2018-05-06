@@ -96,16 +96,16 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 				return err
 			}
 			g.scene = &EndingScene{}
-		case GAMESTATE_MSG_REQ_SECRET1:
+		case GAMESTATE_MSG_REQ_SECRET_COMMAND:
 			if err := audio.PlayBGM(audio.BGM1); err != nil {
 				return err
 			}
-			g.scene = NewSecretScene(1)
-		case GAMESTATE_MSG_REQ_SECRET2:
+			g.scene = NewSecretScene(SecretTypeCommand)
+		case GAMESTATE_MSG_REQ_SECRET_CLEAR:
 			if err := audio.PlayBGM(audio.BGM1); err != nil {
 				return err
 			}
-			g.scene = NewSecretScene(2)
+			g.scene = NewSecretScene(SecretTypeClear)
 		}
 	}
 	g.scene.Update(g)

@@ -36,8 +36,8 @@ const (
 	GAMESTATE_MSG_REQ_GAME
 	GAMESTATE_MSG_REQ_OPENING
 	GAMESTATE_MSG_REQ_ENDING
-	GAMESTATE_MSG_REQ_SECRET1
-	GAMESTATE_MSG_REQ_SECRET2
+	GAMESTATE_MSG_REQ_SECRET_COMMAND
+	GAMESTATE_MSG_REQ_SECRET_CLEAR
 )
 
 type TitleScene struct {
@@ -193,9 +193,9 @@ func (e *EndingScene) Update(game *Game) {
 			// 条件を満たしていると隠し画面へ
 			if game.gameData.IsGetOmega() {
 				if game.gameData.lunkerMode {
-					e.gameStateMsg = GAMESTATE_MSG_REQ_SECRET2
+					e.gameStateMsg = GAMESTATE_MSG_REQ_SECRET_CLEAR
 				} else {
-					e.gameStateMsg = GAMESTATE_MSG_REQ_SECRET1
+					e.gameStateMsg = GAMESTATE_MSG_REQ_SECRET_COMMAND
 				}
 				return
 			}
@@ -236,15 +236,22 @@ func (e *EndingScene) Msg() GameStateMsg {
 	return e.gameStateMsg
 }
 
+type SecretType int
+
+const (
+	SecretTypeCommand SecretType = iota
+	SecretTypeClear
+)
+
 type SecretScene struct {
 	gameStateMsg GameStateMsg
 	timer        int
-	number       int
+	secretType   SecretType
 }
 
-func NewSecretScene(number int) *SecretScene {
+func NewSecretScene(secretType SecretType) *SecretScene {
 	return &SecretScene{
-		number: number,
+		secretType: secretType,
 	}
 }
 
@@ -257,11 +264,14 @@ func (s *SecretScene) Update(game *Game) {
 
 func (s *SecretScene) Draw(screen *ebiten.Image, game *Game) {
 	draw.Draw(screen, "bg", 0, 0, 0, 240, 320, 240)
-	if s.number == 1 {
+	switch s.secretType {
+	case SecretTypeCommand:
 		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96*2, 256, 96)
-		return
+	case SecretTypeClear:
+		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96, 256, 96)
+	default:
+		panic("not reached")
 	}
-	draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-96)/2, 0, 2048-96, 256, 96)
 }
 
 func (s *SecretScene) Msg() GameStateMsg {
