@@ -264,6 +264,230 @@ HTML5　いしょく
 １ふやしてあげる
 ああ、なんて　たくましいの…`,
 	},
+	language.English: {
+		TextIDStart:       "PRESS SPACE BEGIN!",
+		TextIDStartLunker: "LUNKER MODE BEGIN!",
+		TextIDStartTouch:  "TOUCH SCREEN BEGIN!",
+		TextIDOpening: `when I wake up
+I become <red>Wild bore</red>
+calm down me
+** stay in dream **
+
+
+
+
+
+in a dream
+a Prophet Druid man
+He telling me
+can finding <red>THE Three "GOT ICONs"</red>
+this dream's HERO
+you. just only YOU!
+
+
+
+
+
+beat any traps
+Telling of
+"The first dream of the year of Japan"
+explor <red>"Imperial Regalia of Japan"</red>
+This is the <red>FATE</red> of me
+
+
+
+
+
+My WILD BORE's Heart get <red>excited</red>.`,
+		TextIDEnding: `shining <red>"Imperial Regalia of Japan"</red>
+OOOMPF!
+
+
+
+Hop Step Jump
+carllouis!
+
+
+
+Before long A factor was
+her Intention had calling to original place
+Recurrence...
+Memoried to His Heart
+Recall it makes Mind of The Creation
+
+
+2007 spring has come!
+
+
+<red>a Happy New Year!</red>
+
+
+
+
+
+INNOVATION 2007
+
+
+
+Super Trivial Works
+O-MEGA
+
+
+
+composer man
+dong
+
+
+
+Field Maps Design
+O-MEGA
+Gekku
+Zy
+351
+
+
+
+Title naming
+wang-zhi
+
+
+
+Test Playing man
+Game-Hell 2000
+Gek
+351
+Zi
+Akaja
+
+
+
+EngRish translation
+Eki
+Dong
+O-MEGA
+
+
+
+Special Thanks man
+Game Dev. BBS users
+www.2ch.net Thread "Game Deveropment"
+
+
+
+Porting to HTML5
+Haneda
+
+
+
+Porting to Go
+Hajime Hoshi
+
+
+
+Produced by
+O-MEGA
+
+
+
+EVZO-END get bath`,
+		TextIDEndingScore1: "Results",
+		TextIDEndingScore2: "You Got ICONS",
+		TextIDEndingScore3: "Clear Time",
+		TextIDSecretCommand: `at Title Screen
+
+L L L
+R R R
+L R`,
+		TextIDSecretClear: `Congratulations!
+
+You are
+the
+technical monkey.`,
+		TextIDItemPowerUp: `You Grab "Water Medicine"
+TA-RA-TERAH!!
+JUMP UP
+you got "M. Jordan's AIR NIKE"
+increase INCREASES!`,
+		TextIDItemFuji: `You Grab a "FUJIYAMA"
+*An Imperial Regalia*
+Throw the One Ring Frodo!`,
+		TextIDItemBushi: `You Feel "BUSHI-DO"
+Japanese SAMURAI Spilit
+USMC, Marines have BUSHI-DO
+SAMURAI SAMURAI BUSHI-DO`,
+		TextIDItemApple: `You Grab Big Apple(fuji-ringo)
+Red Sweety
+Let it be lalala
+Apple is Fxcker`,
+		TextIDItemV: `You Grab "V of Victory"
+war cry!
+Me Humanbeing with a VIDEO GAME
+PILDER ON!`,
+		TextIDItemTaka: `You catch a Hawk(Taka).
+*an Imperial Regalia*
+The President of Sky.
+In ancient Aztec
+A messenger of God`,
+		TextIDItemShoulder: `You got a RED-SHOULDER(Kata)
+upper bodie The root of Arms
+Red-Shoulder`,
+		TextIDItemDagger: `You Got a Dagger
+Short sword
+the only friend
+on your quest`,
+		TextIDItemKatakata: `You Grab "Katakata"
+strange sound
+RATTLE-RATTLE...
+Poltergeist!?
+NO! ask to Mulder!`,
+		TextIDItemNasu: `You Got Eggplant (Nasu)
+*An Imperial Regalia*
+Purple Shining
+King of Vegetable
+But I've never satisfied with this`,
+		TextIDItemBonus: `You Got "Bonus"
+A Bonus!
+Fatality Bonus!
+Pacifist Bonus!
+This is the Bonus!`,
+		TextIDItemNurse: `You Grab "Nurse"
+I'm not an angel in white
+I'm a goddess of hell
+You Patients!`,
+		TextIDItemNazuna: `You got "Nazuna"
+It is called
+"Shepherd's-purse"
+in English
+Symbol of doom`,
+		TextIDItemGameHell: `You Grab “GameHel12000"
+Helcome.
+We are an community of
+Japanese indie game developers.`,
+		TextIDItemGundam: `You Grab "GUNDAM 0079"
+Control is easy
+All you have to do is
+switching on a battle computer`,
+		TextIDItemPoed: `You Grab "Po'ed"
+Ha!
+It's getting more interesting!`,
+		TextIDItemMilestone: `You got "Milestone Mark"
+All your wii are belong to
+our doomsday device KAROUS.`,
+		TextIDItem1Yen: `You Got 1 Yen.
+In ancient Japan
+It was used as a
+substitute for light`,
+		TextIDItemTriangle: `You Got "Triangle Service"
+Slip Trip Oita-Pref.
+Where is the Boss?`,
+		TextIDItemOmega: `You Got "O-mega Medal"
+Thank you for playing
+such a masochistic game.`,
+		TextIDItemLife: `You Got a Heart Container
+DeDeDe-Deng!!
+Increase your MAX LIFE.
+REAL MEN!!`,
+	},
 }
 
 func Get(lang language.Tag, id TextID) string {
