@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
-	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
@@ -107,7 +106,7 @@ func (t *TitleScene) Draw(screen *ebiten.Image, game *Game) {
 		}
 	}
 
-	str := text.Get(language.Japanese, textID)
+	str := text.Get(game.lang, textID)
 	x := (draw.ScreenWidth-font.Width(str))/2 + t.offsetX
 	y := (draw.ScreenHeight-240)/2 + 160 + t.offsetY
 	font.DrawText(screen, str, x, y, clr)
@@ -135,7 +134,7 @@ func (o *OpeningScene) Update(game *Game) {
 	if input.Current().IsActionKeyPressed() || input.Current().IsSpaceTouched() {
 		o.timer += 20
 	}
-	scrollLen := font.Height(text.Get(language.Japanese, text.TextIDOpening)) + draw.ScreenHeight
+	scrollLen := font.Height(text.Get(game.lang, text.TextIDOpening)) + draw.ScreenHeight
 	if o.timer/OPENING_SCROLL_SPEED > scrollLen {
 		o.gameStateMsg = GAMESTATE_MSG_REQ_GAME
 		audio.PauseBGM()
@@ -145,7 +144,7 @@ func (o *OpeningScene) Update(game *Game) {
 func (o *OpeningScene) Draw(screen *ebiten.Image, game *Game) {
 	draw.Draw(screen, "bg", 0, 0, 0, 480, 320, 240)
 
-	for i, line := range strings.Split(text.Get(language.Japanese, text.TextIDOpening), "\n") {
+	for i, line := range strings.Split(text.Get(game.lang, text.TextIDOpening), "\n") {
 		x := (draw.ScreenWidth - font.Width(line)) / 2
 		y := draw.ScreenHeight - (o.timer / OPENING_SCROLL_SPEED) + i*font.LineHeight
 		font.DrawText(screen, line, x, y, color.Black)
@@ -174,7 +173,7 @@ func (e *EndingScene) Update(game *Game) {
 		if input.Current().IsActionKeyPressed() || input.Current().IsSpaceTouched() {
 			e.timer += 20
 		}
-		scrollLen := font.Height(text.Get(language.Japanese, text.TextIDEnding)) + draw.ScreenHeight
+		scrollLen := font.Height(text.Get(game.lang, text.TextIDEnding)) + draw.ScreenHeight
 		if e.timer/ENDING_SCROLL_SPEED > scrollLen {
 			e.timer = 0
 			e.state = ENDINGMAIN_STATE_RESULT
@@ -210,19 +209,19 @@ func (e *EndingScene) Draw(screen *ebiten.Image, game *Game) {
 
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		for i, line := range strings.Split(text.Get(language.Japanese, text.TextIDEnding), "\n") {
+		for i, line := range strings.Split(text.Get(game.lang, text.TextIDEnding), "\n") {
 			x := (draw.ScreenWidth - font.Width(line)) / 2
 			y := draw.ScreenHeight - (e.timer / ENDING_SCROLL_SPEED) + i*font.LineHeight
 			font.DrawText(screen, line, x, y, color.Black)
 		}
 	case ENDINGMAIN_STATE_RESULT:
 		lines := []string{
-			text.Get(language.Japanese, text.TextIDEndingScore1),
+			text.Get(game.lang, text.TextIDEndingScore1),
 			"",
-			text.Get(language.Japanese, text.TextIDEndingScore2),
+			text.Get(game.lang, text.TextIDEndingScore2),
 			strconv.Itoa(game.gameData.GetItemCount()),
 			"",
-			text.Get(language.Japanese, text.TextIDEndingScore3),
+			text.Get(game.lang, text.TextIDEndingScore3),
 			strconv.Itoa(game.gameData.TimeInSecond()),
 		}
 		for i, line := range lines {
@@ -273,7 +272,7 @@ func (s *SecretScene) Draw(screen *ebiten.Image, game *Game) {
 	default:
 		panic("not reached")
 	}
-	str := text.Get(language.Japanese, textID)
+	str := text.Get(game.lang, textID)
 	y := (draw.ScreenHeight - font.Height(str)) / 2
 	for i, line := range strings.Split(str, "\n") {
 		x := (draw.ScreenWidth - font.Width(line)) / 2

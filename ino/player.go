@@ -517,7 +517,7 @@ func (p *Player) drawMessage(screen *ebiten.Image, game *Game) {
 	switch p.state {
 	case PLAYERSTATE_ITEMGET:
 		t := WAIT_TIMER_INTERVAL - p.waitTimer
-		draw.DrawItemMessage(screen, p.itemGet, (draw.ScreenHeight-96)/2+24-t*t)
+		draw.DrawItemMessage(screen, p.itemGet, (draw.ScreenHeight-96)/2+24-t*t, game.lang)
 		draw.DrawItemFrame(screen, (draw.ScreenWidth-32)/2, (draw.ScreenHeight-96)/2-t*t-24)
 		it := int(p.itemGet) - (int(fieldtype.FIELD_ITEM_BORDER) + 1)
 		draw.Draw(screen, "ino", (draw.ScreenWidth-16)/2, (draw.ScreenHeight-96)/2-int(t)*int(t)-16,

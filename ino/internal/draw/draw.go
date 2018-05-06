@@ -67,7 +67,7 @@ func DrawItemFrame(screen *ebiten.Image, x, y int) {
 	screen.DrawImage(imageItemFrame, op)
 }
 
-func DrawItemMessage(screen *ebiten.Image, item fieldtype.FieldType, y int) {
+func DrawItemMessage(screen *ebiten.Image, item fieldtype.FieldType, y int, lang language.Tag) {
 	frame, ok := imageItemMessageFrames[item]
 	if !ok {
 		frame = imageItemMessageFrames[fieldtype.FIELD_NONE]
@@ -78,7 +78,7 @@ func DrawItemMessage(screen *ebiten.Image, item fieldtype.FieldType, y int) {
 	op.GeoM.Translate(float64(x), float64(y))
 	screen.DrawImage(frame, op)
 
-	str := item.ItemMessage(language.Japanese)
+	str := item.ItemMessage(lang)
 	lines := strings.Split(str, "\n")
 	for i, line := range lines {
 		dx := (ScreenWidth - font.Width(line)) / 2

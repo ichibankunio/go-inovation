@@ -11,6 +11,7 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
+	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
@@ -21,6 +22,7 @@ type Game struct {
 	resourceLoadedCh chan error
 	scene            Scene
 	gameData         *GameData
+	lang             language.Tag
 	cpup             *os.File
 }
 
@@ -108,6 +110,14 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 			g.scene = NewSecretScene(SecretTypeClear)
 		}
 	}
+	if input.Current().ToChangeLanguage() {
+		switch g.lang {
+		case language.Japanese:
+			g.lang = language.English
+		case language.English:
+			g.lang = language.Japanese
+		}
+	}
 	g.scene.Update(g)
 	if ebiten.IsRunningSlowly() {
 		return nil
@@ -120,6 +130,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 func NewGame() (*Game, error) {
 	game := &Game{
 		resourceLoadedCh: make(chan error),
+		lang:             language.Japanese,
 	}
 	go func() {
 		if err := draw.LoadImages(); err != nil {

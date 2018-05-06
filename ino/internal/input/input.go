@@ -2,6 +2,7 @@ package input
 
 import (
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/inpututil"
 )
 
 var theInput = &Input{
@@ -159,4 +160,8 @@ func (i *Input) IsDirectionKeyPressed(dir Direction) bool {
 	default:
 		panic("not reach")
 	}
+}
+
+func (i *Input) ToChangeLanguage() bool {
+	return inpututil.IsKeyJustPressed(ebiten.KeyL)
 }
