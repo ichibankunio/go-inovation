@@ -20,7 +20,7 @@ import (
 const (
 	ScreenWidth  = draw.ScreenWidth
 	ScreenHeight = draw.ScreenHeight
-	Title        = "Inovation 2007 (Go version)"
+	Title        = "INNO VATION 2007 (Go version)"
 )
 
 const (
