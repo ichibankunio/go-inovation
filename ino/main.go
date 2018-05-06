@@ -216,9 +216,19 @@ func (e *EndingScene) Draw(screen *ebiten.Image, game *Game) {
 			font.DrawText(screen, line, x, y, color.Black)
 		}
 	case ENDINGMAIN_STATE_RESULT:
-		draw.Draw(screen, "msg", (draw.ScreenWidth-256)/2, (draw.ScreenHeight-160)/2, 0, 1664, 256, 160)
-		font.DrawText(screen, strconv.Itoa(game.gameData.GetItemCount()), (draw.ScreenWidth-10*0)/2, (draw.ScreenHeight-160)/2+13*5+2, color.Black)
-		font.DrawText(screen, strconv.Itoa(game.gameData.TimeInSecond()), (draw.ScreenWidth-13)/2, (draw.ScreenHeight-160)/2+13*8+2, color.Black)
+		lines := []string{
+			text.Get(language.Japanese, text.TextIDEndingScore1),
+			"",
+			text.Get(language.Japanese, text.TextIDEndingScore2),
+			strconv.Itoa(game.gameData.GetItemCount()),
+			"",
+			text.Get(language.Japanese, text.TextIDEndingScore3),
+			strconv.Itoa(game.gameData.TimeInSecond()),
+		}
+		for i, line := range lines {
+			x := (draw.ScreenWidth - font.Width(line)) / 2
+			font.DrawText(screen, line, x, (draw.ScreenHeight-160)/2+16*i, color.Black)
+		}
 	}
 }
 

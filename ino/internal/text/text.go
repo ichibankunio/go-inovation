@@ -12,6 +12,9 @@ const (
 	TextIDStartTouch
 	TextIDOpening
 	TextIDEnding
+	TextIDEndingScore1
+	TextIDEndingScore2
+	TextIDEndingScore3
 )
 
 var texts = map[language.Tag]map[TextID]string{
@@ -132,6 +135,9 @@ HTML5　いしょく
 
 えんどう　おふろに　はいる
 `,
+		TextIDEndingScore1: "せいせき　はぴょう",
+		TextIDEndingScore2: "かくとく　あいてむ",
+		TextIDEndingScore3: "くりあ　たいむ",
 	},
 }
 
