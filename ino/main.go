@@ -92,7 +92,7 @@ func (t *TitleScene) Update(game *Game) {
 		t.lunkerMode = !t.lunkerMode
 	}
 
-	if input.Current().IsLanguageKeyPressed() {
+	if input.Current().IsLanguageSwitcherPressed() {
 		switch game.lang {
 		case language.Japanese:
 			game.lang = language.English
@@ -124,6 +124,9 @@ func (t *TitleScene) Draw(screen *ebiten.Image, game *Game) {
 	// Draw the title.
 	key := "msg_" + game.lang.String()
 	draw.Draw(screen, key, (draw.ScreenWidth-256)/2, 32+(draw.ScreenHeight-240)/2, 0, 0, 256, 48)
+
+	// Draw the language switcher.
+	font.DrawText(screen, "Language", 320-48, 0, color.RGBA{0x80, 0x80, 0x80, 0xff})
 }
 
 func (t *TitleScene) Msg() GameStateMsg {

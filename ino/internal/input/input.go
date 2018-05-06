@@ -114,10 +114,14 @@ func (i *Input) Update() {
 	}
 }
 
+func inLanguageSwitcher(x, y int) bool {
+	return ScreenWidth*3/4 <= x && y < ScreenHeight/4
+}
+
 func (i *Input) IsSpaceTouched() bool {
 	for _, t := range ebiten.TouchIDs() {
-		_, y := ebiten.TouchPosition(t)
-		if y < ScreenHeight-64 {
+		x, y := ebiten.TouchPosition(t)
+		if !inLanguageSwitcher(x, y) && y < ScreenHeight-64 {
 			return true
 		}
 	}
@@ -126,8 +130,8 @@ func (i *Input) IsSpaceTouched() bool {
 
 func (i *Input) IsSpaceJustTouched() bool {
 	for _, t := range inpututil.JustPressedTouchIDs() {
-		_, y := ebiten.TouchPosition(t)
-		if y < ScreenHeight-64 {
+		x, y := ebiten.TouchPosition(t)
+		if !inLanguageSwitcher(x, y) && y < ScreenHeight-64 {
 			return true
 		}
 	}
@@ -169,9 +173,19 @@ func (i *Input) IsDirectionKeyPressed(dir Direction) bool {
 	}
 }
 
-func (i *Input) IsLanguageKeyPressed() bool {
+func (i *Input) IsLanguageSwitcherPressed() bool {
 	if inpututil.IsKeyJustPressed(ebiten.KeyL) {
 		return true
+	}
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		if inLanguageSwitcher(ebiten.CursorPosition()) {
+			return true
+		}
+	}
+	for _, t := range inpututil.JustPressedTouchIDs() {
+		if inLanguageSwitcher(ebiten.TouchPosition(t)) {
+			return true
+		}
 	}
 	return false
 }
