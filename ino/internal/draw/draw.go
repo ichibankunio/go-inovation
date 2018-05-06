@@ -83,7 +83,9 @@ func DrawItemMessage(screen *ebiten.Image, item fieldtype.FieldType, y int) {
 	for i, line := range lines {
 		dx := (ScreenWidth - font.Width(line)) / 2
 		dy := i * font.LineHeight
-		if i > 0 {
+		if i == 0 {
+			dy += 1
+		} else {
 			dy += (80 - font.LineHeight*(len(lines)-1)) / 2
 		}
 		clr := color.Black
