@@ -5,6 +5,12 @@ import (
 	"github.com/hajimehoshi/ebiten/inpututil"
 )
 
+const (
+	// TODO: This is duplicated with draw package's definitions.
+	ScreenWidth  = 320
+	ScreenHeight = 240
+)
+
 var theInput = &Input{
 	pressed:     map[ebiten.Key]struct{}{},
 	prevPressed: map[ebiten.Key]struct{}{},
@@ -38,11 +44,9 @@ var keys = []ebiten.Key{
 }
 
 type Input struct {
-	pressed          map[ebiten.Key]struct{}
-	prevPressed      map[ebiten.Key]struct{}
-	spaceTouched     bool
-	prevSpaceTouched bool
-	touchEnabled     bool
+	pressed      map[ebiten.Key]struct{}
+	prevPressed  map[ebiten.Key]struct{}
+	touchEnabled bool
 }
 
 func (i *Input) IsTouchEnabled() bool {
@@ -85,33 +89,24 @@ func (i *Input) Update() {
 	}
 
 	// Emulates the keys by touching
-	touches := ebiten.Touches()
+	touches := ebiten.TouchIDs()
 	for _, t := range touches {
-		x, y := t.Position()
-		// TODO(hajimehoshi): 240 and 64 are magic numbers
-		if y < 240-64 {
+		x, y := ebiten.TouchPosition(t)
+		// TODO(hajimehoshi): 64 are magic numbers
+		if y < ScreenHeight-64 {
 			continue
 		}
 		switch {
-		case 320 <= x:
-		case 240 <= x:
+		case ScreenWidth <= x:
+		case ScreenWidth*3/4 <= x:
 			i.pressed[ebiten.KeyEnter] = struct{}{}
 			i.pressed[ebiten.KeySpace] = struct{}{}
-		case 160 <= x:
+		case ScreenWidth*2/4 <= x:
 			i.pressed[ebiten.KeyDown] = struct{}{}
-		case 80 <= x:
+		case ScreenWidth/4 <= x:
 			i.pressed[ebiten.KeyRight] = struct{}{}
 		default:
 			i.pressed[ebiten.KeyLeft] = struct{}{}
-		}
-	}
-	i.prevSpaceTouched = i.spaceTouched
-	i.spaceTouched = false
-	for _, t := range touches {
-		_, y := t.Position()
-		if y < 240-64 {
-			i.spaceTouched = true
-			break
 		}
 	}
 	if 0 < len(touches) {
@@ -120,11 +115,23 @@ func (i *Input) Update() {
 }
 
 func (i *Input) IsSpaceTouched() bool {
-	return i.spaceTouched
+	for _, t := range ebiten.TouchIDs() {
+		_, y := ebiten.TouchPosition(t)
+		if y < ScreenHeight-64 {
+			return true
+		}
+	}
+	return false
 }
 
 func (i *Input) IsSpaceJustTouched() bool {
-	return i.spaceTouched && !i.prevSpaceTouched
+	for _, t := range inpututil.JustPressedTouchIDs() {
+		_, y := ebiten.TouchPosition(t)
+		if y < ScreenHeight-64 {
+			return true
+		}
+	}
+	return false
 }
 
 func (i *Input) IsKeyPressed(key ebiten.Key) bool {
@@ -162,6 +169,9 @@ func (i *Input) IsDirectionKeyPressed(dir Direction) bool {
 	}
 }
 
-func (i *Input) ToChangeLanguage() bool {
-	return inpututil.IsKeyJustPressed(ebiten.KeyL)
+func (i *Input) IsLanguageKeyPressed() bool {
+	if inpututil.IsKeyJustPressed(ebiten.KeyL) {
+		return true
+	}
+	return false
 }

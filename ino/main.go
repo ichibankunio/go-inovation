@@ -92,7 +92,7 @@ func (t *TitleScene) Update(game *Game) {
 		t.lunkerMode = !t.lunkerMode
 	}
 
-	if input.Current().ToChangeLanguage() {
+	if input.Current().IsLanguageKeyPressed() {
 		switch game.lang {
 		case language.Japanese:
 			game.lang = language.English
