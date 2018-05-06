@@ -56,11 +56,6 @@ const (
 	maxFieldY = 128
 )
 
-type Position struct {
-	X int
-	Y int
-}
-
 type Field struct {
 	field [maxFieldX * maxFieldY]FieldType
 	timer int
@@ -84,15 +79,14 @@ func (f *Field) Update() {
 	f.timer++
 }
 
-func (f *Field) GetStartPoint() Position {
-	p := Position{}
+func (f *Field) GetStartPoint() (int, int) {
 	for yy := 0; yy < maxFieldY; yy++ {
 		for xx := 0; xx < maxFieldX; xx++ {
 			if f.GetField(xx, yy) == FIELD_ITEM_STARTPOINT {
-				p.X = xx * CHAR_SIZE
-				p.Y = yy * CHAR_SIZE
+				x := xx * CHAR_SIZE
+				y := yy * CHAR_SIZE
 				f.EraseField(xx, yy)
-				return p
+				return x, y
 			}
 		}
 	}
@@ -142,12 +136,12 @@ type GameData interface {
 	IsHiddenSecret() bool
 }
 
-func (f *Field) Draw(screen *ebiten.Image, gameData GameData, viewPosition Position) {
+func (f *Field) Draw(screen *ebiten.Image, gameData GameData, viewPositionX, viewPositionY int) {
 	const (
 		graphicOffsetX = -16 - 16*2
 		graphicOffsetY = 8 - 16*2
 	)
-	vx, vy := viewPosition.X, viewPosition.Y
+	vx, vy := viewPositionX, viewPositionY
 	ofs_x := CHAR_SIZE - vx%CHAR_SIZE
 	ofs_y := CHAR_SIZE - vy%CHAR_SIZE
 	for xx := -(draw.ScreenWidth/CHAR_SIZE/2 + 2); xx < (draw.ScreenWidth/CHAR_SIZE/2 + 2); xx++ {

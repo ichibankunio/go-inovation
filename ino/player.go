@@ -56,8 +56,8 @@ type Player struct {
 
 func NewPlayer(gameData *GameData) *Player {
 	f := field.New(field_data)
-	startPoint := f.GetStartPoint()
-	startPointF := PositionF{float64(startPoint.X), float64(startPoint.Y)}
+	x, y := f.GetStartPoint()
+	startPointF := PositionF{float64(x), float64(y)}
 	audio.PlayBGM(audio.BGM0)
 	return &Player{
 		gameData:    gameData,
@@ -531,7 +531,7 @@ func (p *Player) drawMessage(screen *ebiten.Image, game *Game) {
 
 func (p *Player) Draw(screen *ebiten.Image, game *Game) {
 	po := p.view.GetPosition()
-	p.field.Draw(screen, game.gameData, field.Position{X: int(po.X), Y: int(po.Y)})
+	p.field.Draw(screen, game.gameData, int(po.X), int(po.Y))
 	p.drawPlayer(screen, game)
 	p.drawLife(screen, game)
 	p.drawItems(screen, game)
