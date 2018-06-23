@@ -7,10 +7,10 @@ import (
 	"os"
 	"runtime/pprof"
 
-	"github.com/gopherjs/gopherjs/js"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
+	"github.com/hajimehoshi/gopherwasm/js"
 	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
@@ -31,7 +31,7 @@ var cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func (g *Game) Loop(screen *ebiten.Image) error {
 	// exp
-	if inpututil.IsKeyJustPressed(ebiten.KeyQ) && js.Global != nil {
+	if inpututil.IsKeyJustPressed(ebiten.KeyQ) && js.Global != js.Null {
 		doc := js.Global.Get("document")
 		canvas := doc.Call("getElementsByTagName", "canvas").Index(0)
 		context := canvas.Call("getContext", "webgl")
@@ -122,7 +122,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 
 func NewGame() (*Game, error) {
 	lang := language.Japanese
-	if js.Global != nil {
+	if js.Global != js.Null {
 		str := js.Global.Get("navigator").Get("language").String()
 		newLang, _ := language.Parse(str)
 		base, _ := newLang.Base()

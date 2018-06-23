@@ -1,4 +1,5 @@
 // +build android ios darwin,arm darwin,arm64
+// +build !js
 
 package input
 

@@ -1,4 +1,4 @@
-// +build darwin,!arm,!arm64 freebsd linux windows
+// +build darwin,!arm,!arm64 freebsd linux windows js
 // +build !android
 // +build !ios
 
