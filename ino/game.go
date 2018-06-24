@@ -7,10 +7,10 @@ import (
 	"os"
 	"runtime/pprof"
 
+	"github.com/gopherjs/gopherwasm/js"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
-	"github.com/hajimehoshi/gopherwasm/js"
 	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
