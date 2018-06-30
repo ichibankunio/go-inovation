@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/audio"
-	"github.com/hajimehoshi/ebiten/audio/mp3"
+	"github.com/hajimehoshi/ebiten/audio/vorbis"
 	"github.com/hajimehoshi/ebiten/audio/wav"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
@@ -15,8 +15,8 @@ var (
 	soundFilenames = []string{
 		"damage.wav",
 		"heal.wav",
-		"ino1.mp3",
-		"ino2.mp3",
+		"ino1.ogg",
+		"ino2.ogg",
 		"itemget.wav",
 		"itemget2.wav",
 		"jump.wav",
@@ -42,8 +42,8 @@ func Load() error {
 		f := audio.BytesReadSeekCloser(b)
 		var s audio.ReadSeekCloser
 		switch {
-		case strings.HasSuffix(n, ".mp3"):
-			stream, err := mp3.Decode(audioContext, f)
+		case strings.HasSuffix(n, ".ogg"):
+			stream, err := vorbis.Decode(audioContext, f)
 			if err != nil {
 				return err
 			}
@@ -78,8 +78,8 @@ func Finalize() error {
 type BGM string
 
 const (
-	BGM0 BGM = "ino1.mp3"
-	BGM1 BGM = "ino2.mp3"
+	BGM0 BGM = "ino1.ogg"
+	BGM1 BGM = "ino2.ogg"
 )
 
 func SetBGMVolume(volume float64) {
