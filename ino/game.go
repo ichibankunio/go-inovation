@@ -31,8 +31,8 @@ var cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func (g *Game) Loop(screen *ebiten.Image) error {
 	// exp
-	if inpututil.IsKeyJustPressed(ebiten.KeyQ) && js.Global != js.Null {
-		doc := js.Global.Get("document")
+	if inpututil.IsKeyJustPressed(ebiten.KeyQ) && js.Global() != js.Null() {
+		doc := js.Global().Get("document")
 		canvas := doc.Call("getElementsByTagName", "canvas").Index(0)
 		context := canvas.Call("getContext", "webgl")
 		context.Call("getExtension", "WEBGL_lose_context").Call("loseContext")
@@ -122,8 +122,8 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 
 func NewGame() (*Game, error) {
 	lang := language.Japanese
-	if js.Global != js.Null {
-		str := js.Global.Get("navigator").Get("language").String()
+	if js.Global() != js.Null() {
+		str := js.Global().Get("navigator").Get("language").String()
 		newLang, _ := language.Parse(str)
 		base, _ := newLang.Base()
 		newLang, _ = language.Compose(base)
