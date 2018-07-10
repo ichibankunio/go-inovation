@@ -112,7 +112,7 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		}
 	}
 	g.scene.Update(g)
-	if ebiten.IsRunningSlowly() {
+	if ebiten.IsDrawingSkipped() {
 		return nil
 	}
 	g.scene.Draw(screen, g)
