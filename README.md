@@ -21,9 +21,9 @@ http://hajimehoshi.github.io/go-inovation/
 ## How to install and run on desktops
 
 ```
-:; go get github.com/hajimehoshi/go-inovation
-:; cd $GOPATH/src/github.com/hajimehoshi/go-inovation
-:; go run main.go
+go get github.com/hajimehoshi/go-inovation
+cd $GOPATH/src/github.com/hajimehoshi/go-inovation
+go run main.go
 ```
 
 ## How to build for Android
@@ -31,7 +31,7 @@ http://hajimehoshi.github.io/go-inovation/
 At this directory, run
 
 ```
-:; gomobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar github.com/hajimehoshi/go-inovation/mobile
+gomobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar github.com/hajimehoshi/go-inovation/mobile
 ```
 
 and run the Android Studio project in `./mobile/android`.
@@ -41,7 +41,7 @@ and run the Android Studio project in `./mobile/android`.
 At this directory, run
 
 ```
-:; gomobile bind -target ios -o ./mobile/ios/Mobile.framework github.com/hajimehoshi/go-inovation/mobile
+gomobile bind -target ios -o ./mobile/ios/Mobile.framework github.com/hajimehoshi/go-inovation/mobile
 ```
 
 and run the Xcode project in `./mobile/ios`.
