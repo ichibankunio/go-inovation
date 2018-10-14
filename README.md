@@ -36,6 +36,8 @@ gomobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/a
 
 and run the Android Studio project in `./mobile/android`.
 
+`GO111MODULE=off` might be required.
+
 ## How to build for iOS
 
 At this directory, run
@@ -45,3 +47,5 @@ gomobile bind -target ios -o ./mobile/ios/Mobile.framework github.com/hajimehosh
 ```
 
 and run the Xcode project in `./mobile/ios`.
+
+`GO111MODULE=off` might be required.
