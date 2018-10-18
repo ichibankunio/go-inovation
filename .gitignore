@@ -3,3 +3,7 @@
 *.framework
 *.aar
 *.jar
+
+# mobiles
+mobile/android/.idea/
+mobile/android/app/release/
