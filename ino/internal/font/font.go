@@ -6,7 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/text"
-	"github.com/hajimehoshi/go-mplusbitmap"
+	"github.com/hajimehoshi/bitmapfont"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
@@ -38,7 +38,7 @@ func tokens(str string) []string {
 func Width(str string) int {
 	w := fixed.I(0)
 	for _, t := range tokens(str) {
-		w += font.MeasureString(mplusbitmap.Gothic12r, t)
+		w += font.MeasureString(bitmapfont.Gothic12r, t)
 	}
 	return w.Round()
 }
@@ -62,7 +62,7 @@ func DrawText(target *ebiten.Image, str string, x, y int, clr color.Color) {
 		if i%2 == 1 {
 			clr = red
 		}
-		text.Draw(target, t, mplusbitmap.Gothic12r, fx.Round()+dx, fy.Round()+dy, clr)
-		fx += font.MeasureString(mplusbitmap.Gothic12r, t)
+		text.Draw(target, t, bitmapfont.Gothic12r, fx.Round()+dx, fy.Round()+dy, clr)
+		fx += font.MeasureString(bitmapfont.Gothic12r, t)
 	}
 }
