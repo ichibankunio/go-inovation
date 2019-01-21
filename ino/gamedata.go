@@ -52,8 +52,8 @@ func (g *GameData) Update() {
 	g.time++
 }
 
-func (g *GameData) TimeInSecond() int {
-	return g.time / 60
+func (g *GameData) TimeInFrame() int {
+	return g.time
 }
 
 func (g *GameData) IsGameClear() bool {
