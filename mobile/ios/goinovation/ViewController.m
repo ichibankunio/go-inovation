@@ -20,20 +20,29 @@
     return (GLKView*)[self.view viewWithTag:100];
 }
 
+- (MTKView*)mtkView {
+    return (MTKView*)[self.view viewWithTag:101];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-    [self glkView].context = context;
+    if ([self glkView]) {
+        EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+        [self glkView].context = context;
     
-    [EAGLContext setCurrentContext:context];
+        [EAGLContext setCurrentContext:context];
     
-    CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(drawFrame)];
-    [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(drawFrame)];
+        [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    } else if ([self mtkView]) {
+        // TODO
+    }
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
+
     CGRect viewRect = [[self view] frame];
     double scaleX = viewRect.size.width / (double)MobileScreenWidth;
     double scaleY = viewRect.size.height / (double)MobileScreenHeight;
@@ -42,8 +51,9 @@
     int height = (int)MobileScreenHeight * scale;
     int x = (viewRect.size.width - width) / 2;
     int y = (viewRect.size.height - height) / 2;
-    CGRect glkViewRect = CGRectMake(x, y, width, height);
-    [[self glkView] setFrame:glkViewRect];
+    CGRect kitViewRect = CGRectMake(x, y, width, height);
+    [[self glkView] setFrame:kitViewRect];
+    [[self mtkView] setFrame:kitViewRect];
     
     if (!MobileIsRunning()) {
         NSError* err = nil;
@@ -73,12 +83,24 @@
 
 - (void)updateTouches:(NSSet*)touches {
     for (UITouch* touch in touches) {
-        if (touch.view != [self glkView]) {
+        if (touch.view != [self glkView] && touch.view != [self mtkView]) {
             continue;
         }
-        CGPoint location = [touch locationInView:[self glkView]];
+        CGPoint location = [touch locationInView:touch.view];
         MobileUpdateTouchesOnIOS(touch.phase, (int64_t)touch, location.x, location.y);
     }
+}
+
+- (void)drawInMTKView:(nonnull MTKView *)view {
+    NSError* err = nil;
+    MobileUpdate(&err);
+    if (err != nil) {
+        NSLog(@"Error: %@", err);
+    }
+}
+
+- (void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size {
+    // Do nothing
 }
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event {
