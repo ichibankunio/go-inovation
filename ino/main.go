@@ -237,7 +237,7 @@ func (e *EndingScene) Draw(screen *ebiten.Image, game *Game) {
 			strconv.Itoa(game.gameData.GetItemCount()),
 			"",
 			text.Get(game.lang, text.TextIDEndingScore3),
-			fmt.Sprintf("%.2f", float64(game.gameData.TimeInFrame()) / 60),
+			fmt.Sprintf("%.2f", float64(game.gameData.TimeInFrame())/60),
 		}
 		for i, line := range lines {
 			x := (draw.ScreenWidth - font.Width(line)) / 2

@@ -4,9 +4,9 @@ import (
 	"image/color"
 	"strings"
 
+	"github.com/hajimehoshi/bitmapfont"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/text"
-	"github.com/hajimehoshi/bitmapfont"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
