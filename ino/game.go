@@ -7,16 +7,13 @@ import (
 	"os"
 	"runtime/pprof"
 
-	"github.com/gopherjs/gopherwasm/js"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
-	"github.com/hajimehoshi/ebiten/inpututil"
 	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
-	"github.com/hajimehoshi/go-inovation/ino/internal/text"
 )
 
 type Game struct {
@@ -30,13 +27,7 @@ type Game struct {
 var cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func (g *Game) Loop(screen *ebiten.Image) error {
-	// exp
-	if inpututil.IsKeyJustPressed(ebiten.KeyQ) && js.Global() != js.Null() {
-		doc := js.Global().Get("document")
-		canvas := doc.Call("getElementsByTagName", "canvas").Index(0)
-		context := canvas.Call("getContext", "webgl")
-		context.Call("getExtension", "WEBGL_lose_context").Call("loseContext")
-		fmt.Println("Context Lost!")
+	if tryLoseContext() {
 		return nil
 	}
 
@@ -121,22 +112,9 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 }
 
 func NewGame() (*Game, error) {
-	lang := language.Japanese
-	if js.Global() != js.Null() {
-		str := js.Global().Get("navigator").Get("language").String()
-		newLang, _ := language.Parse(str)
-		base, _ := newLang.Base()
-		newLang, _ = language.Compose(base)
-		for _, l := range text.Languages() {
-			if newLang == l {
-				lang = newLang
-				break
-			}
-		}
-	}
 	game := &Game{
 		resourceLoadedCh: make(chan error),
-		lang:             lang,
+		lang:             systemLang(),
 	}
 	go func() {
 		if err := draw.LoadImages(); err != nil {
