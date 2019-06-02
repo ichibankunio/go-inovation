@@ -6,8 +6,8 @@ import (
 	_ "image/png"
 	"os"
 	"runtime/pprof"
+	"syscall/js"
 
-	"github.com/gopherjs/gopherwasm/js"
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
