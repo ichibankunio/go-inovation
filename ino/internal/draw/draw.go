@@ -122,10 +122,8 @@ func LoadImages() error {
 
 func Draw(screen *ebiten.Image, key string, px, py, sx, sy, sw, sh int) {
 	op := &ebiten.DrawImageOptions{}
-	r := image.Rect(sx, sy, sx+sw, sy+sh)
-	op.SourceRect = &r
 	op.GeoM.Translate(float64(px), float64(py))
-	screen.DrawImage(images[key], op)
+	screen.DrawImage(images[key].SubImage(image.Rect(sx, sy, sx+sw, sy+sh)).(*ebiten.Image), op)
 }
 
 func DrawTouchButtons(screen *ebiten.Image) {
@@ -137,16 +135,12 @@ func DrawTouchButtons(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.ColorM.Scale(1, 1, 1, 0.4)
 	for _, i := range []int{0, 1, 3} {
-		r := image.Rect(i*w, 0, (i+1)*w, h)
-		op.SourceRect = &r
 		op.GeoM.Reset()
 		op.GeoM.Translate(float64(dx+i*w), float64(dy))
-		screen.DrawImage(img, op)
+		screen.DrawImage(img.SubImage(image.Rect(i*w, 0, (i+1)*w, h)).(*ebiten.Image), op)
 	}
 	// Render 'down' button
 	op = &ebiten.DrawImageOptions{}
-	r := image.Rect(2*w, 0, 3*w, h)
-	op.SourceRect = &r
 	op.GeoM.Translate(float64(dx+2*w), float64(dy))
 	alpha := 0.0
 	if input.Current().IsActionKeyPressed() {
@@ -155,5 +149,5 @@ func DrawTouchButtons(screen *ebiten.Image) {
 		alpha = 0.1
 	}
 	op.ColorM.Scale(1, 1, 1, alpha)
-	screen.DrawImage(img, op)
+	screen.DrawImage(img.SubImage(image.Rect(2*w, 0, 3*w, h)).(*ebiten.Image), op)
 }
