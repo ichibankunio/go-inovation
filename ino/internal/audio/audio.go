@@ -22,7 +22,12 @@ var (
 		"jump.wav",
 	}
 	soundPlayers = map[string]*audio.Player{}
+	mute         = false
 )
+
+func Mute() {
+	mute = true
+}
 
 func init() {
 	const sampleRate = 44100
@@ -83,6 +88,9 @@ const (
 )
 
 func SetBGMVolume(volume float64) {
+	if mute {
+		return
+	}
 	for _, b := range []BGM{BGM0, BGM1} {
 		p := soundPlayers[string(b)]
 		if !p.IsPlaying() {
@@ -94,6 +102,9 @@ func SetBGMVolume(volume float64) {
 }
 
 func PauseBGM() {
+	if mute {
+		return
+	}
 	for _, b := range []BGM{BGM0, BGM1} {
 		p := soundPlayers[string(b)]
 		p.Pause()
@@ -101,6 +112,9 @@ func PauseBGM() {
 }
 
 func ResumeBGM(bgm BGM) {
+	if mute {
+		return
+	}
 	PauseBGM()
 	p := soundPlayers[string(bgm)]
 	p.SetVolume(1)
@@ -108,6 +122,9 @@ func ResumeBGM(bgm BGM) {
 }
 
 func PlayBGM(bgm BGM) error {
+	if mute {
+		return nil
+	}
 	PauseBGM()
 	p := soundPlayers[string(bgm)]
 	p.SetVolume(1)
@@ -129,6 +146,9 @@ const (
 )
 
 func PlaySE(se SE) {
+	if mute {
+		return
+	}
 	p := soundPlayers[string(se)]
 	p.Rewind()
 	p.Play()

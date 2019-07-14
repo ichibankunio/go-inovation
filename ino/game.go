@@ -24,7 +24,10 @@ type Game struct {
 	cpup             *os.File
 }
 
-var cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
+var (
+	cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
+	mute       = flag.Bool("mute", false, "mute")
+)
 
 func (g *Game) Loop(screen *ebiten.Image) error {
 	if tryLoseContext() {
@@ -112,6 +115,10 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 }
 
 func NewGame() (*Game, error) {
+	if *mute {
+		audio.Mute()
+	}
+
 	game := &Game{
 		resourceLoadedCh: make(chan error),
 		lang:             systemLang(),
