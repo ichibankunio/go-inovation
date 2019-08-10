@@ -41,6 +41,7 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
     }
 
     private double mDeviceScale = 0.0;
+    private boolean mRunning = false;
 
     public EbitenGLSurfaceView(Context context) {
         super(context);
@@ -91,8 +92,9 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
             });
         }
         try {
-            if (!Mobile.isRunning()) {
+            if (!mRunning) {
                 Mobile.start(pxToDp(getScaleInPx()));
+                mRunning = true;
             }
         } catch (Exception e) {
             Log.e("Go Error", e.toString());
