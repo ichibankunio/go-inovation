@@ -14,7 +14,9 @@
 
 @end
 
-@implementation ViewController
+@implementation ViewController {
+    bool running_;
+}
 
 - (GLKView*)glkView {
     return (GLKView*)[self.view viewWithTag:100];
@@ -45,12 +47,13 @@
     CGRect glkViewRect = CGRectMake(x, y, width, height);
     [[self glkView] setFrame:glkViewRect];
     
-    if (!MobileIsRunning()) {
+    if (!running_) {
         NSError* err = nil;
         MobileStart(scale, &err);
         if (err != nil) {
             NSLog(@"Error: %@", err);
         }
+        running_ = true;
     }
 }
 
