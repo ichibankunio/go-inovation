@@ -15,10 +15,6 @@ var (
 	running bool
 )
 
-func IsRunning() bool {
-	return running
-}
-
 func Start(scale float64) error {
 	running = true
 	game, err := ino.NewGame()
