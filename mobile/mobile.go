@@ -16,9 +16,7 @@ func Start(scale float64) error {
 	if err != nil {
 		return err
 	}
-	if err := mobile.Start(game.Loop, ino.ScreenWidth, ino.ScreenHeight, scale, ino.Title); err != nil {
-		return err
-	}
+	mobile.Start(game.Loop, ino.ScreenWidth, ino.ScreenHeight, scale, ino.Title)
 	return nil
 }
 
