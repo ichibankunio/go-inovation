@@ -11,12 +11,7 @@ const (
 	ScreenHeight = ino.ScreenHeight
 )
 
-var (
-	running bool
-)
-
 func Start(scale float64) error {
-	running = true
 	game, err := ino.NewGame()
 	if err != nil {
 		return err
