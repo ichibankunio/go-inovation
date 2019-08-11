@@ -11,23 +11,16 @@ const (
 	ScreenHeight = ino.ScreenHeight
 )
 
-func Start(scale float64) error {
+func init() {
 	game, err := ino.NewGame()
 	if err != nil {
-		return err
+		panic(err)
 	}
-	mobile.Start(game.Loop, ino.ScreenWidth, ino.ScreenHeight, scale, ino.Title)
-	return nil
+	mobile.SetUpdateFunc(game.Loop)
 }
 
-func Update() error {
-	return mobile.Update()
-}
-
-func UpdateTouchesOnAndroid(action int, id int, x, y int) {
-	mobile.UpdateTouchesOnAndroid(action, id, x, y)
-}
-
-func UpdateTouchesOnIOS(phase int, ptr int64, x, y int) {
-	mobile.UpdateTouchesOnIOS(phase, ptr, x, y)
-}
+// Dummy is a dummy exported function.
+//
+// gomobile doesn't compile a package that doesn't include any exported function.
+// Dummy forces gomobile to compile this package.
+func Dummy() {}

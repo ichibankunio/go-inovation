@@ -48,11 +48,7 @@
     [[self glkView] setFrame:glkViewRect];
     
     if (!running_) {
-        NSError* err = nil;
-        MobileStart(scale, &err);
-        if (err != nil) {
-            NSLog(@"Error: %@", err);
-        }
+        EbitenmobileviewRun((long)MobileScreenWidth, (long)MobileScreenHeight, scale, @"");
         running_ = true;
     }
 }
@@ -68,7 +64,7 @@
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
     NSError* err = nil;
-    MobileUpdate(&err);
+    EbitenmobileviewUpdate(&err);
     if (err != nil) {
         NSLog(@"Error: %@", err);
     }
@@ -80,7 +76,7 @@
             continue;
         }
         CGPoint location = [touch locationInView:[self glkView]];
-        MobileUpdateTouchesOnIOS(touch.phase, (int64_t)touch, location.x, location.y);
+        EbitenmobileviewUpdateTouchesOnIOS(touch.phase, (int64_t)touch, location.x, location.y);
     }
 }
 

@@ -10,7 +10,8 @@ import android.view.View;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import com.hajimehoshi.goinovation.mobile.*;
+import com.hajimehoshi.goinovation.mobile.Mobile;
+import com.hajimehoshi.goinovation.ebitenmobileview.Ebitenmobileview;
 
 public class EbitenGLSurfaceView extends GLSurfaceView {
 
@@ -24,7 +25,7 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
                 return;
             }
             try {
-                Mobile.update();
+                Ebitenmobileview.update();
             } catch (Exception e) {
                 Log.e("Go Error", e.toString());
                 mErrored = true;
@@ -93,7 +94,7 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
         }
         try {
             if (!mRunning) {
-                Mobile.start(pxToDp(getScaleInPx()));
+                Ebitenmobileview.run(Mobile.ScreenWidth, Mobile.ScreenHeight, pxToDp(getScaleInPx()), "");
                 mRunning = true;
             }
         } catch (Exception e) {
@@ -107,7 +108,7 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
             int id = e.getPointerId(i);
             int x = (int)e.getX(i);
             int y = (int)e.getY(i);
-            Mobile.updateTouchesOnAndroid(e.getActionMasked(), id, (int)pxToDp(x), (int)pxToDp(y));
+            Ebitenmobileview.updateTouchesOnAndroid(e.getActionMasked(), id, (int)pxToDp(x), (int)pxToDp(y));
         }
         return true;
     }
