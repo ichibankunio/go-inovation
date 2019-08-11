@@ -94,7 +94,7 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
         }
         try {
             if (!mRunning) {
-                Ebitenmobileview.run(Mobile.ScreenWidth, Mobile.ScreenHeight, pxToDp(getScaleInPx()), "");
+                Ebitenmobileview.run(Mobile.ScreenWidth, Mobile.ScreenHeight, pxToDp(getScaleInPx()));
                 mRunning = true;
             }
         } catch (Exception e) {

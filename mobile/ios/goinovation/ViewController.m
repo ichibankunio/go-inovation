@@ -48,7 +48,7 @@
     [[self glkView] setFrame:glkViewRect];
     
     if (!running_) {
-        EbitenmobileviewRun((long)MobileScreenWidth, (long)MobileScreenHeight, scale, @"");
+        EbitenmobileviewRun((long)MobileScreenWidth, (long)MobileScreenHeight, scale);
         running_ = true;
     }
 }
