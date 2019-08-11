@@ -70,8 +70,8 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
     public double getScaleInPx() {
         View parent = (View)getParent();
         return Math.max(1,
-                Math.min(parent.getWidth() / (double)Mobile.ScreenWidth,
-                        parent.getHeight() / (double)Mobile.ScreenHeight));
+                Math.min(parent.getWidth() / (double)Ebitenmobileview.screenWidth(),
+                        parent.getHeight() / (double)Ebitenmobileview.screenHeight()));
     }
 
     @Override
@@ -80,8 +80,8 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
         int oldWidth = getLayoutParams().width;
         int oldHeight = getLayoutParams().height;
         double scaleInPx = getScaleInPx();
-        int newWidth = (int)(Mobile.ScreenWidth * scaleInPx);
-        int newHeight = (int)(Mobile.ScreenHeight * scaleInPx);
+        int newWidth = (int)(Ebitenmobileview.screenWidth() * scaleInPx);
+        int newHeight = (int)(Ebitenmobileview.screenHeight() * scaleInPx);
         if (oldWidth != newWidth || oldHeight != newHeight) {
             getLayoutParams().width = newWidth;
             getLayoutParams().height = newHeight;
@@ -94,7 +94,7 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
         }
         try {
             if (!mRunning) {
-                Ebitenmobileview.run(Mobile.ScreenWidth, Mobile.ScreenHeight, pxToDp(getScaleInPx()));
+                Ebitenmobileview.run(pxToDp(getScaleInPx()));
                 mRunning = true;
             }
         } catch (Exception e) {

@@ -6,17 +6,12 @@ import (
 	"github.com/hajimehoshi/go-inovation/ino"
 )
 
-const (
-	ScreenWidth  = ino.ScreenWidth
-	ScreenHeight = ino.ScreenHeight
-)
-
 func init() {
 	game, err := ino.NewGame()
 	if err != nil {
 		panic(err)
 	}
-	mobile.SetUpdateFunc(game.Loop)
+	mobile.Set(game.Loop, ino.ScreenWidth, ino.ScreenHeight)
 }
 
 // Dummy is a dummy exported function.

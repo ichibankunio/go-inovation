@@ -37,18 +37,21 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     CGRect viewRect = [[self view] frame];
-    double scaleX = viewRect.size.width / (double)MobileScreenWidth;
-    double scaleY = viewRect.size.height / (double)MobileScreenHeight;
+
+    long screenWidth = EbitenmobileviewScreenWidth();
+    long screenHeight = EbitenmobileviewScreenHeight();
+    double scaleX = viewRect.size.width / (double)screenWidth;
+    double scaleY = viewRect.size.height / (double)screenHeight;
     double scale = MIN(scaleX, scaleY);
-    int width = (int)MobileScreenWidth * scale;
-    int height = (int)MobileScreenHeight * scale;
+    int width = (int)screenWidth * scale;
+    int height = (int)screenHeight * scale;
     int x = (viewRect.size.width - width) / 2;
     int y = (viewRect.size.height - height) / 2;
     CGRect glkViewRect = CGRectMake(x, y, width, height);
     [[self glkView] setFrame:glkViewRect];
     
     if (!running_) {
-        EbitenmobileviewRun((long)MobileScreenWidth, (long)MobileScreenHeight, scale);
+        EbitenmobileviewRun(scale);
         running_ = true;
     }
 }
