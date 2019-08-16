@@ -1,17 +1,30 @@
 package mobile
 
 import (
+	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/mobile"
 
 	"github.com/hajimehoshi/go-inovation/ino"
 )
 
+type game struct {
+	g *ino.Game
+}
+
+func (g *game) Update(screen *ebiten.Image) error {
+	return g.g.Loop(screen)
+}
+
+func (g *game) Layout(viewWidth, viewHeight int) (screenWidth, screenHeight int) {
+	return ino.ScreenWidth, ino.ScreenHeight
+}
+
 func init() {
-	game, err := ino.NewGame()
+	inogame, err := ino.NewGame()
 	if err != nil {
 		panic(err)
 	}
-	mobile.Set(game.Loop, ino.ScreenWidth, ino.ScreenHeight)
+	mobile.SetGame(&game{g: inogame})
 }
 
 // Dummy is a dummy exported function.

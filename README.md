@@ -31,21 +31,17 @@ go run main.go
 At this directory, run
 
 ```
-gomobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar github.com/hajimehoshi/go-inovation/mobile github.com/hajimehoshi/ebiten/mobile/ebitenmobileview
+env GO111MODULE=off gomobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar github.com/hajimehoshi/go-inovation/mobile github.com/hajimehoshi/ebiten/mobile/ebitenmobileview
 ```
 
 and run the Android Studio project in `./mobile/android`.
-
-`GO111MODULE=off` might be required.
 
 ## How to build for iOS
 
 At this directory, run
 
 ```
-gomobile bind -target ios -o ./mobile/ios/Mobile.framework github.com/hajimehoshi/go-inovation/mobile github.com/hajimehoshi/ebiten/mobile/ebitenmobileview
+env GO111MODULE=off gomobile bind -target ios -o ./mobile/ios/Mobile.framework github.com/hajimehoshi/go-inovation/mobile github.com/hajimehoshi/ebiten/mobile/ebitenmobileview
 ```
 
 and run the Xcode project in `./mobile/ios`.
-
-`GO111MODULE=off` might be required.

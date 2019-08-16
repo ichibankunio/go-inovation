@@ -5,15 +5,14 @@ import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import com.hajimehoshi.goinovation.mobile.Mobile;
 import com.hajimehoshi.goinovation.ebitenmobileview.Ebitenmobileview;
+import com.hajimehoshi.goinovation.ebitenmobileview.ViewRectSetter;
 
-public class EbitenGLSurfaceView extends GLSurfaceView {
+public class EbitenSurfaceView extends GLSurfaceView {
 
     private class EbitenRenderer implements Renderer {
 
@@ -44,12 +43,12 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
     private double mDeviceScale = 0.0;
     private boolean mRunning = false;
 
-    public EbitenGLSurfaceView(Context context) {
+    public EbitenSurfaceView(Context context) {
         super(context);
         initialize();
     }
 
-    public EbitenGLSurfaceView(Context context, AttributeSet attrs) {
+    public EbitenSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize();
     }
@@ -60,46 +59,47 @@ public class EbitenGLSurfaceView extends GLSurfaceView {
         setRenderer(new EbitenRenderer());
     }
 
-    private double pxToDp(double x) {
+    private double deviceScale() {
         if (mDeviceScale == 0.0) {
             mDeviceScale = getResources().getDisplayMetrics().density;
         }
-        return x / mDeviceScale;
+        return mDeviceScale;
     }
 
-    public double getScaleInPx() {
-        View parent = (View)getParent();
-        return Math.max(1,
-                Math.min(parent.getWidth() / (double)Ebitenmobileview.screenWidth(),
-                        parent.getHeight() / (double)Ebitenmobileview.screenHeight()));
+    private double pxToDp(double x) {
+        return x / deviceScale();
+    }
+
+    private double dpToPx(double x) {
+        return x * deviceScale();
     }
 
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        int oldWidth = getLayoutParams().width;
-        int oldHeight = getLayoutParams().height;
-        double scaleInPx = getScaleInPx();
-        int newWidth = (int)(Ebitenmobileview.screenWidth() * scaleInPx);
-        int newHeight = (int)(Ebitenmobileview.screenHeight() * scaleInPx);
-        if (oldWidth != newWidth || oldHeight != newHeight) {
-            getLayoutParams().width = newWidth;
-            getLayoutParams().height = newHeight;
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    requestLayout();
+
+        int width = (int)Math.floor(pxToDp(right - left));
+        int height = (int)Math.floor(pxToDp(bottom - top));
+        Ebitenmobileview.layout(width, height, new ViewRectSetter() {
+            @Override
+            public void setViewRect(long x, long y, long width, long height) {
+                int oldWidth = getLayoutParams().width;
+                int oldHeight = getLayoutParams().height;
+                int newWidth = (int)Math.ceil(dpToPx(width));
+                int newHeight = (int)Math.ceil(dpToPx(height));
+                if (oldWidth == newWidth && oldHeight == newHeight) {
+                    return;
                 }
-            });
-        }
-        try {
-            if (!mRunning) {
-                Ebitenmobileview.run(pxToDp(getScaleInPx()));
-                mRunning = true;
+                getLayoutParams().width = newWidth;
+                getLayoutParams().height = newHeight;
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        requestLayout();
+                    }
+                });
             }
-        } catch (Exception e) {
-            Log.e("Go Error", e.toString());
-        }
+        });
     }
 
     @Override

@@ -6,7 +6,7 @@
     tools:context="com.hajimehoshi.goinovation.MainActivity"
     android:keepScreenOn="true"
     android:background="@color/background_material_dark">
-    <com.hajimehoshi.goinovation.EbitenGLSurfaceView
+    <com.hajimehoshi.goinovation.EbitenSurfaceView
         android:id="@+id/glview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

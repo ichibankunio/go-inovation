@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 
+#import "EbitenViewController.h"
+
 @interface AppDelegate ()
 
 @end
@@ -16,6 +18,9 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // Force the linker to use this symbol, or the storyboard might miss this class.
+    [EbitenViewController class];
+
     // Override point for customization after application launch.
     return YES;
 }

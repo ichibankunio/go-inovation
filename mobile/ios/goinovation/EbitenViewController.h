@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  EbitenViewController.h
 //  goinovation
 //
 //  Created by Hajime Hoshi on 6/16/16.
@@ -7,8 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <GLKit/GLkit.h>
 
-@interface ViewController : UIViewController <GLKViewDelegate>
+@interface EbitenViewController : UIViewController
 @end
-
