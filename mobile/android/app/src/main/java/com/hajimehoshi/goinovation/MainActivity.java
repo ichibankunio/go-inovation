@@ -15,19 +15,19 @@ public class MainActivity extends AppCompatActivity {
         Seq.setContext(getApplicationContext());
     }
 
-    private GLSurfaceView glSurfaceView() {
-        return (GLSurfaceView)this.findViewById(R.id.glview);
+    private EbitenView getEbitenView() {
+        return (EbitenView)this.findViewById(R.id.ebitenview);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        this.glSurfaceView().onPause();
+        this.getEbitenView().onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        this.glSurfaceView().onResume();
+        this.getEbitenView().onResume();
     }
 }

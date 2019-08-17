@@ -16,18 +16,18 @@ public class EbitenSurfaceView extends GLSurfaceView {
 
     private class EbitenRenderer implements Renderer {
 
-        private boolean mErrored;
+        private boolean errored_;
 
         @Override
         public void onDrawFrame(GL10 gl) {
-            if (mErrored) {
+            if (errored_) {
                 return;
             }
             try {
                 Ebitenmobileview.update();
             } catch (Exception e) {
                 Log.e("Go Error", e.toString());
-                mErrored = true;
+                errored_ = true;
             }
         }
 
@@ -40,8 +40,7 @@ public class EbitenSurfaceView extends GLSurfaceView {
         }
     }
 
-    private double mDeviceScale = 0.0;
-    private boolean mRunning = false;
+    private double deviceScale_ = 0.0;
 
     public EbitenSurfaceView(Context context) {
         super(context);
@@ -59,22 +58,22 @@ public class EbitenSurfaceView extends GLSurfaceView {
         setRenderer(new EbitenRenderer());
     }
 
-    private double deviceScale() {
-        if (mDeviceScale == 0.0) {
-            mDeviceScale = getResources().getDisplayMetrics().density;
+    private double getDeviceScale() {
+        if (deviceScale_ == 0.0) {
+            deviceScale_ = getResources().getDisplayMetrics().density;
         }
-        return mDeviceScale;
+        return deviceScale_;
     }
 
     private double pxToDp(double x) {
-        return x / deviceScale();
+        return x / getDeviceScale();
     }
 
     private double dpToPx(double x) {
-        return x * deviceScale();
+        return x * getDeviceScale();
     }
 
-    @Override
+    /*@Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
@@ -100,7 +99,7 @@ public class EbitenSurfaceView extends GLSurfaceView {
                 });
             }
         });
-    }
+    }*/
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
