@@ -1,10 +1,8 @@
 package com.hajimehoshi.goinovation;
 
 import android.content.Context;
-import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.hajimehoshi.goinovation.ebitenmobileview.Ebitenmobileview;
 import com.hajimehoshi.goinovation.ebitenmobileview.ViewRectSetter;
