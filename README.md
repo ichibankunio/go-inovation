@@ -41,7 +41,7 @@ and run the Android Studio project in `./mobile/android`.
 At this directory, run
 
 ```
-env GO111MODULE=off gomobile bind -target ios -o ./mobile/ios/Mobile.framework github.com/hajimehoshi/go-inovation/mobile github.com/hajimehoshi/ebiten/mobile/ebitenmobileview
+env GO111MODULE=off ebitenmobile bind -target ios -o ./mobile/ios/Mobile.framework github.com/hajimehoshi/go-inovation/mobile
 ```
 
 and run the Xcode project in `./mobile/ios`.

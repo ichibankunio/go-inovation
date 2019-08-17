@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Ebiten View Controller-->
+        <!--Mobile Ebiten View Controller-->
         <scene sceneID="8PP-ZW-tID">
             <objects>
-                <viewController id="0qB-et-hQ9" customClass="EbitenViewController" sceneMemberID="viewController">
+                <viewController id="0qB-et-hQ9" customClass="MobileEbitenViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="RYf-6t-8aa"/>
                         <viewControllerLayoutGuide type="bottom" id="jnY-aY-UdJ"/>
