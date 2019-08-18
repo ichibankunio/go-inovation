@@ -31,7 +31,7 @@ go run main.go
 At this directory, run
 
 ```
-env GO111MODULE=off gomobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar github.com/hajimehoshi/go-inovation/mobile github.com/hajimehoshi/ebiten/mobile/ebitenmobileview
+env GO111MODULE=off ebitenmobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar github.com/hajimehoshi/go-inovation/mobile
 ```
 
 and run the Android Studio project in `./mobile/android`.

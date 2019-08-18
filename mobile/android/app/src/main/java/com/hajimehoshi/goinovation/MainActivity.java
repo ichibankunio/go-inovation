@@ -1,10 +1,11 @@
 package com.hajimehoshi.goinovation;
 
-import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import go.Seq;
+
+import com.hajimehoshi.goinovation.mobile.EbitenView;
 
 public class MainActivity extends AppCompatActivity {
 
