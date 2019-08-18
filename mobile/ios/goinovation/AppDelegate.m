@@ -8,18 +8,11 @@
 
 #import "AppDelegate.h"
 
-#import <Mobile/MobileEbitenViewController.h>
-
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
-
-+ (void)initialize {
-    // This line forces the linker to link the Mobile framework, or the interface builder might miss the class.
-    [MobileEbitenViewController class];
-}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.

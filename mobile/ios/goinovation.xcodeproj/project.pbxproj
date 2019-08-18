@@ -15,6 +15,7 @@
 		8C7185C11D11C56C00F98056 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7185C01D11C56C00F98056 /* AppDelegate.m */; };
 		8C7185C71D11C56C00F98056 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C7185C51D11C56C00F98056 /* Main.storyboard */; settings = {ASSET_TAGS = (1, ); }; };
 		8C7185C91D11C56C00F98056 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C7185C81D11C56C00F98056 /* Assets.xcassets */; };
+		8CB110C1230972630064D8CE /* MobileEbitenViewControllerWithErrorHandling.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB110C0230972630064D8CE /* MobileEbitenViewControllerWithErrorHandling.m */; };
 		8CCAFF0B22E3133E00FAEDC1 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CCAFF0A22E3133E00FAEDC1 /* AVFoundation.framework */; };
 		8CEB8FF51D2ED60600E86B12 /* Mobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CEB8FF41D2ED60600E86B12 /* Mobile.framework */; };
 /* End PBXBuildFile section */
@@ -31,6 +32,8 @@
 		8C7185C61D11C56C00F98056 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8C7185C81D11C56C00F98056 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8C7185CD1D11C56C00F98056 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8CB110C0230972630064D8CE /* MobileEbitenViewControllerWithErrorHandling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MobileEbitenViewControllerWithErrorHandling.m; sourceTree = "<group>"; };
+		8CB110C22309728C0064D8CE /* MobileEbitenViewControllerWithErrorHandling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MobileEbitenViewControllerWithErrorHandling.h; sourceTree = "<group>"; };
 		8CCAFF0A22E3133E00FAEDC1 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8CEB8FF41D2ED60600E86B12 /* Mobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Mobile.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,6 +76,8 @@
 			children = (
 				8C7185BF1D11C56C00F98056 /* AppDelegate.h */,
 				8C7185C01D11C56C00F98056 /* AppDelegate.m */,
+				8CB110C22309728C0064D8CE /* MobileEbitenViewControllerWithErrorHandling.h */,
+				8CB110C0230972630064D8CE /* MobileEbitenViewControllerWithErrorHandling.m */,
 				8C7185C51D11C56C00F98056 /* Main.storyboard */,
 				8C050D3D1D16B7E500F865C4 /* LaunchScreen.storyboard */,
 				8C7185C81D11C56C00F98056 /* Assets.xcassets */,
@@ -177,6 +182,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CB110C1230972630064D8CE /* MobileEbitenViewControllerWithErrorHandling.m in Sources */,
 				8C7185C11D11C56C00F98056 /* AppDelegate.m in Sources */,
 				8C7185BE1D11C56C00F98056 /* main.m in Sources */,
 			);
