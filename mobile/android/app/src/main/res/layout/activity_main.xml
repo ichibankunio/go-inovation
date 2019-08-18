@@ -7,7 +7,7 @@
     android:keepScreenOn="true"
     android:background="@color/background_material_dark">
 
-    <com.hajimehoshi.goinovation.mobile.EbitenView
+    <com.hajimehoshi.goinovation.EbitenViewWithErrorHandling
         android:id="@+id/ebitenview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
