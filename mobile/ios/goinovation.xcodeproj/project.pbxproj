@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8C050D3F1D16B7E500F865C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C050D3D1D16B7E500F865C4 /* LaunchScreen.storyboard */; };
+		8C319FA3232D60A90051792B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C319FA2232D60A80051792B /* AudioToolbox.framework */; };
 		8C341D9E22E3140400B5C749 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C341D9D22E3140400B5C749 /* OpenGLES.framework */; };
-		8C341D9F22E3140A00B5C749 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C341D9A22E313CD00B5C749 /* OpenAL.framework */; };
 		8C341DA022E3141600B5C749 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C341D9922E313CD00B5C749 /* GLKit.framework */; };
 		8C7185BE1D11C56C00F98056 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7185BD1D11C56C00F98056 /* main.m */; };
 		8C7185C11D11C56C00F98056 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7185C01D11C56C00F98056 /* AppDelegate.m */; };
@@ -22,8 +22,8 @@
 
 /* Begin PBXFileReference section */
 		8C050D3E1D16B7E500F865C4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = goinovation/Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8C319FA2232D60A80051792B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		8C341D9922E313CD00B5C749 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
-		8C341D9A22E313CD00B5C749 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		8C341D9D22E3140400B5C749 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		8C7185B91D11C56C00F98056 /* goinovation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = goinovation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C7185BD1D11C56C00F98056 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -43,8 +43,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C319FA3232D60A90051792B /* AudioToolbox.framework in Frameworks */,
 				8C341DA022E3141600B5C749 /* GLKit.framework in Frameworks */,
-				8C341D9F22E3140A00B5C749 /* OpenAL.framework in Frameworks */,
 				8C341D9E22E3140400B5C749 /* OpenGLES.framework in Frameworks */,
 				8CCAFF0B22E3133E00FAEDC1 /* AVFoundation.framework in Frameworks */,
 				8CEB8FF51D2ED60600E86B12 /* Mobile.framework in Frameworks */,
@@ -98,9 +98,9 @@
 		8CCAFF0922E3133E00FAEDC1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8C319FA2232D60A80051792B /* AudioToolbox.framework */,
 				8C341D9D22E3140400B5C749 /* OpenGLES.framework */,
 				8CEB8FF41D2ED60600E86B12 /* Mobile.framework */,
-				8C341D9A22E313CD00B5C749 /* OpenAL.framework */,
 				8C341D9922E313CD00B5C749 /* GLKit.framework */,
 				8CCAFF0A22E3133E00FAEDC1 /* AVFoundation.framework */,
 			);
