@@ -1,6 +1,7 @@
 package com.hajimehoshi.goinovation;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 
 import go.Seq;
@@ -23,12 +24,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        this.getEbitenView().onPause();
+        this.getEbitenView().suspendGame();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        this.getEbitenView().onResume();
+        this.getEbitenView().resumeGame();
     }
 }
