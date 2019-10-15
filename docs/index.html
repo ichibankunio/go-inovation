@@ -19,6 +19,8 @@ if (!WebAssembly.instantiateStreaming) {
 
 const go = new Go();
 WebAssembly.instantiateStreaming(fetch("go-inovation.wasm"), go.importObject).then(result => {
+  document.getElementById('loading').remove();
   go.run(result.instance);
 });
 </script>
+<p id="loading">Loading...</p>
