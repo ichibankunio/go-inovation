@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	memProfile = flag.String("memprofile", "", "write memory profile to file")
-	traceOut   = flag.String("trace", "", "write trace to file")
+	memProfile  = flag.String("memprofile", "", "write memory profile to file")
+	traceOut    = flag.String("trace", "", "write trace to file")
+	transparent = flag.Bool("transparent", false, "background transparency")
 )
 
 func main() {
@@ -34,6 +35,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	if *transparent {
+		ebiten.SetScreenTransparent(true)
+		ebiten.SetWindowDecorated(false)
+		game.SetTransparent()
+	}
+
 	if err := ebiten.Run(game.Loop, ino.ScreenWidth, ino.ScreenHeight, ino.Scale(), ino.Title); err != nil {
 		panic(err)
 	}

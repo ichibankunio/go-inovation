@@ -22,12 +22,17 @@ type Game struct {
 	gameData         *GameData
 	lang             language.Tag
 	cpup             *os.File
+	transparent      bool
 }
 
 var (
 	cpuProfile = flag.String("cpuprofile", "", "write cpu profile to file")
 	mute       = flag.Bool("mute", false, "mute")
 )
+
+func (g *Game) SetTransparent() {
+	g.transparent = true
+}
 
 func (g *Game) Loop(screen *ebiten.Image) error {
 	if tryLoseContext() {

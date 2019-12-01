@@ -106,14 +106,16 @@ func (t *TitleScene) Update(game *Game) {
 func (t *TitleScene) Draw(screen *ebiten.Image, game *Game) {
 	textID := text.TextIDStart
 	clr := color.Black
-	if t.lunkerMode {
-		draw.Draw(screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
-		textID = text.TextIDStartLunker
-		clr = color.White
-	} else {
-		draw.Draw(screen, "bg", 0, 0, 0, 0, draw.ScreenWidth, draw.ScreenHeight)
-		if input.Current().IsTouchEnabled() {
-			textID = text.TextIDStartTouch
+	if !game.transparent {
+		if t.lunkerMode {
+			draw.Draw(screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
+			textID = text.TextIDStartLunker
+			clr = color.White
+		} else {
+			draw.Draw(screen, "bg", 0, 0, 0, 0, draw.ScreenWidth, draw.ScreenHeight)
+			if input.Current().IsTouchEnabled() {
+				textID = text.TextIDStartTouch
+			}
 		}
 	}
 
@@ -157,7 +159,9 @@ func (o *OpeningScene) Update(game *Game) {
 }
 
 func (o *OpeningScene) Draw(screen *ebiten.Image, game *Game) {
-	draw.Draw(screen, "bg", 0, 0, 0, 480, 320, 240)
+	if !game.transparent {
+		draw.Draw(screen, "bg", 0, 0, 0, 480, 320, 240)
+	}
 
 	for i, line := range strings.Split(text.Get(game.lang, text.TextIDOpening), "\n") {
 		x := (draw.ScreenWidth - font.Width(line)) / 2
@@ -220,7 +224,9 @@ func (e *EndingScene) Update(game *Game) {
 }
 
 func (e *EndingScene) Draw(screen *ebiten.Image, game *Game) {
-	draw.Draw(screen, "bg", 0, 0, 0, 480, 320, 240)
+	if !game.transparent {
+		draw.Draw(screen, "bg", 0, 0, 0, 480, 320, 240)
+	}
 
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
@@ -277,7 +283,9 @@ func (s *SecretScene) Update(game *Game) {
 }
 
 func (s *SecretScene) Draw(screen *ebiten.Image, game *Game) {
-	draw.Draw(screen, "bg", 0, 0, 0, 240, 320, 240)
+	if !game.transparent {
+		draw.Draw(screen, "bg", 0, 0, 0, 240, 320, 240)
+	}
 	var textID text.TextID
 	switch s.secretType {
 	case SecretTypeCommand:
@@ -316,10 +324,12 @@ func (g *GameScene) Update(game *Game) {
 }
 
 func (g *GameScene) Draw(screen *ebiten.Image, game *Game) {
-	if game.gameData.lunkerMode {
-		draw.Draw(screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
-	} else {
-		draw.Draw(screen, "bg", 0, 0, 0, 0, draw.ScreenWidth, draw.ScreenHeight)
+	if !game.transparent {
+		if game.gameData.lunkerMode {
+			draw.Draw(screen, "bg", 0, 0, 0, 240, draw.ScreenWidth, draw.ScreenHeight)
+		} else {
+			draw.Draw(screen, "bg", 0, 0, 0, 0, draw.ScreenWidth, draw.ScreenHeight)
+		}
 	}
 	g.player.Draw(screen, game)
 	if input.Current().IsTouchEnabled() {
