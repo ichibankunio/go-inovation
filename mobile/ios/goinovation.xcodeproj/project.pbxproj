@@ -142,6 +142,7 @@
 					8C7185B81D11C56C00F98056 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = M89F6KFPW7;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -311,7 +312,7 @@
 				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "cca24b5e-b0e3-4591-89da-13ce3c68f28f";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -321,8 +322,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = M89F6KFPW7;
 				ENABLE_BITCODE = NO;
@@ -336,8 +338,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hajimehoshi.goinovation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b89fa05e-828d-422a-910c-f8aa02980b86";
-				PROVISIONING_PROFILE_SPECIFIER = "iOS Dev";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -359,8 +361,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hajimehoshi.goinovation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b89fa05e-828d-422a-910c-f8aa02980b86";
 				PROVISIONING_PROFILE_SPECIFIER = "iOS Dev";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
