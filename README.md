@@ -39,8 +39,6 @@ and run the Android Studio project in `./mobile/android`.
 
 ## How to build for iOS
 
-At this directory, run
-
 ```
 git clone https://github.com/hajimehoshi/go-inovation
 cd go-inovation
