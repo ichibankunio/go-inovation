@@ -29,10 +29,10 @@ go run github.com/hajimehoshi/go-inovation
 
 ## How to build for Android
 
-At this directory, run
-
 ```
-ebitenmobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar github.com/hajimehoshi/go-inovation/mobile
+git clone https://github.com/hajimehoshi/go-inovation
+cd go-inovation
+ebitenmobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar ./mobile
 ```
 
 and run the Android Studio project in `./mobile/android`.
@@ -42,7 +42,9 @@ and run the Android Studio project in `./mobile/android`.
 At this directory, run
 
 ```
-ebitenmobile bind -target ios -o ./ios/Mobile.framework github.com/hajimehoshi/go-inovation/mobile
+git clone https://github.com/hajimehoshi/go-inovation
+cd go-inovation
+ebitenmobile bind -target ios -o ./ios/Mobile.framework ./mobile
 ```
 
 and run the Xcode project in `./mobile/ios`.
