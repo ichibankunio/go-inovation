@@ -12,7 +12,7 @@ import (
 )
 
 func tryLoseContext() bool {
-	if inpututil.IsKeyJustPressed(ebiten.KeyQ) && js.Global() != js.Null() {
+	if inpututil.IsKeyJustPressed(ebiten.KeyQ) && js.Global().Bool() {
 		doc := js.Global().Get("document")
 		canvas := doc.Call("getElementsByTagName", "canvas").Index(0)
 		context := canvas.Call("getContext", "webgl")
