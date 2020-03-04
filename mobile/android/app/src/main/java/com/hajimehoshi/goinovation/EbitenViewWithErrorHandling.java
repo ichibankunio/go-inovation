@@ -3,8 +3,6 @@ package com.hajimehoshi.goinovation;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.crashlytics.android.Crashlytics;
-
 import com.hajimehoshi.goinovation.mobile.EbitenView;
 
 class EbitenViewWithErrorHandling extends EbitenView {
@@ -19,6 +17,7 @@ class EbitenViewWithErrorHandling extends EbitenView {
     @Override
     protected void onErrorOnGameUpdate(Exception e) {
         // You can define your own error handling e.g., using Crashlytics.
-        Crashlytics.logException(e);
+        // e.g., Crashlytics.logException(e);
+        super.onErrorOnGameUpdate(e);
     }
 }
