@@ -71,13 +71,13 @@ func (i *Input) Update() {
 	}
 
 	// Emulates the keys by gamepad pressing
-	switch ebiten.GamepadAxis(gamepadID, 0) {
-	case -1:
+	switch v := ebiten.GamepadAxis(gamepadID, 0); true {
+	case -0.9 >= v:
 		i.pressed[ebiten.KeyLeft] = struct{}{}
-	case 1:
+	case 0.9 <= v:
 		i.pressed[ebiten.KeyRight] = struct{}{}
 	}
-	if y := ebiten.GamepadAxis(gamepadID, 1); y == 1 {
+	if y := ebiten.GamepadAxis(gamepadID, 1); y >= 0.9 {
 		i.pressed[ebiten.KeyDown] = struct{}{}
 	}
 	for b := ebiten.GamepadButton0; b <= ebiten.GamepadButtonMax; b++ {
