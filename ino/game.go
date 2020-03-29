@@ -34,7 +34,11 @@ func (g *Game) SetTransparent() {
 	g.transparent = true
 }
 
-func (g *Game) Loop(screen *ebiten.Image) error {
+func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+	return ScreenWidth, ScreenHeight
+}
+
+func (g *Game) Update(screen *ebiten.Image) error {
 	if tryLoseContext() {
 		return nil
 	}
@@ -107,18 +111,16 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		}
 	}
 	g.scene.Update(g)
+	return nil
+}
 
-	if ebiten.IsDrawingSkipped() {
-		return nil
-	}
-
+func (g *Game) Draw(screen *ebiten.Image) {
 	if g.resourceLoadedCh != nil {
 		ebitenutil.DebugPrint(screen, "Now Loading...")
-		return nil
+		return
 	}
 	g.scene.Draw(screen, g)
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %.2f", ebiten.CurrentFPS()))
-	return nil
 }
 
 func NewGame() (*Game, error) {

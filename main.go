@@ -42,7 +42,10 @@ func main() {
 		game.SetTransparent()
 	}
 
-	if err := ebiten.Run(game.Loop, ino.ScreenWidth, ino.ScreenHeight, ino.Scale(), ino.Title); err != nil {
+	const scale = 2
+	ebiten.SetWindowSize(ino.ScreenWidth * scale, ino.ScreenHeight * scale)
+	ebiten.SetWindowTitle(ino.Title)
+	if err := ebiten.RunGame(game); err != nil {
 		panic(err)
 	}
 	if *memProfile != "" {
