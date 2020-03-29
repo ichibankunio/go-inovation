@@ -49,10 +49,6 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		default:
 		}
 	}
-	if g.resourceLoadedCh != nil {
-		ebitenutil.DebugPrint(screen, "Now Loading...")
-		return nil
-	}
 
 	input.Current().Update()
 
@@ -111,7 +107,13 @@ func (g *Game) Loop(screen *ebiten.Image) error {
 		}
 	}
 	g.scene.Update(g)
+
 	if ebiten.IsDrawingSkipped() {
+		return nil
+	}
+
+	if g.resourceLoadedCh != nil {
+		ebitenutil.DebugPrint(screen, "Now Loading...")
 		return nil
 	}
 	g.scene.Draw(screen, g)
