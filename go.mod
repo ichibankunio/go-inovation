@@ -8,5 +8,3 @@ require (
 	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
 	golang.org/x/text v0.3.2
 )
-
-replace github.com/hajimehoshi/ebiten => ../ebiten
