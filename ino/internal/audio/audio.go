@@ -1,17 +1,21 @@
 package audio
 
 import (
+	"bytes"
+	"io"
 	"strings"
 
-	"github.com/hajimehoshi/ebiten/audio"
-	"github.com/hajimehoshi/ebiten/audio/vorbis"
-	"github.com/hajimehoshi/ebiten/audio/wav"
+	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
+	"github.com/hajimehoshi/ebiten/v2/audio/wav"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
 )
 
+const sampleRate = 44100
+
 var (
-	audioContext   *audio.Context
+	audioContext   = audio.NewContext(sampleRate)
 	soundFilenames = []string{
 		"damage.wav",
 		"heal.wav",
@@ -29,23 +33,14 @@ func Mute() {
 	mute = true
 }
 
-func init() {
-	const sampleRate = 44100
-	var err error
-	audioContext, err = audio.NewContext(sampleRate)
-	if err != nil {
-		panic(err)
-	}
-}
-
 func Load() error {
 	for _, n := range soundFilenames {
 		b, err := assets.Asset("resources/sound/" + n)
 		if err != nil {
 			return err
 		}
-		f := audio.BytesReadSeekCloser(b)
-		var s audio.ReadSeekCloser
+		f := bytes.NewReader(b)
+		var s io.ReadSeeker
 		switch {
 		case strings.HasSuffix(n, ".ogg"):
 			stream, err := vorbis.Decode(audioContext, f)

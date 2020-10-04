@@ -7,8 +7,8 @@ import (
 	"os"
 	"runtime/pprof"
 
-	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
@@ -38,7 +38,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return ScreenWidth, ScreenHeight
 }
 
-func (g *Game) Update(screen *ebiten.Image) error {
+func (g *Game) Update() error {
 	if tryLoseContext() {
 		return nil
 	}
@@ -59,7 +59,11 @@ func (g *Game) Update(screen *ebiten.Image) error {
 	if input.Current().IsKeyJustPressed(ebiten.KeyF) {
 		f := ebiten.IsFullscreen()
 		ebiten.SetFullscreen(!f)
-		ebiten.SetCursorVisible(f)
+		if f {
+			ebiten.SetCursorMode(ebiten.CursorModeVisible)
+		} else {
+			ebiten.SetCursorMode(ebiten.CursorModeHidden)
+		}
 	}
 
 	if input.Current().IsKeyJustPressed(ebiten.KeyP) && *cpuProfile != "" && g.cpup == nil {

@@ -7,7 +7,7 @@ import (
 	"runtime/pprof"
 	"runtime/trace"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/go-inovation/ino"
 )
 

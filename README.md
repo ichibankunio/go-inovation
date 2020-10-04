@@ -32,7 +32,7 @@ go run github.com/hajimehoshi/go-inovation
 ```
 git clone https://github.com/hajimehoshi/go-inovation
 cd go-inovation
-go run github.com/hajimehoshi/ebiten/cmd/ebitenmobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar ./mobile
+go run github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile bind -target android -javapkg com.hajimehoshi.goinovation -o ./mobile/android/inovation/inovation.aar ./mobile
 ```
 
 and run the Android Studio project in `./mobile/android`.
@@ -42,7 +42,7 @@ and run the Android Studio project in `./mobile/android`.
 ```
 git clone https://github.com/hajimehoshi/go-inovation
 cd go-inovation
-go run github.com/hajimehoshi/ebiten/cmd/ebitenmobile bind -target ios -o ./mobile/ios/Mobile.framework ./mobile
+go run github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile bind -target ios -o ./mobile/ios/Mobile.framework ./mobile
 ```
 
 and run the Xcode project in `./mobile/ios`.

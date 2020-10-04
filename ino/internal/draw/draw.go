@@ -6,8 +6,8 @@ import (
 	"image/color"
 	"strings"
 
-	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
@@ -22,12 +22,11 @@ const (
 )
 
 var (
-	imageItemFrame         *ebiten.Image
+	imageItemFrame         = ebiten.NewImage(32, 32)
 	imageItemMessageFrames = map[fieldtype.FieldType]*ebiten.Image{}
 )
 
 func init() {
-	imageItemFrame, _ = ebiten.NewImage(32, 32, ebiten.FilterDefault)
 	imageItemFrame.Fill(color.Black)
 	ebitenutil.DrawRect(imageItemFrame, 2, 2, 28, 28, color.White)
 }
@@ -53,7 +52,7 @@ func init() {
 		if !ok {
 			bodyColor = color.RGBA{0xff, 0xff, 0xff, 0xff}
 		}
-		img, _ := ebiten.NewImage(256, 96, ebiten.FilterDefault)
+		img := ebiten.NewImage(256, 96)
 		img.Fill(color.Black)
 		ebitenutil.DrawRect(img, 1, 1, 254, 15, titleColor)
 		ebitenutil.DrawRect(img, 1, 17, 254, 78, bodyColor)
@@ -115,7 +114,7 @@ func LoadImages() error {
 		if err != nil {
 			return err
 		}
-		images[f], _ = ebiten.NewImageFromImage(origImg, ebiten.FilterDefault)
+		images[f] = ebiten.NewImageFromImage(origImg)
 	}
 	return nil
 }

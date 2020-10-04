@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
@@ -198,7 +198,7 @@ func (e *EndingScene) Update(game *Game) {
 			e.state = ENDINGMAIN_STATE_RESULT
 		}
 	case ENDINGMAIN_STATE_RESULT:
-		const max = 5 * ebiten.FPS
+		const max = 5 * 60
 		e.bgmFadingTimer++
 		switch {
 		case e.bgmFadingTimer == max:
