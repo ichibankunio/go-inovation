@@ -26,7 +26,7 @@ func tryLoseContext() bool {
 
 func systemLang() language.Tag {
 	nav := js.Global().Get("navigator")
-	if nav.IsNull() {
+	if !nav.Truthy() {
 		return language.Japanese
 	}
 	str := nav.Get("language").String()
