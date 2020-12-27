@@ -47,6 +47,9 @@ type Input struct {
 	pressed      map[ebiten.Key]struct{}
 	prevPressed  map[ebiten.Key]struct{}
 	touchEnabled bool
+
+	gamepadID      ebiten.GamepadID
+	gamepadEnabled bool
 }
 
 func (i *Input) IsTouchEnabled() bool {
@@ -57,8 +60,6 @@ func (i *Input) IsTouchEnabled() bool {
 }
 
 func (i *Input) Update() {
-	const gamepadID = 0
-
 	i.prevPressed = map[ebiten.Key]struct{}{}
 	for k := range i.pressed {
 		i.prevPressed[k] = struct{}{}
@@ -71,20 +72,32 @@ func (i *Input) Update() {
 	}
 
 	// Emulates the keys by gamepad pressing
-	switch v := ebiten.GamepadAxis(gamepadID, 0); true {
-	case -0.9 >= v:
-		i.pressed[ebiten.KeyLeft] = struct{}{}
-	case 0.9 <= v:
-		i.pressed[ebiten.KeyRight] = struct{}{}
+	gamepadIDs := ebiten.GamepadIDs()
+	if len(gamepadIDs) > 0 {
+		if !i.gamepadEnabled {
+			i.gamepadID = gamepadIDs[0]
+			i.gamepadEnabled = true
+		}
+	} else {
+		i.gamepadEnabled = false
 	}
-	if y := ebiten.GamepadAxis(gamepadID, 1); y >= 0.9 {
-		i.pressed[ebiten.KeyDown] = struct{}{}
-	}
-	for b := ebiten.GamepadButton0; b <= ebiten.GamepadButtonMax; b++ {
-		if ebiten.IsGamepadButtonPressed(gamepadID, b) {
-			i.pressed[ebiten.KeyEnter] = struct{}{}
-			i.pressed[ebiten.KeySpace] = struct{}{}
-			break
+	if i.gamepadEnabled {
+		switch v := ebiten.GamepadAxis(i.gamepadID, 0); true {
+		case -0.9 >= v:
+			i.pressed[ebiten.KeyLeft] = struct{}{}
+		case 0.9 <= v:
+			i.pressed[ebiten.KeyRight] = struct{}{}
+		}
+		if y := ebiten.GamepadAxis(i.gamepadID, 1); y >= 0.9 {
+			i.pressed[ebiten.KeyDown] = struct{}{}
+		}
+
+		for b := ebiten.GamepadButton0; b <= ebiten.GamepadButtonMax; b++ {
+			if ebiten.IsGamepadButtonPressed(i.gamepadID, b) {
+				i.pressed[ebiten.KeyEnter] = struct{}{}
+				i.pressed[ebiten.KeySpace] = struct{}{}
+				break
+			}
 		}
 	}
 
