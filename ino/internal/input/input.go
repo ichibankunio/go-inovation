@@ -77,6 +77,17 @@ func (i *Input) Update() {
 		if !i.gamepadEnabled {
 			i.gamepadID = gamepadIDs[0]
 			i.gamepadEnabled = true
+		} else {
+			var found bool
+			for _, id := range gamepadIDs {
+				if i.gamepadID == id {
+					found = true
+					break
+				}
+			}
+			if !found {
+				i.gamepadID = gamepadIDs[0]
+			}
 		}
 	} else {
 		i.gamepadEnabled = false
@@ -92,7 +103,7 @@ func (i *Input) Update() {
 			i.pressed[ebiten.KeyDown] = struct{}{}
 		}
 
-		for b := ebiten.GamepadButton0; b <= ebiten.GamepadButtonMax; b++ {
+		for b := ebiten.GamepadButton0; b <= ebiten.GamepadButton3; b++ {
 			if ebiten.IsGamepadButtonPressed(i.gamepadID, b) {
 				i.pressed[ebiten.KeyEnter] = struct{}{}
 				i.pressed[ebiten.KeySpace] = struct{}{}
