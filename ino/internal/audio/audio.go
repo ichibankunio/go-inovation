@@ -12,7 +12,7 @@ import (
 	"github.com/hajimehoshi/go-inovation/ino/internal/assets"
 )
 
-const sampleRate = 44100
+const sampleRate = 48000
 
 var (
 	audioContext = audio.NewContext(sampleRate)
