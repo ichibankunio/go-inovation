@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/go-inovation/ino"
 )
+
 func init() {
 	inogame, err := ino.NewGame()
 	if err != nil {
