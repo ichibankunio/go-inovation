@@ -15,15 +15,15 @@ import (
 const sampleRate = 44100
 
 var (
-	audioContext   = audio.NewContext(sampleRate)
-	soundFilenames = []string{
-		"damage.wav",
-		"heal.wav",
-		"ino1.ogg",
-		"ino2.ogg",
-		"itemget.wav",
-		"itemget2.wav",
-		"jump.wav",
+	audioContext = audio.NewContext(sampleRate)
+	soundFiles   = map[string][]byte{
+		"damage.wav":   assets.SoundDamage,
+		"heal.wav":     assets.SoundHeal,
+		"ino1.ogg":     assets.SoundIno1,
+		"ino2.ogg":     assets.SoundIno2,
+		"itemget.wav":  assets.SoundItemget,
+		"itemget2.wav": assets.SoundItemget2,
+		"jump.wav":     assets.SoundJump,
 	}
 	soundPlayers = map[string]*audio.Player{}
 	mute         = false
@@ -34,11 +34,7 @@ func Mute() {
 }
 
 func Load() error {
-	for _, n := range soundFilenames {
-		b, err := assets.Asset("resources/sound/" + n)
-		if err != nil {
-			return err
-		}
+	for n, b := range soundFiles {
 		f := bytes.NewReader(b)
 		var s io.ReadSeeker
 		switch {

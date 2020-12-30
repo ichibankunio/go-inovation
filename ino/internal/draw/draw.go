@@ -101,15 +101,18 @@ func DrawItemMessage(screen *ebiten.Image, item fieldtype.FieldType, y int, lang
 }
 
 var (
+	imageFiles = map[string][]byte{
+		"ino":    assets.ImageIno,
+		"msg_ja": assets.ImageMsgJa,
+		"msg_en": assets.ImageMsgEn,
+		"bg":     assets.ImageBg,
+		"touch":  assets.ImageTouch,
+	}
 	images = map[string]*ebiten.Image{}
 )
 
 func LoadImages() error {
-	for _, f := range []string{"ino", "msg_ja", "msg_en", "bg", "touch"} {
-		b, err := assets.Asset("resources/images/color/" + f + ".png")
-		if err != nil {
-			return err
-		}
+	for f, b := range imageFiles {
 		origImg, _, err := image.Decode(bytes.NewReader(b))
 		if err != nil {
 			return err
