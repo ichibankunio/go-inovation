@@ -44,9 +44,9 @@ var keys = []ebiten.Key{
 }
 
 type Input struct {
-	pressed      map[ebiten.Key]struct{}
-	prevPressed  map[ebiten.Key]struct{}
-	touchEnabled bool
+	pressed     map[ebiten.Key]struct{}
+	prevPressed map[ebiten.Key]struct{}
+	touchMode   bool
 
 	gamepadID      ebiten.GamepadID
 	gamepadEnabled bool
@@ -56,7 +56,7 @@ func (i *Input) IsTouchEnabled() bool {
 	if isTouchPrimaryInput() {
 		return true
 	}
-	return i.touchEnabled
+	return i.touchMode
 }
 
 func (i *Input) Update() {
@@ -92,21 +92,27 @@ func (i *Input) Update() {
 	} else {
 		i.gamepadEnabled = false
 	}
+
+	var gamepadUsed bool
 	if i.gamepadEnabled {
 		switch v := ebiten.GamepadAxis(i.gamepadID, 0); true {
 		case -0.9 >= v:
 			i.pressed[ebiten.KeyLeft] = struct{}{}
+			gamepadUsed = true
 		case 0.9 <= v:
 			i.pressed[ebiten.KeyRight] = struct{}{}
+			gamepadUsed = true
 		}
 		if y := ebiten.GamepadAxis(i.gamepadID, 1); y >= 0.9 {
 			i.pressed[ebiten.KeyDown] = struct{}{}
+			gamepadUsed = true
 		}
 
 		for b := ebiten.GamepadButton0; b <= ebiten.GamepadButton3; b++ {
 			if ebiten.IsGamepadButtonPressed(i.gamepadID, b) {
 				i.pressed[ebiten.KeyEnter] = struct{}{}
 				i.pressed[ebiten.KeySpace] = struct{}{}
+				gamepadUsed = true
 				break
 			}
 		}
@@ -133,8 +139,11 @@ func (i *Input) Update() {
 			i.pressed[ebiten.KeyLeft] = struct{}{}
 		}
 	}
+
 	if 0 < len(touches) {
-		i.touchEnabled = true
+		i.touchMode = true
+	} else if gamepadUsed {
+		i.touchMode = false
 	}
 }
 
