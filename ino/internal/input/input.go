@@ -95,25 +95,44 @@ func (i *Input) Update() {
 
 	var gamepadUsed bool
 	if i.gamepadEnabled {
-		switch v := ebiten.GamepadAxis(i.gamepadID, 0); true {
-		case -0.9 >= v:
+		const threshold = 0.9
+		var x, y float64
+		std := ebiten.IsStandardGamepadLayoutAvailable(i.gamepadID)
+		if std {
+			x = ebiten.StandardGamepadAxisValue(i.gamepadID, ebiten.StandardGamepadAxisLeftStickHorizontal)
+			y = ebiten.StandardGamepadAxisValue(i.gamepadID, ebiten.StandardGamepadAxisLeftStickVertical)
+		} else {
+			x = ebiten.GamepadAxis(i.gamepadID, 0)
+			y = ebiten.GamepadAxis(i.gamepadID, 1)
+		}
+		switch {
+		case -threshold >= x:
 			i.pressed[ebiten.KeyLeft] = struct{}{}
 			gamepadUsed = true
-		case 0.9 <= v:
+		case threshold <= x:
 			i.pressed[ebiten.KeyRight] = struct{}{}
 			gamepadUsed = true
 		}
-		if y := ebiten.GamepadAxis(i.gamepadID, 1); y >= 0.9 {
+		if y >= threshold {
 			i.pressed[ebiten.KeyDown] = struct{}{}
 			gamepadUsed = true
 		}
 
-		for b := ebiten.GamepadButton0; b <= ebiten.GamepadButton3; b++ {
-			if ebiten.IsGamepadButtonPressed(i.gamepadID, b) {
+		if std {
+			if ebiten.IsStandardGamepadButtonPressed(i.gamepadID, ebiten.StandardGamepadButtonRightBottom) ||
+				ebiten.IsStandardGamepadButtonPressed(i.gamepadID, ebiten.StandardGamepadButtonRightRight) {
 				i.pressed[ebiten.KeyEnter] = struct{}{}
 				i.pressed[ebiten.KeySpace] = struct{}{}
 				gamepadUsed = true
-				break
+			}
+		} else {
+			for b := ebiten.GamepadButton0; b <= ebiten.GamepadButton3; b++ {
+				if ebiten.IsGamepadButtonPressed(i.gamepadID, b) {
+					i.pressed[ebiten.KeyEnter] = struct{}{}
+					i.pressed[ebiten.KeySpace] = struct{}{}
+					gamepadUsed = true
+					break
+				}
 			}
 		}
 	}
