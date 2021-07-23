@@ -5,6 +5,5 @@
 *.jar
 
 # mobiles
-.idea/**/workspace.xml
-.idea/**/tasks.xml
+.idea
 mobile/android/app/release/
