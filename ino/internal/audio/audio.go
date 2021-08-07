@@ -1,9 +1,9 @@
 package audio
 
 import (
-	"bytes"
 	"io"
-	"strings"
+	"path"
+	"path/filepath"
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
@@ -16,15 +16,6 @@ const sampleRate = 48000
 
 var (
 	audioContext = audio.NewContext(sampleRate)
-	soundFiles   = map[string][]byte{
-		"damage.wav":   assets.SoundDamage,
-		"heal.wav":     assets.SoundHeal,
-		"ino1.ogg":     assets.SoundIno1,
-		"ino2.ogg":     assets.SoundIno2,
-		"itemget.wav":  assets.SoundItemget,
-		"itemget2.wav": assets.SoundItemget2,
-		"jump.wav":     assets.SoundJump,
-	}
 	soundPlayers = map[string]*audio.Player{}
 	mute         = false
 )
@@ -34,17 +25,35 @@ func Mute() {
 }
 
 func Load() error {
-	for n, b := range soundFiles {
-		f := bytes.NewReader(b)
+	const dir = "resources/sound"
+
+	ents, err := assets.Assets.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+
+	for _, ent := range ents {
+		name := ent.Name()
+		ext := filepath.Ext(name)
+		if ext != ".ogg" && ext != ".wav" {
+			continue
+		}
+
+		f, err := assets.Assets.Open(path.Join(dir, name))
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+
 		var s io.ReadSeeker
-		switch {
-		case strings.HasSuffix(n, ".ogg"):
+		switch ext {
+		case ".ogg":
 			stream, err := vorbis.Decode(audioContext, f)
 			if err != nil {
 				return err
 			}
 			s = audio.NewInfiniteLoop(stream, stream.Length())
-		case strings.HasSuffix(n, ".wav"):
+		case ".wav":
 			stream, err := wav.Decode(audioContext, f)
 			if err != nil {
 				return err
@@ -53,11 +62,13 @@ func Load() error {
 		default:
 			panic("invalid file name")
 		}
+
 		p, err := audio.NewPlayer(audioContext, s)
 		if err != nil {
 			return err
 		}
-		soundPlayers[n] = p
+
+		soundPlayers[name] = p
 	}
 	return nil
 }

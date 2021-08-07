@@ -1,9 +1,10 @@
 package draw
 
 import (
-	"bytes"
 	"image"
 	"image/color"
+	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -101,23 +102,37 @@ func DrawItemMessage(screen *ebiten.Image, item fieldtype.FieldType, y int, lang
 }
 
 var (
-	imageFiles = map[string][]byte{
-		"ino":    assets.ImageIno,
-		"msg_ja": assets.ImageMsgJa,
-		"msg_en": assets.ImageMsgEn,
-		"bg":     assets.ImageBg,
-		"touch":  assets.ImageTouch,
-	}
 	images = map[string]*ebiten.Image{}
 )
 
 func LoadImages() error {
-	for f, b := range imageFiles {
-		origImg, _, err := image.Decode(bytes.NewReader(b))
+	const dir = "resources/images/color"
+
+	ents, err := assets.Assets.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+
+	for _, ent := range ents {
+		name := ent.Name()
+		ext := filepath.Ext(name)
+		if ext != ".png" {
+			continue
+		}
+
+		f, err := assets.Assets.Open(path.Join(dir, name))
 		if err != nil {
 			return err
 		}
-		images[f] = ebiten.NewImageFromImage(origImg)
+		defer f.Close()
+
+		img, _, err := image.Decode(f)
+		if err != nil {
+			return err
+		}
+
+		key := name[:len(name)-len(ext)]
+		images[key] = ebiten.NewImageFromImage(img)
 	}
 	return nil
 }
