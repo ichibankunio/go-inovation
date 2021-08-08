@@ -21,7 +21,6 @@ import (
 const (
 	ScreenWidth  = draw.ScreenWidth
 	ScreenHeight = draw.ScreenHeight
-	Title        = "INNO VATION 2007 (Go version)"
 )
 
 const (
@@ -100,6 +99,13 @@ func (t *TitleScene) Update(game *Game) {
 		case language.English:
 			game.lang = language.Japanese
 		}
+	}
+
+	switch game.lang {
+	case language.English:
+		ebiten.SetWindowTitle("INNO VATION! 2007")
+	case language.Japanese:
+		ebiten.SetWindowTitle("いの べーしょん! 2007")
 	}
 }
 

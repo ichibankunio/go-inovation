@@ -44,7 +44,6 @@ func main() {
 
 	const scale = 2
 	ebiten.SetWindowSize(ino.ScreenWidth*scale, ino.ScreenHeight*scale)
-	ebiten.SetWindowTitle(ino.Title)
 	ebiten.SetWindowResizable(true)
 	if err := ebiten.RunGame(game); err != nil {
 		panic(err)
