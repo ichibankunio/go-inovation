@@ -150,5 +150,10 @@ func NewGame() (*Game, error) {
 	if err := audio.Finalize(); err != nil {
 		return nil, err
 	}
+
+	if err := setIcons(); err != nil {
+		return nil, err
+	}
+
 	return game, nil
 }
