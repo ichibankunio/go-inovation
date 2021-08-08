@@ -25,7 +25,7 @@ func Mute() {
 }
 
 func Load() error {
-	const dir = "resources/sound"
+	const dir = "sound"
 
 	ents, err := assets.Assets.ReadDir(dir)
 	if err != nil {

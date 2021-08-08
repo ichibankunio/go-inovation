@@ -106,7 +106,7 @@ var (
 )
 
 func LoadImages() error {
-	const dir = "resources/images/color"
+	const dir = "images/color"
 
 	ents, err := assets.Assets.ReadDir(dir)
 	if err != nil {
