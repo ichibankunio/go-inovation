@@ -11,19 +11,6 @@ import (
 	"github.com/hajimehoshi/go-inovation/ino/internal/text"
 )
 
-func tryLoseContext() bool {
-	if inpututil.IsKeyJustPressed(ebiten.KeyQ) && js.Global().Truthy() {
-		doc := js.Global().Get("document")
-		canvas := doc.Call("getElementsByTagName", "canvas").Index(0)
-		context := canvas.Call("getContext", "webgl")
-		context.Call("getExtension", "WEBGL_lose_context").Call("loseContext")
-		fmt.Println("Context Lost!")
-		return true
-	}
-
-	return false
-}
-
 func systemLang() language.Tag {
 	nav := js.Global().Get("navigator")
 	if !nav.Truthy() {

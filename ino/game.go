@@ -39,10 +39,6 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 }
 
 func (g *Game) Update() error {
-	if tryLoseContext() {
-		return nil
-	}
-
 	if g.resourceLoadedCh != nil {
 		select {
 		case err := <-g.resourceLoadedCh:
