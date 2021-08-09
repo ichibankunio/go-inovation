@@ -1,4 +1,4 @@
-package ino
+package lang
 
 import (
 	"syscall/js"
@@ -8,7 +8,7 @@ import (
 	"github.com/hajimehoshi/go-inovation/ino/internal/text"
 )
 
-func systemLang() language.Tag {
+func SystemLang() language.Tag {
 	nav := js.Global().Get("navigator")
 	if !nav.Truthy() {
 		return language.Japanese
@@ -22,5 +22,5 @@ func systemLang() language.Tag {
 			return newLang
 		}
 	}
-	return language.Japanese
+	return language.English
 }

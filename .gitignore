@@ -3,7 +3,8 @@
 *.framework
 *.aar
 *.jar
-bin
+bin/*
+!bin/steam_appid.txt
 
 # mobiles
 .idea

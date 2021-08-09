@@ -14,6 +14,7 @@ import (
 	"github.com/hajimehoshi/go-inovation/ino/internal/audio"
 	"github.com/hajimehoshi/go-inovation/ino/internal/draw"
 	"github.com/hajimehoshi/go-inovation/ino/internal/input"
+	"github.com/hajimehoshi/go-inovation/ino/internal/lang"
 )
 
 type Game struct {
@@ -130,7 +131,7 @@ func NewGame() (*Game, error) {
 
 	game := &Game{
 		resourceLoadedCh: make(chan error),
-		lang:             systemLang(),
+		lang:             lang.SystemLang(),
 	}
 	go func() {
 		if err := draw.LoadImages(); err != nil {
