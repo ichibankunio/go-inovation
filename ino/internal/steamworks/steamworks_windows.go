@@ -86,7 +86,7 @@ func init() {
 }
 
 func RestartAppIfNecessary(appID int) bool {
-	v, err := theDLL.call("SteamAPI_RestartAppIfNecessary", uintptr(appID))
+	v, err := theDLL.call(flatAPI_RestartAppIfNecessary, uintptr(appID))
 	if err != nil {
 		panic(err)
 	}
@@ -94,7 +94,7 @@ func RestartAppIfNecessary(appID int) bool {
 }
 
 func Init() bool {
-	v, err := theDLL.call("SteamAPI_Init")
+	v, err := theDLL.call(flatAPI_Init)
 	if err != nil {
 		panic(err)
 	}
@@ -102,7 +102,7 @@ func Init() bool {
 }
 
 func SteamApps() ISteamApps {
-	v, err := theDLL.call("SteamAPI_SteamApps_v008")
+	v, err := theDLL.call(flatAPI_SteamApps)
 	if err != nil {
 		panic(err)
 	}
@@ -112,7 +112,7 @@ func SteamApps() ISteamApps {
 type steamApps uintptr
 
 func (s steamApps) GetCurrentGameLanguage() string {
-	v, err := theDLL.call("SteamAPI_ISteamApps_GetAvailableGameLanguages", uintptr(s))
+	v, err := theDLL.call(flatAPI_ISteamApps_GetAvailableGameLanguages, uintptr(s))
 	if err != nil {
 		panic(err)
 	}
