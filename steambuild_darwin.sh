@@ -5,11 +5,6 @@ app_name=Innovation2007.app
 bundle_id=com.hajimehoshi.innovation2007.macos
 mkdir -p bin
 
-# Windows
-# TODO: Should '-ldflags=-H=windowsgui' be added?
-GOOS=windows GOARCH=amd64 go build -tags=steam -o bin/${name}.exe .
-
-# macOS
 rm -rf bin/${app_name}
 mkdir -p bin/${app_name}/Contents/MacOS
 mkdir -p bin/${app_name}/Contents/Resources
