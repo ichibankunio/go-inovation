@@ -53,7 +53,8 @@ xcrun altool --notarize-app \
              --password "${APP_PASSWORD}" \
              --asc-provider "${asc_provider}" \
              --file bin/${zip_name}
+rm bin/${zip_name}
 
 echo "Please wait for an email from Apple."
 echo "For the log, run this command: xcrun altool --notarization-info <UUID> --username <USER NAME> --password <APP PASSWORD>"
-echo "Run this command later: xcrun stapler staple bin/${app_name}"
+echo "After the notarization succeeds, run this command: xcrun stapler staple bin/${app_name}"
