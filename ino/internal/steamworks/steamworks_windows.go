@@ -2,7 +2,6 @@ package steamworks
 
 import (
 	"crypto/sha256"
-	_ "embed"
 	"encoding/hex"
 	"os"
 	"path/filepath"
@@ -11,14 +10,11 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-//go:embed steam_api64.dll
-var steamAPI64DLL []byte
-
-var steamAPI64DLLHash string
+var steamAPIDLLHash string
 
 func init() {
-	hash := sha256.Sum256(steamAPI64DLL)
-	steamAPI64DLLHash = hex.EncodeToString(hash[:])
+	hash := sha256.Sum256(steamAPIDLL)
+	steamAPIDLLHash = hex.EncodeToString(hash[:])
 }
 
 type dll struct {
@@ -57,12 +53,12 @@ func loadDLL() (*dll, error) {
 		return nil, err
 	}
 
-	fn := filepath.Join(dir, steamAPI64DLLHash+".dll")
+	fn := filepath.Join(dir, steamAPIDLLHash+".dll")
 	if _, err := os.Stat(fn); err != nil {
 		if !os.IsNotExist(err) {
 			return nil, err
 		}
-		if err := os.WriteFile(fn+".tmp", steamAPI64DLL, 0644); err != nil {
+		if err := os.WriteFile(fn+".tmp", steamAPIDLL, 0644); err != nil {
 			return nil, err
 		}
 		if err := os.Rename(fn+".tmp", fn); err != nil {
