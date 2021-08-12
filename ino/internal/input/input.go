@@ -101,6 +101,15 @@ func (i *Input) Update() {
 		if std {
 			x = ebiten.StandardGamepadAxisValue(i.gamepadID, ebiten.StandardGamepadAxisLeftStickHorizontal)
 			y = ebiten.StandardGamepadAxisValue(i.gamepadID, ebiten.StandardGamepadAxisLeftStickVertical)
+
+			switch {
+			case ebiten.IsStandardGamepadButtonPressed(i.gamepadID, ebiten.StandardGamepadButtonLeftLeft):
+				x = -1
+			case ebiten.IsStandardGamepadButtonPressed(i.gamepadID, ebiten.StandardGamepadButtonLeftRight):
+				x = 1
+			case ebiten.IsStandardGamepadButtonPressed(i.gamepadID, ebiten.StandardGamepadButtonLeftBottom):
+				y = 1
+			}
 		} else {
 			x = ebiten.GamepadAxis(i.gamepadID, 0)
 			y = ebiten.GamepadAxis(i.gamepadID, 1)
