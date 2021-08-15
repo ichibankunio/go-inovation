@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/hajimehoshi/bitmapfont/v2 v2.1.3
-	github.com/hajimehoshi/ebiten/v2 v2.2.0-alpha.11.0.20210812183551-797f42b839cd
+	github.com/hajimehoshi/ebiten/v2 v2.2.0-alpha.11.0.20210815090641-d5150a194ce2
 	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb
 	golang.org/x/sys v0.0.0-20210510120138-977fb7262007
 	golang.org/x/text v0.3.6
