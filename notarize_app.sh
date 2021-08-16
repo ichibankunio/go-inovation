@@ -18,6 +18,9 @@ asc_provider=M89F6KFPW7
 # * https://partner.steamgames.com/doc/store/application/platforms
 # * https://coldandold.com/posts/releasing-steam-game-on-mac/
 
+cd bin
+mkdir -p .cache
+
 echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -27,7 +30,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
      <key>com.apple.security.cs.allow-dyld-environment-variables</key>
      <true/>
   </dict>
-</plist>' > bin/entitlements.plist
+</plist>' > .cache/entitlements.plist
 
 codesign --display \
          --verbose \
@@ -36,11 +39,11 @@ codesign --display \
          --timestamp \
          --options runtime \
          --force \
-         --entitlements bin/entitlements.plist \
+         --entitlements .cache/entitlements.plist \
          --deep \
-         bin/${app_name}
+         ${app_name}
 
-/usr/bin/ditto -c -k --keepParent bin/${app_name} bin/${zip_name}
+/usr/bin/ditto -c -k --keepParent ${app_name} ${zip_name}
 
 if [[ -z "${APP_PASSWORD}" ]]; then
     echo 'fail: set APP_PASSWORD. See https://support.apple.com/en-us/HT204397'
@@ -52,8 +55,8 @@ xcrun altool --notarize-app \
              --username "${email}" \
              --password "${APP_PASSWORD}" \
              --asc-provider "${asc_provider}" \
-             --file bin/${zip_name}
-rm bin/${zip_name}
+             --file ${zip_name}
+rm ${zip_name}
 
 echo "Please wait for an email from Apple."
 echo "For the log, run this command: xcrun altool --notarization-info <UUID> --username <USER NAME> --password <APP PASSWORD>"
