@@ -43,7 +43,7 @@ codesign --display \
          --deep \
          ${app_name}
 
-/usr/bin/ditto -c -k --keepParent ${app_name} ${zip_name}
+ditto -c -k --keepParent ${app_name} ${zip_name}
 
 if [[ -z "${APP_PASSWORD}" ]]; then
     echo 'fail: set APP_PASSWORD. See https://support.apple.com/en-us/HT204397'

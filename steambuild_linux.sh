@@ -3,7 +3,7 @@ set -e
 name=innovation2007
 STEAM_RUNTIME_VERSION=0.20210721.1
 GO_VERSION=$(go env GOVERSION)
-mkdir -p bin/${STEAM_RUNTIME_VERSION}
+mkdir -p bin/.cache/${STEAM_RUNTIME_VERSION}
 
 cd bin
 
