@@ -8,7 +8,7 @@ mkdir -p bin
 rm -rf bin/${app_name}
 mkdir -p bin/${app_name}/Contents/MacOS
 mkdir -p bin/${app_name}/Contents/Resources
-go build -tags=steam -o bin/${app_name}/Contents/MacOS/${name} .
+env CGO_CFLAGS=-mmacosx-version-min=10.12 CGO_LDFLAGS=-mmacosx-version-min=10.12 go build -tags=steam -o bin/${app_name}/Contents/MacOS/${name} .
 cp steam/icon/icon_512x512.icns bin/${app_name}/Contents/Resources/icon.icns
 echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -31,7 +31,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
     <key>NSHighResolutionCapable</key>
     <true />
     <key>LSMinimumSystemVersion</key>
-    <string>10.13.0</string>
+    <string>10.12.0</string>
   </dict>
 </plist>' |
     sed -e "s/{{.Name}}/${name}/g" |
