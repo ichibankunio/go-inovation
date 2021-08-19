@@ -26,9 +26,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
 <plist version="1.0">
   <dict>
     <key>com.apple.security.cs.disable-library-validation</key>
-     <true/>
-     <key>com.apple.security.cs.allow-dyld-environment-variables</key>
-     <true/>
+    <true/>
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <true/>
   </dict>
 </plist>' > .cache/entitlements.plist
 
