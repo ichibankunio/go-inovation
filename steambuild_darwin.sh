@@ -22,6 +22,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
     <string>icon.icns</string>
     <key>NSHighResolutionCapable</key>
     <true />
+    <key>LSMinimumSystemVersion</key>
+    <string>10.13.0</string>
   </dict>
 </plist>' |
     sed -e "s/{{.Name}}/${name}/g" |
