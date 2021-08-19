@@ -85,7 +85,7 @@ func loadLib() (C.uintptr_t, error) {
 	if runtime.GOOS == "darwin" {
 		ext = ".dylib"
 	}
-	path := filepath.Join(dir, "libsteam_api" + ext)
+	path := filepath.Join(dir, "libsteam_api"+ext)
 	if err := os.WriteFile(path, libSteamAPI, 0644); err != nil {
 		return 0, err
 	}
