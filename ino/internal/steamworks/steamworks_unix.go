@@ -118,7 +118,7 @@ func RestartAppIfNecessary(appID int) bool {
 	if err != nil {
 		panic(err)
 	}
-	return v != 0
+	return byte(v) != 0
 }
 
 func Init() bool {
@@ -126,7 +126,7 @@ func Init() bool {
 	if err != nil {
 		panic(err)
 	}
-	return v != 0
+	return byte(v) != 0
 }
 
 func SteamApps() ISteamApps {
