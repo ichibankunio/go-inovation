@@ -3,7 +3,9 @@ package main
 import (
 	"errors"
 	"fmt"
+	"image/color"
 	"image/png"
+	"math"
 	"os"
 	"regexp"
 
@@ -16,9 +18,21 @@ var regularTermination = errors.New("regular termiination")
 var reFilename = regexp.MustCompile(`^screenshot(.+)_([a-z]+)\.png$`)
 
 type Game struct {
+	tmpImage *ebiten.Image
 }
 
-func (*Game) Update() error {
+func (g *Game) getTmpImage(width, height int) *ebiten.Image {
+	if g.tmpImage != nil {
+		if w, h := g.tmpImage.Size(); w == width && h == height {
+			g.tmpImage.Clear()
+			return g.tmpImage
+		}
+	}
+	g.tmpImage = ebiten.NewImage(width, height)
+	return g.tmpImage
+}
+
+func (g *Game) Update() error {
 	ents, err := os.ReadDir(".")
 	if err != nil {
 		return err
@@ -45,14 +59,21 @@ func (*Game) Update() error {
 			return err
 		}
 
-		const scale = 6
-		//w, h := img.Size()
+		w, h := img.Size()
+		scale := screenshotHeight / float64(h)
+		iscale := math.Ceil(scale)
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Scale(scale, scale)
-		op.GeoM.Translate(0, -192)
+		op.GeoM.Scale(iscale, iscale)
+		tmpImg := g.getTmpImage(w * int(iscale), h * int(iscale))
+		tmpImg.DrawImage(img, op)
 
+		op = &ebiten.DrawImageOptions{}
+		op.GeoM.Scale(float64(scale) / float64(iscale), float64(scale) / float64(iscale))
+		op.GeoM.Translate((screenshotWidth - float64(w) * scale) / 2, 0)
+		op.Filter = ebiten.FilterLinear
 		offscreen.Clear()
-		offscreen.DrawImage(img, op)
+		offscreen.Fill(color.Black)
+		offscreen.DrawImage(tmpImg, op)
 
 		newName := fmt.Sprintf("screenshot%s_%dx%d_%s.png", m[0], screenshotWidth, screenshotHeight, m[1])
 		f, err := os.Create(newName)
