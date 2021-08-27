@@ -15,7 +15,7 @@ import (
 
 var regularTermination = errors.New("regular termiination")
 
-var reFilename = regexp.MustCompile(`^screenshot(.+)_([a-z]+)\.png$`)
+var reFilename = regexp.MustCompile(`^screenshot([^_]+)_([a-z]+)\.png$`)
 
 type Game struct {
 	tmpImage *ebiten.Image
@@ -75,7 +75,7 @@ func (g *Game) Update() error {
 		offscreen.Fill(color.Black)
 		offscreen.DrawImage(tmpImg, op)
 
-		newName := fmt.Sprintf("screenshot%s_%dx%d_%s.png", m[0], screenshotWidth, screenshotHeight, m[1])
+		newName := fmt.Sprintf("screenshot%s_%dx%d_%s.png", m[1], screenshotWidth, screenshotHeight, m[2])
 		f, err := os.Create(newName)
 		if err != nil {
 			return err
