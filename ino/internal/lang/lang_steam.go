@@ -6,9 +6,8 @@ package lang
 import (
 	"os"
 
+	"github.com/hajimehoshi/go-steamworks"
 	"golang.org/x/text/language"
-
-	"github.com/hajimehoshi/go-inovation/ino/internal/steamworks"
 )
 
 const appID = 1710390
