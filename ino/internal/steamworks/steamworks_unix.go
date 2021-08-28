@@ -68,7 +68,7 @@ func (l *lib) call(name string, args ...uintptr) (C.uintptr_t, error) {
 		return C.callFunc_Bool(f), nil
 	case flatAPI_SteamApps:
 		return C.callFunc_Ptr(f), nil
-	case flatAPI_ISteamApps_GetAvailableGameLanguages:
+	case flatAPI_ISteamApps_GetCurrentGameLanguage:
 		return C.callFunc_Ptr_Ptr(f, C.uintptr_t(args[0])), nil
 	}
 
@@ -140,7 +140,7 @@ func SteamApps() ISteamApps {
 type steamApps C.uintptr_t
 
 func (s steamApps) GetCurrentGameLanguage() string {
-	v, err := theLib.call(flatAPI_ISteamApps_GetAvailableGameLanguages, uintptr(s))
+	v, err := theLib.call(flatAPI_ISteamApps_GetCurrentGameLanguage, uintptr(s))
 	if err != nil {
 		panic(err)
 	}

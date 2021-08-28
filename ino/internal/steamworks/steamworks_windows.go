@@ -108,7 +108,7 @@ func SteamApps() ISteamApps {
 type steamApps uintptr
 
 func (s steamApps) GetCurrentGameLanguage() string {
-	v, err := theDLL.call(flatAPI_ISteamApps_GetAvailableGameLanguages, uintptr(s))
+	v, err := theDLL.call(flatAPI_ISteamApps_GetCurrentGameLanguage, uintptr(s))
 	if err != nil {
 		panic(err)
 	}
