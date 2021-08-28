@@ -11,24 +11,24 @@ mkdir -p .cache
 
 # Download binaries for 386.
 if [ ! -f .cache/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-i386-scout-sysroot.Dockerfile ]; then
-    curl -L --output .cache/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-i386-scout-sysroot.Dockerfile https://repo.steampowered.com/steamrt-images-scout/snapshots/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-i386-scout-sysroot.Dockerfile
+    curl --location --remote-name https://repo.steampowered.com/steamrt-images-scout/snapshots/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-i386-scout-sysroot.Dockerfile
 fi
 if [ ! -f .cache/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-i386-scout-sysroot.tar.gz ]; then
-    curl -L --output .cache/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-i386-scout-sysroot.tar.gz https://repo.steampowered.com/steamrt-images-scout/snapshots/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-i386-scout-sysroot.tar.gz
+    curl --location --remote-name https://repo.steampowered.com/steamrt-images-scout/snapshots/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-i386-scout-sysroot.tar.gz
 fi
 if [ ! -f .cache/${GO_VERSION}.linux-386.tar.gz ]; then
-    curl -L --output .cache/${GO_VERSION}.linux-386.tar.gz https://golang.org/dl/${GO_VERSION}.linux-386.tar.gz
+    curl --location --remote-name https://golang.org/dl/${GO_VERSION}.linux-386.tar.gz
 fi
 
 # Download binaries for amd64.
 if [ ! -f .cache/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-scout-sysroot.Dockerfile ]; then
-    curl -L --output .cache/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-scout-sysroot.Dockerfile https://repo.steampowered.com/steamrt-images-scout/snapshots/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-scout-sysroot.Dockerfile
+    curl --location --remote-name https://repo.steampowered.com/steamrt-images-scout/snapshots/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-scout-sysroot.Dockerfile
 fi
 if [ ! -f .cache/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-scout-sysroot.tar.gz ]; then
-    curl -L --output .cache/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-scout-sysroot.tar.gz https://repo.steampowered.com/steamrt-images-scout/snapshots/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-scout-sysroot.tar.gz
+    curl --location --remote-name https://repo.steampowered.com/steamrt-images-scout/snapshots/${STEAM_RUNTIME_VERSION}/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-scout-sysroot.tar.gz
 fi
 if [ ! -f .cache/${GO_VERSION}.linux-amd64.tar.gz ]; then
-    curl -L --output .cache/${GO_VERSION}.linux-amd64.tar.gz https://golang.org/dl/${GO_VERSION}.linux-amd64.tar.gz
+    curl --location --remote-name https://golang.org/dl/${GO_VERSION}.linux-amd64.tar.gz
 fi
 
 # Build for 386
