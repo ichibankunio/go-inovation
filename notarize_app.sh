@@ -2,7 +2,6 @@ set -e
 
 name=innovation2007
 app_name=Innovation2007.app
-zip_name=Innovation2007.zip
 bundle_id=com.hajimehoshi.innovation2007.macos
 email=hajimehoshi@gmail.com
 
@@ -43,7 +42,7 @@ codesign --display \
          --deep \
          ${app_name}
 
-ditto -c -k --keepParent ${app_name} ${zip_name}
+ditto -c -k --keepParent ${app_name} ${app_name}.zip
 
 if [[ -z "${APP_PASSWORD}" ]]; then
     echo 'fail: set APP_PASSWORD. See https://support.apple.com/en-us/HT204397'
@@ -55,8 +54,8 @@ xcrun altool --notarize-app \
              --username "${email}" \
              --password "${APP_PASSWORD}" \
              --asc-provider "${asc_provider}" \
-             --file ${zip_name}
-rm ${zip_name}
+             --file ${app_name}.zip
+rm ${app_name}.zip
 
 echo "Please wait for an email from Apple."
 echo "For the log, run this command: xcrun altool --notarization-info <UUID> --username <USER NAME> --password <APP PASSWORD>"
