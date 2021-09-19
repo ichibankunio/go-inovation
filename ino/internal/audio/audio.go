@@ -48,13 +48,13 @@ func Load() error {
 		var s io.ReadSeeker
 		switch ext {
 		case ".ogg":
-			stream, err := vorbis.Decode(audioContext, f)
+			stream, err := vorbis.DecodeWithSampleRate(sampleRate, f)
 			if err != nil {
 				return err
 			}
 			s = audio.NewInfiniteLoop(stream, stream.Length())
 		case ".wav":
-			stream, err := wav.Decode(audioContext, f)
+			stream, err := wav.DecodeWithSampleRate(sampleRate, f)
 			if err != nil {
 				return err
 			}
