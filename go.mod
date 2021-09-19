@@ -7,7 +7,6 @@ require (
 	github.com/hajimehoshi/ebiten/v2 v2.2.0-alpha.12
 	github.com/hajimehoshi/go-steamworks v0.0.0-20210828152405-ba6afdaa1db7
 	golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d
-	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf
 	golang.org/x/text v0.3.6
 )
 
@@ -20,6 +19,7 @@ require (
 	golang.org/x/mobile v0.0.0-20210716004757-34ab1303b554 // indirect
 	golang.org/x/mod v0.4.2 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
+	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
 	golang.org/x/tools v0.1.2 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 )
