@@ -145,6 +145,7 @@ func (t *TitleScene) Msg() GameStateMsg {
 type OpeningScene struct {
 	gameStateMsg GameStateMsg
 	timer        int
+	texts        map[language.Tag][]string
 }
 
 const (
@@ -169,7 +170,13 @@ func (o *OpeningScene) Draw(screen *ebiten.Image, game *Game) {
 		draw.Draw(screen, "bg", 0, 0, 0, 480, 320, 240)
 	}
 
-	for i, line := range strings.Split(text.Get(game.lang, text.TextIDOpening), "\n") {
+	if _, ok := o.texts[game.lang]; !ok {
+		if o.texts == nil {
+			o.texts = map[language.Tag][]string{}
+		}
+		o.texts[game.lang] = strings.Split(text.Get(game.lang, text.TextIDOpening), "\n")
+	}
+	for i, line := range o.texts[game.lang] {
 		x := (draw.ScreenWidth - font.Width(line)) / 2
 		y := draw.ScreenHeight - (o.timer / OPENING_SCROLL_SPEED) + i*font.LineHeight
 		font.DrawText(screen, line, x, y, color.Black)
@@ -185,6 +192,7 @@ type EndingScene struct {
 	timer          int
 	bgmFadingTimer int
 	state          int
+	texts          map[language.Tag][]string
 }
 
 const (
@@ -236,7 +244,13 @@ func (e *EndingScene) Draw(screen *ebiten.Image, game *Game) {
 
 	switch e.state {
 	case ENDINGMAIN_STATE_STAFFROLL:
-		for i, line := range strings.Split(text.Get(game.lang, text.TextIDEnding), "\n") {
+		if _, ok := e.texts[game.lang]; !ok {
+			if e.texts == nil {
+				e.texts = map[language.Tag][]string{}
+			}
+			e.texts[game.lang] = strings.Split(text.Get(game.lang, text.TextIDEnding), "\n")
+		}
+		for i, line := range e.texts[game.lang] {
 			x := (draw.ScreenWidth - font.Width(line)) / 2
 			y := draw.ScreenHeight - (e.timer / ENDING_SCROLL_SPEED) + i*font.LineHeight
 			font.DrawText(screen, line, x, y, color.Black)
