@@ -1,6 +1,7 @@
 package audio
 
 import (
+	"bytes"
 	"io"
 	"path"
 	"path/filepath"
@@ -52,7 +53,11 @@ func Load() error {
 			if err != nil {
 				return err
 			}
-			s = audio.NewInfiniteLoop(stream, stream.Length())
+			bs, err := io.ReadAll(stream)
+			if err != nil {
+				return err
+			}
+			s = audio.NewInfiniteLoop(bytes.NewReader(bs), stream.Length())
 		case ".wav":
 			stream, err := wav.DecodeWithSampleRate(sampleRate, f)
 			if err != nil {

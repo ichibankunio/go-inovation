@@ -11,6 +11,7 @@
 		8C319FA3232D60A90051792B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C319FA2232D60A80051792B /* AudioToolbox.framework */; };
 		8C341D9E22E3140400B5C749 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C341D9D22E3140400B5C749 /* OpenGLES.framework */; };
 		8C341DA022E3141600B5C749 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C341D9922E313CD00B5C749 /* GLKit.framework */; };
+		8C4C3321271B334200CB6E83 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C4C3320271B334200CB6E83 /* GameController.framework */; };
 		8C7185BE1D11C56C00F98056 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7185BD1D11C56C00F98056 /* main.m */; };
 		8C7185C11D11C56C00F98056 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C7185C01D11C56C00F98056 /* AppDelegate.m */; };
 		8C7185C71D11C56C00F98056 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C7185C51D11C56C00F98056 /* Main.storyboard */; settings = {ASSET_TAGS = (1, ); }; };
@@ -25,6 +26,7 @@
 		8C319FA2232D60A80051792B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		8C341D9922E313CD00B5C749 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		8C341D9D22E3140400B5C749 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		8C4C3320271B334200CB6E83 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		8C7185B91D11C56C00F98056 /* goinovation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = goinovation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C7185BD1D11C56C00F98056 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8C7185BF1D11C56C00F98056 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -45,6 +47,7 @@
 			files = (
 				8C319FA3232D60A90051792B /* AudioToolbox.framework in Frameworks */,
 				8C341DA022E3141600B5C749 /* GLKit.framework in Frameworks */,
+				8C4C3321271B334200CB6E83 /* GameController.framework in Frameworks */,
 				8C341D9E22E3140400B5C749 /* OpenGLES.framework in Frameworks */,
 				8CCAFF0B22E3133E00FAEDC1 /* AVFoundation.framework in Frameworks */,
 				8CEB8FF51D2ED60600E86B12 /* Mobile.framework in Frameworks */,
@@ -98,6 +101,7 @@
 		8CCAFF0922E3133E00FAEDC1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8C4C3320271B334200CB6E83 /* GameController.framework */,
 				8C319FA2232D60A80051792B /* AudioToolbox.framework */,
 				8C341D9D22E3140400B5C749 /* OpenGLES.framework */,
 				8CEB8FF41D2ED60600E86B12 /* Mobile.framework */,
