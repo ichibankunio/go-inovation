@@ -1,6 +1,7 @@
 *~
 .DS_Store
 *.framework
+*.xcframework
 *.aar
 *.jar
 bin/*

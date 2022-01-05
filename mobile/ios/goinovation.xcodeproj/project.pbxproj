@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,8 +17,8 @@
 		8C7185C71D11C56C00F98056 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C7185C51D11C56C00F98056 /* Main.storyboard */; settings = {ASSET_TAGS = (1, ); }; };
 		8C7185C91D11C56C00F98056 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C7185C81D11C56C00F98056 /* Assets.xcassets */; };
 		8CB110C1230972630064D8CE /* MobileEbitenViewControllerWithErrorHandling.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CB110C0230972630064D8CE /* MobileEbitenViewControllerWithErrorHandling.m */; };
+		8CCA2ADB2784D87000F93EF7 /* Mobile.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CCA2AD72784D18900F93EF7 /* Mobile.xcframework */; };
 		8CCAFF0B22E3133E00FAEDC1 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CCAFF0A22E3133E00FAEDC1 /* AVFoundation.framework */; };
-		8CEB8FF51D2ED60600E86B12 /* Mobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CEB8FF41D2ED60600E86B12 /* Mobile.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,8 +36,8 @@
 		8C7185CD1D11C56C00F98056 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8CB110C0230972630064D8CE /* MobileEbitenViewControllerWithErrorHandling.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MobileEbitenViewControllerWithErrorHandling.m; sourceTree = "<group>"; };
 		8CB110C22309728C0064D8CE /* MobileEbitenViewControllerWithErrorHandling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MobileEbitenViewControllerWithErrorHandling.h; sourceTree = "<group>"; };
+		8CCA2AD72784D18900F93EF7 /* Mobile.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Mobile.xcframework; sourceTree = "<group>"; };
 		8CCAFF0A22E3133E00FAEDC1 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		8CEB8FF41D2ED60600E86B12 /* Mobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Mobile.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,7 +50,7 @@
 				8C4C3321271B334200CB6E83 /* GameController.framework in Frameworks */,
 				8C341D9E22E3140400B5C749 /* OpenGLES.framework in Frameworks */,
 				8CCAFF0B22E3133E00FAEDC1 /* AVFoundation.framework in Frameworks */,
-				8CEB8FF51D2ED60600E86B12 /* Mobile.framework in Frameworks */,
+				8CCA2ADB2784D87000F93EF7 /* Mobile.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,10 +101,10 @@
 		8CCAFF0922E3133E00FAEDC1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8CCA2AD72784D18900F93EF7 /* Mobile.xcframework */,
 				8C4C3320271B334200CB6E83 /* GameController.framework */,
 				8C319FA2232D60A80051792B /* AudioToolbox.framework */,
 				8C341D9D22E3140400B5C749 /* OpenGLES.framework */,
-				8CEB8FF41D2ED60600E86B12 /* Mobile.framework */,
 				8C341D9922E313CD00B5C749 /* GLKit.framework */,
 				8CCAFF0A22E3133E00FAEDC1 /* AVFoundation.framework */,
 			);
@@ -343,7 +343,10 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = goinovation/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hajimehoshi.goinovation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -366,7 +369,10 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = goinovation/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hajimehoshi.goinovation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "iOS Dev";

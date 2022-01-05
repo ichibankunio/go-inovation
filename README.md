@@ -42,7 +42,7 @@ and run the Android Studio project in `./mobile/android`.
 ```
 git clone https://github.com/hajimehoshi/go-inovation
 cd go-inovation
-go run github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile bind -target ios -o ./mobile/ios/Mobile.framework ./mobile
+go run github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile bind -target ios -o ./mobile/ios/Mobile.xcframework ./mobile
 ```
 
 and run the Xcode project in `./mobile/ios`.
