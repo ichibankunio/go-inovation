@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/hajimehoshi/bitmapfont/v2 v2.1.3
-	github.com/hajimehoshi/ebiten/v2 v2.3.0-alpha.4.0.20220105083146-116203c5a516
+	github.com/hajimehoshi/ebiten/v2 v2.3.0-alpha.4.0.20220105083728-1f17a630844d
 	github.com/hajimehoshi/go-steamworks v0.0.0-20211013134811-a834d04a63aa
 	golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d
 	golang.org/x/text v0.3.6
@@ -17,7 +17,7 @@ require (
 	github.com/jfreymuth/oggvorbis v1.0.3 // indirect
 	github.com/jfreymuth/vorbis v1.0.2 // indirect
 	golang.org/x/exp v0.0.0-20190731235908-ec7cb31e5a56 // indirect
-	golang.org/x/mobile v0.0.0-20210902104108-5d9a33257ab5 // indirect
+	golang.org/x/mobile v0.0.0-20220104184238-4a8be17bd2e3 // indirect
 	golang.org/x/mod v0.4.2 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20210917161153-d61c044b1678 // indirect
