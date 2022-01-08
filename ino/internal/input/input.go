@@ -95,7 +95,7 @@ func (i *Input) Update() {
 
 	var gamepadUsed bool
 	if i.gamepadEnabled {
-		const threshold = 0.9
+		const threshold = 0.8
 		var x, y float64
 		std := ebiten.IsStandardGamepadLayoutAvailable(i.gamepadID)
 		if std {
