@@ -18,6 +18,10 @@ http://hajimehoshi.github.io/go-inovation/
 
 <a href="https://itunes.apple.com/us/app/%E3%81%84%E3%81%AE-%E3%81%B9%E3%83%BC%E3%81%97%E3%82%87%E3%82%93-2007/id1132624266?mt=8"><img src="https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg" alt="Download on the App Store" width="135" height="40"></a>
 
+### Privacy Policy
+
+We never collect any data from users in the above applications.
+
 ## How to install and run on desktops
 
 ```
